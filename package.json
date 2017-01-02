@@ -21,7 +21,7 @@
     "lodash": "^4.17.4",
     "reselect": "^2.5.4"
   },
-  "description": "Simplified generator of selectors",
+  "description": "Simplified generator of reselect selectors",
   "devDependencies": {
     "ava": "^0.17.0",
     "babel": "^6.5.2",
@@ -56,6 +56,10 @@
     "webpack-dev-server": "^1.16.2"
   },
   "homepage": "https://github.com/planttheidea/selectorator#readme",
+  "keywords": [
+    "reselect",
+    "selector"
+  ],
   "license": "MIT",
   "main": "lib/index.js",
   "name": "selectorator",
