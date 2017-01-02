@@ -9,11 +9,16 @@ import {
   getStandardSelector,
   getStructuredSelector,
   throwInvalidPathsError,
-  throwInvalidComputedFunctionError
+  throwInvalidComputedFunctionError,
+  throwNoPathsError
 } from './utils';
 
 /**
- * @function selectorator
+ * @module selectorator
+ */
+
+/**
+ * @function createSelector
  * 
  * @description
  * create a selector without any boilerplate code
@@ -56,6 +61,10 @@ const createSelector = (paths, getComputedValue, options = {}) => {
 
   if (!isArray(paths)) {
     throwInvalidPathsError();
+  }
+
+  if (!paths.length) {
+    throwNoPathsError();
   }
 
   if (!isFunction(getComputedValue)) {

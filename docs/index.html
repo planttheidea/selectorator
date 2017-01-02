@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>selectorator Index</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.dark.css">
+
+	<link type="text/css" rel="stylesheet" href="styles/site.paper.css">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top ">
+<div class="container">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="index.html">selectorator</a>
+		<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#topNavigation">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+        </button>
+	</div>
+	<div class="navbar-collapse collapse" id="topNavigation">
+		<ul class="nav navbar-nav">
+			
+			<li class="dropdown">
+				<a href="modules.list.html" class="dropdown-toggle" data-toggle="dropdown">Modules<b class="caret"></b></a>
+				<ul class="dropdown-menu inline">
+					<li><a href="module-selectorator.html">selectorator</a></li>
+				</ul>
+			</li>
+			
+		</ul>
+        
+            <div class="col-sm-3 col-md-3">
+                <form class="navbar-form" role="search">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search" name="q" id="search-input">
+                        <div class="input-group-btn">
+                            <button class="btn btn-default" id="search-submit"><i class="glyphicon glyphicon-search"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        
+	</div>
+
+</div>
+</div>
+
+
+<div class="container" id="toc-content">
+<div class="row">
+
+	
+	<div class="col-md-8">
+	
+		<div id="main">
+			
+
+	
+	
+
+
+
+    <h3>selectorator 1.0.0</h3>
+
+
+
+
+
+
+
+
+
+	
+	
+
+
+
+
+
+    <section class="readme-section">
+        <article><h1 id="selectorator">selectorator</h1>
+<p><img src="https://img.shields.io/badge/build-passing-brightgreen.svg"/>
+<img src="https://img.shields.io/badge/coverage-100%25-brightgreen.svg"/>
+<img src="https://img.shields.io/badge/license-MIT-blue.svg"/></p>
+<p><code>selectorator</code> is an abstraction API for creating selectors via <a href="https://github.com/reactjs/reselect">reselect</a> with less boilerplate code.</p>
+<h3 id="installation">Installation</h3>
+<pre class="prettyprint source"><code>$ npm i selectorator --save</code></pre><h3 id="usage">Usage</h3>
+<pre class="prettyprint source lang-javascript"><code>import createSelector from 'selectorator';
+
+// selector created with single method call
+const getBarBaz = createSelector(['foo.bar', 'baz'], (bar, baz) => {
+  return `${bar} ${baz}`;
+});
+
+const state = {
+  foo: {
+    bar: 'bar'
+  },
+  baz: 'baz'
+};
+
+console.log(getBarBaz(state)); // &quot;bar baz&quot;</code></pre><p>Not a whole lot of magic here, just simplifying the creation of the &quot;identity selectors&quot; that <code>reselect</code> requires, instead replacing them with a standardized dot- or bracket-notiation string for retrieval of a nested property in the state object.</p>
+<p>That said, you can still use your own custom identity selectors, or compose selectors, if you so choose. Here is the example from the <code>reselect</code> README modified to use <code>selectorator</code>:</p>
+<pre class="prettyprint source lang-javascript"><code>// subtotal built using simple method
+const getSubtotal = createSelector(['shop.items'], (items) => {
+  return items.reduce((sum, {value}) => {
+    return sum + value;
+  }, 0);
+});
+
+// tax build with simple method combined with other selector
+const getTax = createSelector([getSubtotal, 'shop.taxPercent'], (subtotal, taxPercent) => {
+  return subtotal * (taxPercent / 100);
+});
+
+// total build entirely with other selectors
+const getTotal = createSelector([getSubtotal, getTax], (subtotal, tax) => {
+  return {
+    total: subtotal + tax
+  };
+});
+
+const state = {
+  shop: {
+    taxPercent: 8,
+    items: [
+      {name: 'apple', value: 1.20},
+      {name: 'orange', value: 0.95}
+    ]
+  }
+};
+
+console.log('subtotal: ', getSubtotal(state)); // 2.15
+console.log('tax: ', getTax(state)); // 0.172
+console.log('total: ', getTotal(state)); // {total: 2.322}</code></pre><h3 id="advanced-usage">Advanced usage</h3>
+<p>All the capabilities that exist with <code>reselect</code> are still available using <code>selectorator</code>, they are just passed as an object of options to <code>createSelector</code>.</p>
+<p><strong>deepEqual</strong> <em>defaults to false</em></p>
+<p>A common usage of custom selectors is to perform a deep equality check instead of the standard strict equality check when comparing values. To apply this, simply set <code>deepEqual</code> to <code>true</code>.</p>
+<pre class="prettyprint source lang-javascript"><code>import createSelector from 'selectorator';
+
+const selectoratorOptions = {
+  deepEqual: true
+};
+
+const getBaz = createSelector(['foo.bar.baz'], (baz) => {
+  return !!baz;
+}, selectoratorOptions);</code></pre><p><strong>memoizer</strong> <em>defaults to <code>reselect</code> defaultMemoize</em></p>
+<p>If you want to use a custom memoizer, pass the method as this option. This will use <code>createSelectorCreator</code> from <code>reselect</code> internally, so consult their documentation on proper usage.</p>
+<pre class="prettyprint source lang-javascript"><code>import createSelector from 'selectorator';
+import moize from 'moize';
+
+const selectoratorOptions = {
+  memoizer: moize
+};
+
+const getFoo = createSelector(['foo'], (foo) => {
+  return !!foo;
+}, selectoratorOptions);</code></pre><p><strong>memoizerParams</strong> <em>defaults to []</em></p>
+<p><code>reselect</code> allows you to pass parameters to the <code>memoizer</code> function, and this array will translate directly into those parameters.</p>
+<pre class="prettyprint source lang-javascript"><code>import createSelector from 'selectorator';
+
+const selectoratorOptions = {
+  // silly example checking current or next values related to &quot;foo&quot;
+  memoizerParams: [
+    (currentFoo, nextFoo) => {
+      return currentFoo === 'foo' || nextFoo !== 'foo';
+    }
+  ]
+};
+
+const getFoo = createSelector(['foo'], (foo) => {
+  return !!foo;
+}, selectoratorOptions);</code></pre><h3 id="development">Development</h3>
+<p>Standard stuff, clone the repo and <code>npm install</code> dependencies. The npm scripts available:</p>
+<ul>
+<li><code>build</code> =&gt; run webpack to build development <code>dist</code> file with NODE_ENV=development</li>
+<li><code>build:minifed</code> =&gt; run webpack to build production <code>dist</code> file with NODE_ENV=production</li>
+<li><code>dev</code> =&gt; run webpack dev server to run example app (playground!)</li>
+<li><code>docs</code> =&gt; builds the docs via <code>jsdoc</code></li>
+<li><code>lint</code> =&gt; run ESLint against all files in the <code>src</code> folder</li>
+<li><code>prepublish</code> =&gt; runs <code>prepublish:compile</code></li>
+<li><code>prepublish:compile</code> =&gt; run <code>lint</code>, <code>test:coverage</code>, <code>transpile</code>, <code>build</code>, <code>build:minified</code>, and <code>docs</code></li>
+<li><code>test</code> =&gt; run AVA test functions with <code>NODE_ENV=test</code></li>
+<li><code>test:coverage</code> =&gt; run <code>test</code> but with <code>nyc</code> for coverage checker</li>
+<li><code>test:watch</code> =&gt; run <code>test</code>, but with persistent watcher</li>
+<li><code>transpile</code> =&gt; run babel against all files in <code>src</code> to create files in <code>lib</code></li>
+</ul></article>
+    </section>
+
+
+
+
+
+
+
+		</div>
+	</div>
+
+	<div class="clearfix"></div>
+
+	
+		<div class="col-md-3">
+			<div id="toc" class="col-md-3 hidden-xs hidden-sm hidden-md"></div>
+		</div>
+	
+
+</div>
+</div>
+
+
+    <div class="modal fade" id="searchResults">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Search results</h4>
+          </div>
+          <div class="modal-body"></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div>
+
+
+<footer>
+
+
+<span class="jsdoc-message">
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a>
+	
+	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
+</span>
+</footer>
+
+<script src="scripts/docstrap.lib.js"></script>
+<script src="scripts/toc.js"></script>
+
+    <script type="text/javascript" src="scripts/fulltext-search-ui.js"></script>
+
+
+<script>
+$( function () {
+	$( "[id*='$']" ).each( function () {
+		var $this = $( this );
+
+		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
+	} );
+
+	$( ".tutorial-section pre, .readme-section pre, pre.prettyprint.source" ).each( function () {
+		var $this = $( this );
+
+		var example = $this.find( "code" );
+		exampleText = example.html();
+		var lang = /{@lang (.*?)}/.exec( exampleText );
+		if ( lang && lang[1] ) {
+			exampleText = exampleText.replace( lang[0], "" );
+			example.html( exampleText );
+			lang = lang[1];
+		} else {
+			var langClassMatch = example.parent()[0].className.match(/lang\-(\S+)/);
+			lang = langClassMatch ? langClassMatch[1] : "javascript";
+		}
+
+		if ( lang ) {
+
+			$this
+			.addClass( "sunlight-highlight-" + lang )
+			.addClass( "linenums" )
+			.html( example.html() );
+
+		}
+	} );
+
+	Sunlight.highlightAll( {
+		lineNumbers : true,
+		showMenu : true,
+		enableDoclinks : true
+	} );
+
+	$.catchAnchorLinks( {
+        navbarOffset: 10
+	} );
+	$( "#toc" ).toc( {
+		anchorName  : function ( i, heading, prefix ) {
+			return $( heading ).attr( "id" ) || ( prefix + i );
+		},
+		selectors   : "#toc-content h1,#toc-content h2,#toc-content h3,#toc-content h4",
+		showAndHide : false,
+		smoothScrolling: true
+	} );
+
+	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+	$( '.dropdown-toggle' ).dropdown();
+
+    $( "table" ).each( function () {
+      var $this = $( this );
+      $this.addClass('table');
+    } );
+
+} );
+</script>
+
+
+
+<!--Navigation and Symbol Display-->
+
+<script>
+	$( function () {
+		$( '#main' ).localScroll( {
+			offset : { top : 60 } //offset by the height of your header (give or take a few px, see what works for you)
+		} );
+		$( "dt.name" ).each( function () {
+			var $this = $( this ).find("h4");
+			var icon = $( "<i/>" ).addClass( "icon-plus-sign" ).addClass( "pull-right" ).addClass( "icon-white" );
+			var dt = $(this);
+			var children = dt.next( "dd" );
+
+			dt.prepend( icon ).css( {cursor : "pointer"} );
+			dt.addClass( "member-collapsed" ).addClass( "member" );
+
+
+			children.hide();
+
+			dt.children().on( "click", function () {
+				children = dt.next( "dd" );
+				children.slideToggle( "fast", function () {
+
+					if ( children.is( ":visible" ) ) {
+						icon.addClass( "icon-minus-sign" ).removeClass( "icon-plus-sign" ).removeClass( "icon-white" );
+						dt.addClass( "member-open" ).animate( "member-collapsed" );
+					} else {
+						icon.addClass( "icon-plus-sign" ).removeClass( "icon-minus-sign" ).addClass( "icon-white" );
+						dt.addClass( "member-collapsed" ).removeClass( "member-open" );
+					}
+				} );
+			} );
+
+		} );
+	} );
+</script>
+
+
+<!--Google Analytics-->
+
+
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            SearcherDisplay.init();
+        });
+    </script>
+
+
+</body>
+</html>

@@ -1,5 +1,22 @@
 {
   "author": "planttheidea <tony.quetano@planttheidea.com>",
+  "ava": {
+    "concurrency": 5,
+    "babel": "inherit",
+    "failFast": true,
+    "files": [
+      "./test/utils.js",
+      "./test/index.js"
+    ],
+    "require": [
+      "babel-register",
+      "babel-polyfill"
+    ],
+    "verbose": true
+  },
+  "bugs": {
+    "url": "https://github.com/planttheidea/selectorator/issues"
+  },
   "dependencies": {
     "lodash": "^4.17.4",
     "reselect": "^2.5.4"
@@ -16,9 +33,10 @@
     "babel-preset-latest": "^6.16.0",
     "babel-preset-react": "^6.16.0",
     "babel-preset-stage-2": "^6.18.0",
+    "babel-register": "^6.18.0",
     "eslint": "^3.12.2",
     "eslint-config-rapid7": "^2.6.0",
-    "eslint-friendly-formatter": "^2.0.6",
+    "eslint-friendly-formatter": "^2.0.7",
     "eslint-loader": "^1.6.1",
     "html-webpack-plugin": "^2.25.0",
     "in-publish": "^2.0.0",
@@ -37,15 +55,26 @@
     "webpack-dashboard": "^0.2.0",
     "webpack-dev-server": "^1.16.2"
   },
+  "homepage": "https://github.com/planttheidea/selectorator#readme",
   "license": "MIT",
   "main": "lib/index.js",
   "name": "selectorator",
-  "repository": "git@github.com:planttheidea/selectorator.git",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/planttheidea/selectorator.git"
+  },
   "scripts": {
     "build": "NODE_ENV=development webpack --progress --colors",
     "build:minified": "NODE_ENV=production webpack --progress --colors --config=webpack.config.minified.js",
     "dev": "NODE_ENV=development webpack-dashboard -p 3210 -- webpack-dev-server --colors --config=webpack.config.dev.js",
+    "docs": "rimraf docs && jsdoc -c ./jsdoc.config.json && git add --all",
+    "lint": "eslint src",
+    "prepublish": "in-publish && npm run prepublish:compile || echo ''",
+    "prepublish:compile": "npm run lint && npm run test:coverage && npm run transpile && npm run build && npm run build:minified && npm run docs",
     "start": "npm run dev",
+    "test": "NODE_ENV=test ava --no-cache",
+    "test:coverage": "nyc npm test",
+    "test:watch": "NODE_ENV=test ava --watch",
     "transpile": "babel src --out-dir lib"
   },
   "version": "1.0.0"

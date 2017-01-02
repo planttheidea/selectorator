@@ -43,7 +43,13 @@ module.exports = Object.assign({}, defaultConfig, {
       return Object.assign({}, loaderObject, {
         include: loaderObject.include.concat([
           path.resolve(__dirname, 'DEV_ONLY')
-        ])
+        ]),
+        query: {
+          cacheDirectory: true,
+          presets: [
+            'react'
+          ]
+        }
       });
     })
   }),

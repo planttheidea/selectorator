@@ -11,6 +11,19 @@ import {
 
 /**
  * @private
+ *
+ * @function throwInvalidPathError
+ *
+ * @description
+ * throw the error that the path type is not a string
+ */
+export const throwInvalidPathError = () => {
+  throw new TypeError('Path must be a string type. It can be dot or bracket notation for nested values, for example: ' +
+    '"foo.bar" or "foo[0]".');
+};
+
+/**
+ * @private
  * 
  * @function createIdentitySelector
  * 
@@ -135,19 +148,6 @@ export const throwInvalidComputedFunctionError = () => {
 
 /**
  * @private
- *
- * @function throwInvalidPathError
- *
- * @description
- * throw the error that the path type is not a string
- */
-export const throwInvalidPathError = () => {
-  throw new TypeError('Path must be a string type. It can be dot or bracket notation for nested values, for example: ' +
-    '"foo.bar" or "foo[0]".');
-};
-
-/**
- * @private
  * 
  * @function throwInvalidPathsError
  * 
@@ -160,4 +160,16 @@ export const throwInvalidPathsError = () => {
     'If creating a structured selector, pass a plain object with source and destination properties, where source ' +
     'is an array of properties or custom selector functions, and destination is an array of property names to ' +
     'assign the values from source to.');
+};
+
+/**
+ * @private
+ *
+ * @function throwNoPathsError
+ *
+ * @description
+ * throw the error that no paths exist
+ */
+export const throwNoPathsError = () => {
+  throw new ReferenceError('You have not provided any values for paths, so no values can be retrieved from state.');
 };

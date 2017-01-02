@@ -1,15 +1,13 @@
 {
   "babel": {
     "plugins": [
-      "transform-decorators-legacy",
       "add-module-exports"
     ],
     "presets": [
       ["latest", {
         "loose": true
       }],
-      "stage-2",
-      "react"
+      "stage-2"
     ]
   },
   "configHelpUrl": "http://usejsdoc.org/about-configuring-jsdoc.html",
@@ -54,7 +52,7 @@
     "navType": "inline",
     "outputSourceFiles": true,
     "syntaxTheme": "dark",
-    "systemName": "remeasure",
+    "systemName": "selectorator",
     "theme": "paper"
   }
 }
