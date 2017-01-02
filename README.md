@@ -1,1 +1,1 @@
-# selector-generator
+# selectorator
