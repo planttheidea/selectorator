@@ -82,7 +82,8 @@ export const getSelectorCreator = ({deepEqual = false, memoizer, memoizerParams 
  * 
  * @param {Array<function|string>} paths paths to retrieve values from state from
  * @param {function} selectorCreator function to create selector with
- * @param {function} getComputedValue function to compute values with, receiving properties in state based on paths
+ * @param {function} getComputedValue function to compute values with, receiving properties in state based
+ * on paths and returning computed values from them (defaults to pass-through identity function)
  * @returns {function} selector to return computed value from state
  */
 export const getStandardSelector = (paths, selectorCreator, getComputedValue) => {
@@ -131,19 +132,6 @@ export const getStructuredSelector = (paths, selectorCreator) => {
   });
 
   return selectorCreator(selectors, getStructuredObject(destinationKeys));
-};
-
-/**
- * @private
- * 
- * @function throwInvalidComputedFunctionError
- * 
- * @description
- * throw the error that the getComputedValue function is not a function for a standard selector
- */
-export const throwInvalidComputedFunctionError = () => {
-  throw new TypeError('When building a standard selector, the second parameter passed must be a function, which ' +
-    'will receive the properties requested from state and return a computed value based on them.');
 };
 
 /**

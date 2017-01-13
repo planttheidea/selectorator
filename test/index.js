@@ -30,18 +30,33 @@ test('if createSelector throws when paths is an empty array', (t) => {
   }, ReferenceError);
 });
 
-test('if createSelector throws when paths is an array but getComputedValue is not a function', (t) => {
-  t.throws(() => {
-    createSelector(['foo'], /bar/);
-  }, TypeError);
-});
-
 test('if createSelector calls getStandardSelector when paths is an array and getComputedValue is a function', (t) => {
   const spy = sinon.spy(utils, 'getStandardSelector');
 
   createSelector(['foo'], () => {});
 
   t.true(spy.calledOnce);
+
+  spy.restore();
+});
+
+test('if createSelector calls getStandardSelector when paths is an array and getComputedValue is nor provided, and returns an identity function', (t) => {
+  const spy = sinon.spy(utils, 'getStandardSelector');
+
+  const selector = createSelector(['foo.bar.baz']);
+
+  t.true(spy.calledOnce);
+
+  const baz = 'baz';
+  const result = selector({
+    foo: {
+      bar: {
+        baz
+      }
+    }
+  });
+
+  t.is(result, baz);
 
   spy.restore();
 });

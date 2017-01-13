@@ -151,7 +151,7 @@
             
 <hr>
 <dt>
-    <h4 class="name" id="~createSelector"><span class="type-signature">&lt;inner> </span>createSelector(paths, getComputedValue [, options])</h4>
+    <h4 class="name" id="~createSelector"><span class="type-signature">&lt;inner> </span>createSelector(paths [, getComputedValue] [, options])</h4>
     
     
 </dt>
@@ -254,6 +254,8 @@ an object of key =&gt; path pairs that will assign path at state to key in struc
             
                 <td class="attributes">
                 
+                    &lt;optional><br>
+                
 
                 
 
@@ -264,11 +266,13 @@ an object of key =&gt; path pairs that will assign path at state to key in struc
             
                 <td class="default">
                 
+                    identity
+                
                 </td>
             
 
-            <td class="description last"><p>function that will accept the values at paths in state as parameters and compute 
-the next result</p></td>
+            <td class="description last"><p>function that will accept the values at paths in state as parameters
+and compute the next result</p></td>
         </tr>
 
     
