@@ -51,6 +51,18 @@ const getFoo = createSelector(['foo'], (foo) => {
 console.log('using serializer', getFoo({foo: 'baz'}));
 console.log(getFoo({foo: 'baz'}));
 
+const getIdentity = createSelector(['foo.bar.baz[0]']);
+
+console.log(getIdentity({
+  foo: {
+    bar: {
+      baz: [
+        'foo'
+      ]
+    }
+  }
+}));
+
 const App = () => {
   return (
     <div>

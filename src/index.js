@@ -1,6 +1,6 @@
 // external dependencies
+import identity from 'lodash/identity';
 import isArray from 'lodash/isArray';
-import isFunction from 'lodash/isFunction';
 import isPlainObject from 'lodash/isPlainObject';
 
 // utils
@@ -9,7 +9,6 @@ import {
   getStandardSelector,
   getStructuredSelector,
   throwInvalidPathsError,
-  throwInvalidComputedFunctionError,
   throwNoPathsError
 } from './utils';
 
@@ -44,15 +43,15 @@ import {
  *
  * @param {Array<function|string>|Object} paths paths to retrieve from state as parameters in getComputedValue, or 
  * an object of key => path pairs that will assign path at state to key in structured selector
- * @param {function} getComputedValue function that will accept the values at paths in state as parameters and compute 
- * the next result
+ * @param {function} [getComputedValue=identity] function that will accept the values at paths in state as parameters
+ * and compute the next result
  * @param {Object} [options={}] additional options available for selector creation
  * @param {boolean} [options.deepEqual=false] should strict equality be used for memoization
  * @param {function} [options.memoizer=defaultMemoize] custom memoize function for creating selectors with
  * @param {Array<*>} [options.memoizerParams=[]] additional parameters to pass to the selectorCreator function
  * @returns {function} selector for state object passed
  */
-const createSelector = (paths, getComputedValue, options = {}) => {
+const createSelector = (paths, getComputedValue = identity, options = {}) => {
   const selectorCreator = getSelectorCreator(options);
 
   if (isPlainObject(paths)) {
@@ -65,10 +64,6 @@ const createSelector = (paths, getComputedValue, options = {}) => {
 
   if (!paths.length) {
     throwNoPathsError();
-  }
-
-  if (!isFunction(getComputedValue)) {
-    throwInvalidComputedFunctionError();
   }
 
   return getStandardSelector(paths, selectorCreator, getComputedValue);

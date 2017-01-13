@@ -12,7 +12,6 @@ import {
   getStandardSelector,
   getStructuredObject,
   getStructuredSelector,
-  throwInvalidComputedFunctionError,
   throwInvalidPathError,
   throwInvalidPathsError,
   throwNoPathsError
@@ -155,12 +154,6 @@ test('if getStructuredSelector will map selectors to specific keys in selector f
     bar: 'bar',
     baz: 'baz'
   });
-});
-
-test('if throwInvalidComputedFunctionError throws a type error when called', (t) => {
-  t.throws(() => {
-    throwInvalidComputedFunctionError();
-  }, TypeError);
 });
 
 test('if throwInvalidPathError throws a type error when called', (t) => {
