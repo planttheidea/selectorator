@@ -59,7 +59,7 @@ test('if getSelectorCreator returns the standard reselect createSelector functio
 });
 
 test('if getSelectorCreator will call createSelectorCreator with defaultMemoize and isEqual if deepEqual is set to true', (t) => {
-  const stub = sinon.stub(reselect, 'createSelectorCreator', (memoizer, equalityCheck) => {
+  const stub = sinon.stub(reselect, 'createSelectorCreator').callsFake((memoizer, equalityCheck) => {
     t.is(memoizer, reselect.defaultMemoize);
     t.is(equalityCheck, isEqual);
   });
@@ -77,7 +77,7 @@ test('if getSelectorCreator will call createSelectorCreator with defaultMemoize 
 
 test('if getSelectorCreator will call createSelectorCreator with custom memoizer', (t) => {
   const memoize = sinon.stub();
-  const stub = sinon.stub(reselect, 'createSelectorCreator', (memoizer) => {
+  const stub = sinon.stub(reselect, 'createSelectorCreator').callsFake((memoizer) => {
     t.is(memoizer, memoize);
   });
 
@@ -90,7 +90,7 @@ test('if getSelectorCreator will call createSelectorCreator with custom memoizer
 
 test('if getSelectorCreator will call createSelectorCreator with custom memoizer options', (t) => {
   const option = () => {};
-  const stub = sinon.stub(reselect, 'createSelectorCreator', (memoizer, option1) => {
+  const stub = sinon.stub(reselect, 'createSelectorCreator').callsFake((memoizer, option1) => {
     t.is(memoizer, reselect.defaultMemoize);
     t.is(option1, option);
   });
