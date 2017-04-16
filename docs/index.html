@@ -70,7 +70,7 @@
 
 
 
-    <h3>selectorator 1.1.1</h3>
+    <h3>selectorator 3.0.0</h3>
 
 
 
@@ -93,8 +93,19 @@
 <img src="https://img.shields.io/badge/coverage-100%25-brightgreen.svg"/>
 <img src="https://img.shields.io/badge/license-MIT-blue.svg"/></p>
 <p><code>selectorator</code> is an abstraction API for creating selectors via <a href="https://github.com/reactjs/reselect">reselect</a> with less boilerplate code.</p>
+<h3 id="table-of-contents">Table of contents</h3>
+<ul>
+<li><a href="#installation">Installation</a></li>
+<li><a href="#versions">Versions</a></li>
+<li><a href="#usage">Usage</a></li>
+<li><a href="#advanced-usage">Advanced usage</a></li>
+<li><a href="#development">Development</a></li>
+</ul>
 <h3 id="installation">Installation</h3>
-<pre class="prettyprint source"><code>$ npm i selectorator --save</code></pre><h3 id="usage">Usage</h3>
+<pre class="prettyprint source"><code>$ npm i selectorator --save</code></pre><h3 id="versions">Versions</h3>
+<p>Versions of <code>selectorator</code> on the <code>3.x.x</code> versions will use the <code>3.x.x</code> version of <code>reselect</code> as a dependency, and all major versions of <code>selectorator</code> will match the major versions of <code>reselect</code> going forward. If you wish to still use the <code>2.x.x</code> branch of <code>reselect</code> for your application, then you should continue using the <code>1.x.x</code> branch of <code>selectorator</code>. All future enhancements will be made to both branches, unless they are version-specific.</p>
+<p>If you would like to learn more about the breaking changes related to the major version change for <code>reselect</code>, please visit <a href="https://github.com/reactjs/reselect/blob/master/CHANGELOG.md">the <code>reselect</code> CHANGELOG</a>.</p>
+<h3 id="usage">Usage</h3>
 <pre class="prettyprint source lang-javascript"><code>import createSelector from 'selectorator';
 
 // selector created with single method call
