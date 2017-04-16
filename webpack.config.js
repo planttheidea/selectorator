@@ -7,39 +7,49 @@ const eslintFriendlyFormatter = require('eslint-friendly-formatter');
 const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 
 module.exports = {
+  cache: true,
+
   devtool: '#source-map',
 
   entry: [
     path.resolve(__dirname, 'src', 'index.js')
   ],
 
-  eslint: {
-    configFile: '.eslintrc',
-    emitError: true,
-    failOnError: true,
-    failOnWarning: true,
-    formatter: eslintFriendlyFormatter
-  },
-
   module: {
-    preLoaders: [
+    rules: [
       {
-        cacheable: true,
+        enforce: 'pre',
         include: [
           path.resolve(__dirname, 'src')
         ],
         loader: 'eslint-loader',
+        options: {
+          configFile: '.eslintrc',
+          emitError: true,
+          failOnError: true,
+          failOnWarning: true,
+          formatter: eslintFriendlyFormatter
+        },
         test: /\.js$/
-      }
-    ],
-
-    loaders: [
-      {
-        cacheable: true,
+      }, {
         include: [
           path.resolve(__dirname, 'src')
         ],
-        loader: 'babel',
+        loader: 'babel-loader',
+        options: {
+          babelrc: false,
+          presets: [
+            ['env', {
+              loose: true,
+              modules: false,
+              targets: [
+                'last 2 versions',
+                'ie 9'
+              ]
+            }],
+            'stage-2'
+          ]
+        },
         test: /\.js$/
       }
     ]
@@ -60,18 +70,5 @@ module.exports = {
     new LodashModuleReplacementPlugin({
       paths: true
     })
-  ],
-
-  resolve: {
-    extensions: [
-      '',
-      '.js'
-    ],
-
-    fallback: [
-      path.join(__dirname, 'src')
-    ],
-
-    root: __dirname
-  }
+  ]
 };

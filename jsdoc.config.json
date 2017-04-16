@@ -1,11 +1,12 @@
 {
   "babel": {
-    "plugins": [
-      "add-module-exports"
-    ],
     "presets": [
-      ["latest", {
-        "loose": true
+      ["env", {
+        "loose": true,
+        "targets": [
+          "last 2 versions",
+          "ie 9"
+        ]
       }],
       "stage-2"
     ]

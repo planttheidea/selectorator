@@ -24,12 +24,12 @@ export const throwInvalidPathError = () => {
 
 /**
  * @private
- * 
+ *
  * @function createIdentitySelector
- * 
+ *
  * @description
  * based on the path passed, create the identity function for it or return the function itself
- * 
+ *
  * @param {function|string} path nested path to retrieve from the state object
  * @returns {function} identity function to retrive value from state for given property
  */
@@ -37,7 +37,7 @@ export const createIdentitySelector = (path) => {
   if (isFunction(path)) {
     return path;
   }
-  
+
   if (!isString(path)) {
     throwInvalidPathError();
   }
@@ -49,9 +49,9 @@ export const createIdentitySelector = (path) => {
 
 /**
  * @private
- * 
+ *
  * @function getSelectorCreator
- * 
+ *
  * @description
  * get the creator function to use when generating the selector
  *
@@ -67,19 +67,19 @@ export const getSelectorCreator = ({deepEqual = false, memoizer, memoizerParams 
     return createSelectorCreator(memoizerFn, isEqual, ...memoizerParams);
   }
 
-  return isFunction(memoizer) || !!memoizerParams.length ?
+  return memoizerParams.length || isFunction(memoizer) ?
     createSelectorCreator(memoizerFn, ...memoizerParams) :
     createReselectSelector;
 };
 
 /**
  * @private
- * 
+ *
  * @function getStandardSelector
- * 
+ *
  * @description
  * get a standard selector based on the paths and getComputedValue provided
- * 
+ *
  * @param {Array<function|string>} paths paths to retrieve values from state from
  * @param {function} selectorCreator function to create selector with
  * @param {function} getComputedValue function to compute values with, receiving properties in state based
@@ -136,9 +136,9 @@ export const getStructuredSelector = (paths, selectorCreator) => {
 
 /**
  * @private
- * 
+ *
  * @function throwInvalidPathsError
- * 
+ *
  * @description
  * throw the error that the paths value is not of the correct type
  */

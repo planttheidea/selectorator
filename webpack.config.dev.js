@@ -1,7 +1,6 @@
 'use strict';
 
 const path = require('path');
-const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const WebpackDashboard = require('webpack-dashboard/plugin');
 
@@ -10,8 +9,6 @@ const defaultConfig = require('./webpack.config');
 const PORT = 3000;
 
 module.exports = Object.assign({}, defaultConfig, {
-  cache: true,
-
   devServer: {
     contentBase: './dist',
     host: 'localhost',
@@ -30,27 +27,32 @@ module.exports = Object.assign({}, defaultConfig, {
     path.resolve(__dirname, 'DEV_ONLY', 'App.js')
   ],
 
-  eslint: Object.assign({}, defaultConfig.eslint, {
-    failOnWarning: false
-  }),
-
   module: Object.assign({}, defaultConfig.module, {
-    loaders: defaultConfig.module.loaders.map((loaderObject) => {
-      if (loaderObject.loader !== 'babel') {
-        return loaderObject;
+    rules: defaultConfig.module.rules.map((rule) => {
+      if (rule.loader === 'babel-loader') {
+        return Object.assign({}, rule, {
+          include: rule.include.concat([
+            path.resolve(__dirname, 'DEV_ONLY')
+          ]),
+          options: Object.assign({}, rule.options, {
+            cacheDirectory: true,
+            presets: rule.options.presets.concat([
+              'react'
+            ])
+          })
+        });
       }
 
-      return Object.assign({}, loaderObject, {
-        include: loaderObject.include.concat([
-          path.resolve(__dirname, 'DEV_ONLY')
-        ]),
-        query: {
-          cacheDirectory: true,
-          presets: [
-            'react'
-          ]
-        }
-      });
+      if (rule.loader === 'eslint-loader') {
+        return Object.assign({}, rule, {
+          options: Object.assign({}, rule.options, {
+            emitError: undefined,
+            failOnWarning: false
+          })
+        });
+      }
+
+      return rule;
     })
   }),
 
