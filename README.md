@@ -6,11 +6,24 @@
 
 `selectorator` is an abstraction API for creating selectors via [reselect](https://github.com/reactjs/reselect) with less boilerplate code.
 
+### Table of contents
+* [Installation](#installation)
+* [Versions](#versions)
+* [Usage](#usage)
+* [Advanced usage](#advanced-usage)
+* [Development](#development)
+
 ### Installation
 
 ```
 $ npm i selectorator --save
 ```
+
+### Versions
+
+Versions of `selectorator` on the `3.x.x` versions will use the `3.x.x` version of `reselect` as a dependency, and all major versions of `selectorator` will match the major versions of `reselect` going forward. If you wish to still use the `2.x.x` branch of `reselect` for your application, then you should continue using the `1.x.x` branch of `selectorator`. All future enhancements will be made to both branches, unless they are version-specific.
+
+If you would like to learn more about the breaking changes related to the major version change for `reselect`, please visit [the `reselect` CHANGELOG](https://github.com/reactjs/reselect/blob/master/CHANGELOG.md).
 
 ### Usage
 
