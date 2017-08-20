@@ -30,10 +30,12 @@ test('if createSelector throws when paths is an empty array', (t) => {
   }, ReferenceError);
 });
 
-test('if createSelector calls getStandardSelector when paths is an array and getComputedValue is a function', (t) => {
-  const spy = sinon.spy(utils, 'getStandardSelector');
+test('if createSelector calls getSelectorCreator with the options passed', (t) => {
+  const spy = sinon.spy(utils, 'getSelectorCreator');
 
-  createSelector(['foo'], () => {});
+  createSelector(['foo'], () => {}, {
+    memoizer() {}
+  });
 
   t.true(spy.calledOnce);
 
@@ -57,6 +59,16 @@ test('if createSelector calls getStandardSelector when paths is an array and get
   });
 
   t.is(result, baz);
+
+  spy.restore();
+});
+
+test('if createSelector calls getStandardSelector when paths is an array and getComputedValue is a function', (t) => {
+  const spy = sinon.spy(utils, 'getStandardSelector');
+
+  createSelector(['foo'], () => {});
+
+  t.true(spy.calledOnce);
 
   spy.restore();
 });

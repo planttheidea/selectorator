@@ -20,25 +20,22 @@ module.exports = Object.assign({}, defaultConfig, {
     stats: {
       colors: true,
       progress: true
+    },
+    watchOptions: {
+      ignored: /node_modules/
     }
   },
 
-  entry: [
-    path.resolve(__dirname, 'DEV_ONLY', 'App.js')
-  ],
+  entry: [path.resolve(__dirname, 'DEV_ONLY', 'App.js')],
 
   module: Object.assign({}, defaultConfig.module, {
     rules: defaultConfig.module.rules.map((rule) => {
       if (rule.loader === 'babel-loader') {
         return Object.assign({}, rule, {
-          include: rule.include.concat([
-            path.resolve(__dirname, 'DEV_ONLY')
-          ]),
+          include: rule.include.concat([path.resolve(__dirname, 'DEV_ONLY')]),
           options: Object.assign({}, rule.options, {
             cacheDirectory: true,
-            presets: rule.options.presets.concat([
-              'react'
-            ])
+            presets: rule.options.presets.concat(['react'])
           })
         });
       }

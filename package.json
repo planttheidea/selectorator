@@ -1,63 +1,52 @@
 {
   "author": "planttheidea <tony.quetano@planttheidea.com>",
   "ava": {
-    "concurrency": 5,
     "babel": "inherit",
     "failFast": true,
-    "files": [
-      "./test/utils.js",
-      "./test/index.js"
-    ],
-    "require": [
-      "babel-register",
-      "babel-polyfill"
-    ],
+    "files": ["./test/utils.js", "./test/index.js"],
+    "require": ["babel-register", "babel-polyfill"],
     "verbose": true
   },
   "bugs": {
     "url": "https://github.com/planttheidea/selectorator/issues"
   },
   "dependencies": {
-    "lodash": "^4.17.4",
-    "reselect": "^2.5.4"
+    "kari": "^0.6.0",
+    "reselect": "^3.0.1"
   },
   "description": "Simplified generator of reselect selectors",
   "devDependencies": {
-    "ava": "^0.19.1",
-    "babel": "^6.23.0",
-    "babel-cli": "^6.24.1",
-    "babel-eslint": "^7.2.2",
-    "babel-loader": "^6.4.1",
-    "babel-preset-env": "^1.4.0",
+    "ava": "^0.22.0",
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-eslint": "^7.2.3",
+    "babel-loader": "^7.1.2",
+    "babel-preset-env": "^1.6.0",
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-2": "^6.24.1",
-    "babel-register": "^6.24.1",
-    "eslint": "^3.19.0",
-    "eslint-config-rapid7": "^2.9.0",
-    "eslint-friendly-formatter": "^2.0.7",
-    "eslint-loader": "^1.7.1",
-    "html-webpack-plugin": "^2.28.0",
+    "babel-register": "^6.26.0",
+    "eslint": "^4.5.0",
+    "eslint-config-rapid7": "^2.11.1",
+    "eslint-friendly-formatter": "^3.0.0",
+    "eslint-loader": "^1.9.0",
+    "html-webpack-plugin": "^2.30.1",
     "in-publish": "^2.0.0",
     "ink-docstrap": "^1.3.0",
-    "jsdoc": "^3.4.3",
+    "jsdoc": "^3.5.4",
     "jsdoc-babel": "^0.3.0",
-    "jsdom": "^9.12.0",
-    "lodash-webpack-plugin": "^0.11.2",
-    "nyc": "^10.2.0",
+    "jsdom": "^11.1.0",
+    "nyc": "^11.1.0",
     "optimize-js-plugin": "^0.0.4",
-    "react": "^15.5.4",
-    "react-dom": "^15.5.4",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
     "rimraf": "^2.6.1",
-    "sinon": "^2.1.0",
-    "webpack": "^2.4.1",
-    "webpack-dashboard": "^0.3.0",
-    "webpack-dev-server": "^2.4.2"
+    "sinon": "^3.2.1",
+    "webpack": "^3.5.5",
+    "webpack-dashboard": "^1.0.0-3",
+    "webpack-dev-server": "^2.7.1"
   },
   "homepage": "https://github.com/planttheidea/selectorator#readme",
-  "keywords": [
-    "reselect",
-    "selector"
-  ],
+  "keywords": ["reselect", "selector"],
   "license": "MIT",
   "main": "lib/index.js",
   "name": "selectorator",
@@ -71,14 +60,14 @@
     "clean": "rimraf lib && rimraf dist",
     "dev": "NODE_ENV=development webpack-dashboard -p 3210 -- webpack-dev-server --colors --config=webpack.config.dev.js",
     "docs": "rimraf docs && jsdoc -c ./jsdoc.config.json && git add --all",
-    "lint": "eslint src",
+    "lint": "eslint --max-warnings 0 src",
     "prepublish": "in-publish && npm run prepublish:compile || echo ''",
     "prepublish:compile": "npm run lint && npm run test:coverage && npm run clean && npm run transpile && npm run build && npm run build:minified && npm run docs",
     "start": "npm run dev",
-    "test": "NODE_ENV=test ava --no-cache",
-    "test:coverage": "nyc npm test",
-    "test:watch": "NODE_ENV=test ava --watch",
+    "test": "NODE_ENV=test ava",
+    "test:coverage": "nyc --cache npm test",
+    "test:watch": "npm run test -- --watch",
     "transpile": "babel src --out-dir lib"
   },
-  "version": "1.1.1"
+  "version": "3.0.0"
 }

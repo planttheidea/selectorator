@@ -1,21 +1,24 @@
 // test
 import test from 'ava';
-import isEqual from 'lodash/isEqual';
-import isFunction from 'lodash/isFunction';
+import equals from 'kari/equals';
 import * as reselect from 'reselect';
 import sinon from 'sinon';
 
 // src
-import {
-  createIdentitySelector,
-  getSelectorCreator,
-  getStandardSelector,
-  getStructuredObject,
-  getStructuredSelector,
-  throwInvalidPathError,
-  throwInvalidPathsError,
-  throwNoPathsError
-} from '../src/utils';
+import * as utils from '../src/utils';
+
+test('if typeOf creates a method that checks if the value is the typeof type', (t) => {
+  const type = 'string';
+  const value = 'foo';
+
+  const fn = utils.typeOf(type);
+
+  t.is(typeof fn, 'function');
+
+  const result = fn(value);
+
+  t.true(result);
+});
 
 test('if createIdentitySelector creates a function that receives state and gets the value at the path passed', (t) => {
   const path = 'foo[0].bar[baz]';
@@ -30,49 +33,91 @@ test('if createIdentitySelector creates a function that receives state and gets 
     ]
   };
 
-  const identity = createIdentitySelector(path);
+  const identity = utils.createIdentitySelector(path);
 
-  t.true(isFunction(identity));
+  t.is(typeof identity, 'function');
 
   const result = identity(state);
 
   t.is(result, value);
 });
 
+test('if createIdentitySelector creates a function that receives state and gets the value at the path array passed', (t) => {
+  const path = ['foo', 0, 'bar', 'baz'];
+  const value = 'foo-bar-baz';
+  const state = {
+    foo: [
+      {
+        bar: {
+          baz: value
+        }
+      }
+    ]
+  };
+
+  const identity = utils.createIdentitySelector(path);
+
+  t.is(typeof identity, 'function');
+
+  const result = identity(state);
+
+  t.is(result, value);
+});
+
+test('if createIdentitySelector creates a function that receives state and gets the value at the path number passed', (t) => {
+  const path = 0;
+  const value = 'foo-bar-baz';
+  const state = [
+    {
+      bar: {
+        baz: value
+      }
+    }
+  ];
+
+  const identity = utils.createIdentitySelector(path);
+
+  t.is(typeof identity, 'function');
+
+  const result = identity(state);
+
+  t.is(result, state[path]);
+});
+
 test('if createIdentitySelector returns the function passed when passed a function', (t) => {
   const path = () => {};
-  const result = createIdentitySelector(path);
+  const result = utils.createIdentitySelector(path);
 
   t.is(result, path);
 });
 
 test('if createIdentitySelector throws when path is not a function or string', (t) => {
   t.throws(() => {
-    createIdentitySelector({});
+    utils.createIdentitySelector({});
   }, TypeError);
 });
 
 test('if getSelectorCreator returns the standard reselect createSelector function when passed no options', (t) => {
-  const result = getSelectorCreator({});
+  const result = utils.getSelectorCreator({});
 
   t.is(result, reselect.createSelector);
 });
 
-test('if getSelectorCreator will call createSelectorCreator with defaultMemoize and isEqual if deepEqual is set to true', (t) => {
+test('if getSelectorCreator will call createSelectorCreator with defaultMemoize and equals if deepEqual is set to true', (t) => {
   const stub = sinon.stub(reselect, 'createSelectorCreator').callsFake((memoizer, equalityCheck) => {
     t.is(memoizer, reselect.defaultMemoize);
-    t.is(equalityCheck, isEqual);
+    t.is(equalityCheck, equals);
   });
 
-  getSelectorCreator({deepEqual: true});
+  utils.getSelectorCreator({deepEqual: true});
 
   t.true(stub.calledOnce);
 
   stub.restore();
 
-  const result = getSelectorCreator({deepEqual: true});
+  const result = utils.getSelectorCreator({deepEqual: true});
 
-  t.true(isFunction(result));
+  t.is(typeof result, 'function');
 });
 
 test('if getSelectorCreator will call createSelectorCreator with custom memoizer', (t) => {
@@ -81,7 +126,7 @@ test('if getSelectorCreator will call createSelectorCreator with custom memoizer
     t.is(memoizer, memoize);
   });
 
-  getSelectorCreator({memoizer: memoize});
+  utils.getSelectorCreator({memoizer: memoize});
 
   t.true(stub.calledOnce);
 
@@ -95,7 +140,7 @@ test('if getSelectorCreator will call createSelectorCreator with custom memoizer
     t.is(option1, option);
   });
 
-  getSelectorCreator({memoizerParams: [option]});
+  utils.getSelectorCreator({memoizerParams: [option]});
 
   t.true(stub.calledOnce);
 
@@ -103,7 +148,7 @@ test('if getSelectorCreator will call createSelectorCreator with custom memoizer
 });
 
 test('if getStandardSelector will create a selector function', (t) => {
-  const result = getStandardSelector(['foo.bar'], reselect.createSelector, (bar) => {
+  const result = utils.getStandardSelector(['foo.bar'], reselect.createSelector, (bar) => {
     return !!bar;
   });
   const state = {
@@ -116,9 +161,9 @@ test('if getStandardSelector will create a selector function', (t) => {
 });
 
 test('if getStructuredObject will create an object of key => selector pairs', (t) => {
-  const generator = getStructuredObject(['foo', 'bar', 'baz']);
+  const generator = utils.getStructuredObject(['foo', 'bar', 'baz']);
 
-  t.true(isFunction(generator));
+  t.is(typeof generator, 'function');
 
   const state = {
     foo: 'foo',
@@ -132,11 +177,14 @@ test('if getStructuredObject will create an object of key => selector pairs', (t
 });
 
 test('if getStructuredSelector will map selectors to specific keys in selector function', (t) => {
-  const selector = getStructuredSelector({
-    foo: 'bar.baz',
-    bar: 'foo',
-    baz: 'baz.foo'
-  }, reselect.createSelector);
+  const selector = utils.getStructuredSelector(
+    {
+      foo: 'bar.baz',
+      bar: 'foo',
+      baz: 'baz.foo'
+    },
+    reselect.createSelector
+  );
   const state = {
     bar: {
       baz: 'foo'
@@ -158,18 +206,18 @@ test('if getStructuredSelector will map selectors to specific keys in selector f
 
 test('if throwInvalidPathError throws a type error when called', (t) => {
   t.throws(() => {
-    throwInvalidPathError();
+    utils.throwInvalidPathError();
   }, TypeError);
 });
 
 test('if throwInvalidPathsError throws a type error when called', (t) => {
   t.throws(() => {
-    throwInvalidPathsError();
+    utils.throwInvalidPathsError();
   }, TypeError);
 });
 
 test('if throwNoPathsError throws a type error when called', (t) => {
   t.throws(() => {
-    throwNoPathsError();
+    utils.throwNoPathsError();
   }, ReferenceError);
 });

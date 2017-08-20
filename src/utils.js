@@ -1,13 +1,60 @@
 // external dependencies
-import isEqual from 'lodash/isEqual';
-import isFunction from 'lodash/isFunction';
-import isString from 'lodash/isString';
-import get from 'lodash/get';
-import {
-  createSelector as createReselectSelector,
-  createSelectorCreator,
-  defaultMemoize
-} from 'reselect';
+import equals from 'kari/equals';
+import get from 'kari/get';
+import map from 'kari/map';
+import reduce from 'kari/reduce';
+import {createSelector as createReselectSelector, createSelectorCreator, defaultMemoize} from 'reselect';
+
+/**
+ * @private
+ *
+ * @function typeOf
+ *
+ * @description
+ * creates a method that will return true or false if the value is the typeof the type passed
+ *
+ * @param {string} type the type to test against
+ * @returns {function(*): boolean} the method to test if the value is the typeof type
+ */
+export const typeOf = (type) => {
+  return (value) => {
+    return typeof value === type;
+  };
+};
+
+export const isFunction = typeOf('function');
+export const isNumber = typeOf('number');
+export const isString = typeOf('string');
+
+/**
+ * @private
+ *
+ * @function throwInvalidPathsError
+ *
+ * @description
+ * throw the error that the paths value is not of the correct type
+ */
+export const throwInvalidPathsError = () => {
+  throw new TypeError(
+    'First parameter passed must be either an array or a plain object. If you are creating a ' +
+      'standard selector, pass an array of either properties on the state to retrieve, or custom selector functions. ' +
+      'If creating a structured selector, pass a plain object with source and destination properties, where source ' +
+      'is an array of properties or custom selector functions, and destination is an array of property names to ' +
+      'assign the values from source to.'
+  );
+};
+
+/**
+ * @private
+ *
+ * @function throwNoPathsError
+ *
+ * @description
+ * throw the error that no paths exist
+ */
+export const throwNoPathsError = () => {
+  throw new ReferenceError('You have not provided any values for paths, so no values can be retrieved from state.');
+};
 
 /**
  * @private
@@ -18,8 +65,10 @@ import {
  * throw the error that the path type is not a string
  */
 export const throwInvalidPathError = () => {
-  throw new TypeError('Path must be a string type. It can be dot or bracket notation for nested values, for example: ' +
-    '"foo.bar" or "foo[0]".');
+  throw new TypeError(
+    'Path must be a string type. It can be dot or bracket notation for nested values, for example: ' +
+      '"foo.bar" or "foo[0]".'
+  );
 };
 
 /**
@@ -38,13 +87,11 @@ export const createIdentitySelector = (path) => {
     return path;
   }
 
-  if (!isString(path)) {
-    throwInvalidPathError();
-  }
-
-  return (state) => {
-    return get(state, path);
-  };
+  return !isString(path) && !isNumber(path) && !Array.isArray(path)
+    ? throwInvalidPathError()
+    : (state) => {
+      return get(path, state);
+    };
 };
 
 /**
@@ -64,12 +111,12 @@ export const getSelectorCreator = ({deepEqual = false, memoizer, memoizerParams 
   const memoizerFn = memoizer || defaultMemoize;
 
   if (deepEqual) {
-    return createSelectorCreator(memoizerFn, isEqual, ...memoizerParams);
+    return createSelectorCreator(memoizerFn, equals, ...memoizerParams);
   }
 
-  return memoizerParams.length || isFunction(memoizer) ?
-    createSelectorCreator(memoizerFn, ...memoizerParams) :
-    createReselectSelector;
+  return memoizerParams.length || isFunction(memoizer)
+    ? createSelectorCreator(memoizerFn, ...memoizerParams)
+    : createReselectSelector;
 };
 
 /**
@@ -87,9 +134,7 @@ export const getSelectorCreator = ({deepEqual = false, memoizer, memoizerParams 
  * @returns {function} selector to return computed value from state
  */
 export const getStandardSelector = (paths, selectorCreator, getComputedValue) => {
-  const selectors = paths.map(createIdentitySelector);
-
-  return selectorCreator(selectors, getComputedValue);
+  return selectorCreator(paths.map(createIdentitySelector), getComputedValue);
 };
 
 /**
@@ -105,11 +150,15 @@ export const getStandardSelector = (paths, selectorCreator, getComputedValue) =>
  */
 export const getStructuredObject = (properties) => {
   return (...values) => {
-    return properties.reduce((structuredObject, property, index) => {
-      structuredObject[property] = values[index];
+    return reduce(
+      (structuredObject, property, index) => {
+        structuredObject[property] = values[index];
 
-      return structuredObject;
-    }, {});
+        return structuredObject;
+      },
+      {},
+      properties
+    );
   };
 };
 
@@ -127,37 +176,9 @@ export const getStructuredObject = (properties) => {
  */
 export const getStructuredSelector = (paths, selectorCreator) => {
   const destinationKeys = Object.keys(paths);
-  const selectors = destinationKeys.map((key) => {
+  const selectors = map((key) => {
     return createIdentitySelector(paths[key]);
-  });
+  }, destinationKeys);
 
   return selectorCreator(selectors, getStructuredObject(destinationKeys));
-};
-
-/**
- * @private
- *
- * @function throwInvalidPathsError
- *
- * @description
- * throw the error that the paths value is not of the correct type
- */
-export const throwInvalidPathsError = () => {
-  throw new TypeError('First parameter passed must be either an array or a plain object. If you are creating a ' +
-    'standard selector, pass an array of either properties on the state to retrieve, or custom selector functions. ' +
-    'If creating a structured selector, pass a plain object with source and destination properties, where source ' +
-    'is an array of properties or custom selector functions, and destination is an array of property names to ' +
-    'assign the values from source to.');
-};
-
-/**
- * @private
- *
- * @function throwNoPathsError
- *
- * @description
- * throw the error that no paths exist
- */
-export const throwNoPathsError = () => {
-  throw new ReferenceError('You have not provided any values for paths, so no values can be retrieved from state.');
 };
