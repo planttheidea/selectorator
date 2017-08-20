@@ -3,8 +3,14 @@
   "ava": {
     "babel": "inherit",
     "failFast": true,
-    "files": ["./test/utils.js", "./test/index.js"],
-    "require": ["babel-register", "babel-polyfill"],
+    "files": [
+      "./test/utils.js",
+      "./test/index.js"
+    ],
+    "require": [
+      "babel-register",
+      "babel-polyfill"
+    ],
     "verbose": true
   },
   "bugs": {
@@ -46,7 +52,10 @@
     "webpack-dev-server": "^2.7.1"
   },
   "homepage": "https://github.com/planttheidea/selectorator#readme",
-  "keywords": ["reselect", "selector"],
+  "keywords": [
+    "reselect",
+    "selector"
+  ],
   "license": "MIT",
   "main": "lib/index.js",
   "name": "selectorator",
@@ -69,5 +78,5 @@
     "test:watch": "npm run test -- --watch",
     "transpile": "babel src --out-dir lib"
   },
-  "version": "3.0.0"
+  "version": "3.1.0"
 }
