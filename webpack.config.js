@@ -4,24 +4,18 @@ const path = require('path');
 const webpack = require('webpack');
 const eslintFriendlyFormatter = require('eslint-friendly-formatter');
 
-const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
-
 module.exports = {
   cache: true,
 
   devtool: '#source-map',
 
-  entry: [
-    path.resolve(__dirname, 'src', 'index.js')
-  ],
+  entry: [path.resolve(__dirname, 'src', 'index.js')],
 
   module: {
     rules: [
       {
         enforce: 'pre',
-        include: [
-          path.resolve(__dirname, 'src')
-        ],
+        include: [path.resolve(__dirname, 'src')],
         loader: 'eslint-loader',
         options: {
           configFile: '.eslintrc',
@@ -31,22 +25,21 @@ module.exports = {
           formatter: eslintFriendlyFormatter
         },
         test: /\.js$/
-      }, {
-        include: [
-          path.resolve(__dirname, 'src')
-        ],
+      },
+      {
+        include: [path.resolve(__dirname, 'src')],
         loader: 'babel-loader',
         options: {
           babelrc: false,
           presets: [
-            ['env', {
-              loose: true,
-              modules: false,
-              targets: [
-                'last 2 versions',
-                'ie 9'
-              ]
-            }],
+            [
+              'env',
+              {
+                loose: true,
+                modules: false,
+                targets: ['last 2 versions', 'ie 9']
+              }
+            ],
             'stage-2'
           ]
         },
@@ -63,12 +56,5 @@ module.exports = {
     umdNamedDefine: true
   },
 
-  plugins: [
-    new webpack.EnvironmentPlugin([
-      'NODE_ENV'
-    ]),
-    new LodashModuleReplacementPlugin({
-      paths: true
-    })
-  ]
+  plugins: [new webpack.EnvironmentPlugin(['NODE_ENV'])]
 };
