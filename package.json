@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "kari": "^0.6.0",
-    "reselect": "^3.0.1"
+    "reselect": "^2.5.4"
   },
   "description": "Simplified generator of reselect selectors",
   "devDependencies": {
@@ -69,5 +69,5 @@
     "test:watch": "npm run test -- --watch",
     "transpile": "babel src --out-dir lib"
   },
-  "version": "3.0.0"
+  "version": "1.2.0"
 }
