@@ -17,7 +17,7 @@
     "url": "https://github.com/planttheidea/selectorator/issues"
   },
   "dependencies": {
-    "kari": "^0.6.0",
+    "kari": "^0.7.0",
     "reselect": "^3.0.1"
   },
   "description": "Simplified generator of reselect selectors",
@@ -78,5 +78,5 @@
     "test:watch": "npm run test -- --watch",
     "transpile": "babel src --out-dir lib"
   },
-  "version": "3.1.0"
+  "version": "3.1.1"
 }

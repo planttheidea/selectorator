@@ -70,7 +70,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 6);
+/******/ 	return __webpack_require__(__webpack_require__.s = 5);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -85,7 +85,7 @@ exports.getArgsToPass = getArgsToPass;
 exports.getAreArgsFilled = getAreArgsFilled;
 exports.default = curry;
 
-var _isPlaceholder = __webpack_require__(22);
+var _isPlaceholder = __webpack_require__(10);
 
 var _isPlaceholder2 = _interopRequireDefault(_isPlaceholder);
 
@@ -175,6 +175,50 @@ function curry(fn) {
 
 
 exports.__esModule = true;
+exports.default = isFunction;
+/**
+ * @function isFunction
+ *
+ * @description
+ * test if the item a function
+ *
+ * @param {*} object the object to test
+ * @returns {boolean} is the item a function
+ */
+function isFunction(object) {
+  return typeof object === 'function';
+}
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+exports.default = isNAN;
+/**
+ * @function isNAN
+ *
+ * @description
+ * test if the item is NaN
+ *
+ * @param {*} object the object to test
+ * @returns {boolean} is the item is NaN
+ */
+function isNAN(object) {
+  return object !== object;
+}
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
 /**
  * @function isArray
  *
@@ -187,19 +231,7 @@ exports.__esModule = true;
 exports.default = Array.isArray;
 
 /***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var root = __webpack_require__(12);
-
-/** Built-in value references. */
-var Symbol = root.Symbol;
-
-module.exports = Symbol;
-
-
-/***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -221,82 +253,22 @@ function isString(object) {
 }
 
 /***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
-exports.default = coalesceToArray;
-
-var _isArray = __webpack_require__(1);
-
-var _isArray2 = _interopRequireDefault(_isArray);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/**
- * @function coalesceToArray
- *
- * @description
- * coalesce the value passed to an array if it is not already one
- *
- * @param {*} value the value to possibly coalesce
- * @returns {Array<*>} the coalesced array
- */
-function coalesceToArray(value) {
-  return (0, _isArray2.default)(value) ? value : [value];
-} // utils
-
-/***/ }),
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
+module.exports = __webpack_require__(6);
 
-
-exports.__esModule = true;
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-exports.default = isObject;
-/**
- * @function isObject
- *
- * @description
- * test if the item a object
- *
- * @param {*} object the object to test
- * @returns {boolean} is the item a object
- */
-function isObject(object) {
-  return (typeof object === 'undefined' ? 'undefined' : _typeof(object)) === 'object' && !!object && object.constructor === Object;
-}
 
 /***/ }),
 /* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(7);
-
-
-/***/ }),
-/* 7 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_identity__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_identity___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lodash_identity__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_isArray__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_isArray___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_lodash_isArray__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_lodash_isPlainObject__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_lodash_isPlainObject___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_lodash_isPlainObject__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__utils__ = __webpack_require__(20);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_kari_identity__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_kari_identity___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_kari_identity__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils__ = __webpack_require__(8);
 // external dependencies
-
-
 
 
 // utils
@@ -308,7 +280,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 /**
  * @function createSelector
- * 
+ *
  * @description
  * create a selector without any boilerplate code
  *
@@ -331,7 +303,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
  * console.log(getFilteredItems(state)); // ['foo', 'foo-bar'];
  * console.log(getFilteredItems(state)); // ['foo', 'foo-bar'], pulled from cache;
  *
- * @param {Array<function|string>|Object} paths paths to retrieve from state as parameters in getComputedValue, or 
+ * @param {Array<function|string>|Object} paths paths to retrieve from state as parameters in getComputedValue, or
  * an object of key => path pairs that will assign path at state to key in structured selector
  * @param {function} [getComputedValue=identity] function that will accept the values at paths in state as parameters
  * and compute the next result
@@ -342,419 +314,77 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
  * @returns {function} selector for state object passed
  */
 var createSelector = function createSelector(paths) {
-  var getComputedValue = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : __WEBPACK_IMPORTED_MODULE_0_lodash_identity___default.a;
+  var getComputedValue = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : __WEBPACK_IMPORTED_MODULE_0_kari_identity___default.a;
   var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
-  var selectorCreator = Object(__WEBPACK_IMPORTED_MODULE_3__utils__["a" /* getSelectorCreator */])(options);
+  var selectorCreator = Object(__WEBPACK_IMPORTED_MODULE_1__utils__["a" /* getSelectorCreator */])(options);
 
-  if (__WEBPACK_IMPORTED_MODULE_2_lodash_isPlainObject___default()(paths)) {
-    return Object(__WEBPACK_IMPORTED_MODULE_3__utils__["c" /* getStructuredSelector */])(paths, selectorCreator);
+  if (Object(__WEBPACK_IMPORTED_MODULE_1__utils__["d" /* isPlainObject */])(paths)) {
+    return Object(__WEBPACK_IMPORTED_MODULE_1__utils__["c" /* getStructuredSelector */])(paths, selectorCreator);
   }
 
-  if (!__WEBPACK_IMPORTED_MODULE_1_lodash_isArray___default()(paths)) {
-    Object(__WEBPACK_IMPORTED_MODULE_3__utils__["d" /* throwInvalidPathsError */])();
+  if (!Array.isArray(paths)) {
+    Object(__WEBPACK_IMPORTED_MODULE_1__utils__["e" /* throwInvalidPathsError */])();
   }
 
   if (!paths.length) {
-    Object(__WEBPACK_IMPORTED_MODULE_3__utils__["e" /* throwNoPathsError */])();
+    Object(__WEBPACK_IMPORTED_MODULE_1__utils__["f" /* throwNoPathsError */])();
   }
 
-  return Object(__WEBPACK_IMPORTED_MODULE_3__utils__["b" /* getStandardSelector */])(paths, selectorCreator, getComputedValue);
+  return Object(__WEBPACK_IMPORTED_MODULE_1__utils__["b" /* getStandardSelector */])(paths, selectorCreator, getComputedValue);
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (createSelector);
 
 /***/ }),
-/* 8 */
-/***/ (function(module, exports) {
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
 
+"use strict";
+
+
+exports.__esModule = true;
+exports.default = identity;
 /**
- * This method returns the first argument it receives.
+ * @function identity
  *
- * @static
- * @since 0.1.0
- * @memberOf _
- * @category Util
- * @param {*} value Any value.
- * @returns {*} Returns `value`.
- * @example
+ * @description
+ * function that allows straightforward passthrough of the first argument passed
  *
- * var object = { 'a': 1 };
- *
- * console.log(_.identity(object) === object);
- * // => true
+ * @param {*} value the value passed
+ * @returns {*} the first argument passed
  */
 function identity(value) {
   return value;
 }
 
-module.exports = identity;
-
-
 /***/ }),
-/* 9 */
-/***/ (function(module, exports) {
-
-/**
- * Checks if `value` is classified as an `Array` object.
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is an array, else `false`.
- * @example
- *
- * _.isArray([1, 2, 3]);
- * // => true
- *
- * _.isArray(document.body.children);
- * // => false
- *
- * _.isArray('abc');
- * // => false
- *
- * _.isArray(_.noop);
- * // => false
- */
-var isArray = Array.isArray;
-
-module.exports = isArray;
-
-
-/***/ }),
-/* 10 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var baseGetTag = __webpack_require__(11),
-    getPrototype = __webpack_require__(17),
-    isObjectLike = __webpack_require__(19);
-
-/** `Object#toString` result references. */
-var objectTag = '[object Object]';
-
-/** Used for built-in method references. */
-var funcProto = Function.prototype,
-    objectProto = Object.prototype;
-
-/** Used to resolve the decompiled source of functions. */
-var funcToString = funcProto.toString;
-
-/** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
-
-/** Used to infer the `Object` constructor. */
-var objectCtorString = funcToString.call(Object);
-
-/**
- * Checks if `value` is a plain object, that is, an object created by the
- * `Object` constructor or one with a `[[Prototype]]` of `null`.
- *
- * @static
- * @memberOf _
- * @since 0.8.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a plain object, else `false`.
- * @example
- *
- * function Foo() {
- *   this.a = 1;
- * }
- *
- * _.isPlainObject(new Foo);
- * // => false
- *
- * _.isPlainObject([1, 2, 3]);
- * // => false
- *
- * _.isPlainObject({ 'x': 0, 'y': 0 });
- * // => true
- *
- * _.isPlainObject(Object.create(null));
- * // => true
- */
-function isPlainObject(value) {
-  if (!isObjectLike(value) || baseGetTag(value) != objectTag) {
-    return false;
-  }
-  var proto = getPrototype(value);
-  if (proto === null) {
-    return true;
-  }
-  var Ctor = hasOwnProperty.call(proto, 'constructor') && proto.constructor;
-  return typeof Ctor == 'function' && Ctor instanceof Ctor &&
-    funcToString.call(Ctor) == objectCtorString;
-}
-
-module.exports = isPlainObject;
-
-
-/***/ }),
-/* 11 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var Symbol = __webpack_require__(2),
-    getRawTag = __webpack_require__(15),
-    objectToString = __webpack_require__(16);
-
-/** `Object#toString` result references. */
-var nullTag = '[object Null]',
-    undefinedTag = '[object Undefined]';
-
-/** Built-in value references. */
-var symToStringTag = Symbol ? Symbol.toStringTag : undefined;
-
-/**
- * The base implementation of `getTag` without fallbacks for buggy environments.
- *
- * @private
- * @param {*} value The value to query.
- * @returns {string} Returns the `toStringTag`.
- */
-function baseGetTag(value) {
-  if (value == null) {
-    return value === undefined ? undefinedTag : nullTag;
-  }
-  return (symToStringTag && symToStringTag in Object(value))
-    ? getRawTag(value)
-    : objectToString(value);
-}
-
-module.exports = baseGetTag;
-
-
-/***/ }),
-/* 12 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var freeGlobal = __webpack_require__(13);
-
-/** Detect free variable `self`. */
-var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
-
-/** Used as a reference to the global object. */
-var root = freeGlobal || freeSelf || Function('return this')();
-
-module.exports = root;
-
-
-/***/ }),
-/* 13 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(global) {/** Detect free variable `global` from Node.js. */
-var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
-
-module.exports = freeGlobal;
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14)))
-
-/***/ }),
-/* 14 */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
-
-/***/ }),
-/* 15 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var Symbol = __webpack_require__(2);
-
-/** Used for built-in method references. */
-var objectProto = Object.prototype;
-
-/** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
-
-/**
- * Used to resolve the
- * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
- * of values.
- */
-var nativeObjectToString = objectProto.toString;
-
-/** Built-in value references. */
-var symToStringTag = Symbol ? Symbol.toStringTag : undefined;
-
-/**
- * A specialized version of `baseGetTag` which ignores `Symbol.toStringTag` values.
- *
- * @private
- * @param {*} value The value to query.
- * @returns {string} Returns the raw `toStringTag`.
- */
-function getRawTag(value) {
-  var isOwn = hasOwnProperty.call(value, symToStringTag),
-      tag = value[symToStringTag];
-
-  try {
-    value[symToStringTag] = undefined;
-    var unmasked = true;
-  } catch (e) {}
-
-  var result = nativeObjectToString.call(value);
-  if (unmasked) {
-    if (isOwn) {
-      value[symToStringTag] = tag;
-    } else {
-      delete value[symToStringTag];
-    }
-  }
-  return result;
-}
-
-module.exports = getRawTag;
-
-
-/***/ }),
-/* 16 */
-/***/ (function(module, exports) {
-
-/** Used for built-in method references. */
-var objectProto = Object.prototype;
-
-/**
- * Used to resolve the
- * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
- * of values.
- */
-var nativeObjectToString = objectProto.toString;
-
-/**
- * Converts `value` to a string using `Object.prototype.toString`.
- *
- * @private
- * @param {*} value The value to convert.
- * @returns {string} Returns the converted string.
- */
-function objectToString(value) {
-  return nativeObjectToString.call(value);
-}
-
-module.exports = objectToString;
-
-
-/***/ }),
-/* 17 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var overArg = __webpack_require__(18);
-
-/** Built-in value references. */
-var getPrototype = overArg(Object.getPrototypeOf, Object);
-
-module.exports = getPrototype;
-
-
-/***/ }),
-/* 18 */
-/***/ (function(module, exports) {
-
-/**
- * Creates a unary function that invokes `func` with its argument transformed.
- *
- * @private
- * @param {Function} func The function to wrap.
- * @param {Function} transform The argument transform.
- * @returns {Function} Returns the new function.
- */
-function overArg(func, transform) {
-  return function(arg) {
-    return func(transform(arg));
-  };
-}
-
-module.exports = overArg;
-
-
-/***/ }),
-/* 19 */
-/***/ (function(module, exports) {
-
-/**
- * Checks if `value` is object-like. A value is object-like if it's not `null`
- * and has a `typeof` result of "object".
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
- * @example
- *
- * _.isObjectLike({});
- * // => true
- *
- * _.isObjectLike([1, 2, 3]);
- * // => true
- *
- * _.isObjectLike(_.noop);
- * // => false
- *
- * _.isObjectLike(null);
- * // => false
- */
-function isObjectLike(value) {
-  return value != null && typeof value == 'object';
-}
-
-module.exports = isObjectLike;
-
-
-/***/ }),
-/* 20 */
+/* 8 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* unused harmony export typeOf */
 /* unused harmony export isFunction */
 /* unused harmony export isNumber */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return isPlainObject; });
 /* unused harmony export isString */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return throwInvalidPathsError; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return throwNoPathsError; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return throwInvalidPathsError; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return throwNoPathsError; });
 /* unused harmony export throwInvalidPathError */
 /* unused harmony export createIdentitySelector */
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return getSelectorCreator; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return getStandardSelector; });
 /* unused harmony export getStructuredObject */
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return getStructuredSelector; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_kari_equals__ = __webpack_require__(21);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_kari_equals__ = __webpack_require__(9);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_kari_equals___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_kari_equals__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_kari_get__ = __webpack_require__(30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_kari_get__ = __webpack_require__(16);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_kari_get___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_kari_get__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_kari_map__ = __webpack_require__(34);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_kari_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_kari_map__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_kari_reduce__ = __webpack_require__(35);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_kari_reduce___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_kari_reduce__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_reselect__ = __webpack_require__(38);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_kari_is__ = __webpack_require__(20);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_kari_is___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_kari_is__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_kari_typeOf__ = __webpack_require__(21);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_kari_typeOf___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_kari_typeOf__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_reselect__ = __webpack_require__(22);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_reselect___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_reselect__);
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
 // external dependencies
 
 
@@ -762,26 +392,10 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 
 
-/**
- * @private
- *
- * @function typeOf
- *
- * @description
- * creates a method that will return true or false if the value is the typeof the type passed
- *
- * @param {string} type the type to test against
- * @returns {function(*): boolean} the method to test if the value is the typeof type
- */
-var typeOf = function typeOf(type) {
-  return function (value) {
-    return (typeof value === 'undefined' ? 'undefined' : _typeof(value)) === type;
-  };
-};
-
-var isFunction = typeOf('function');
-var isNumber = typeOf('number');
-var isString = typeOf('string');
+var isFunction = __WEBPACK_IMPORTED_MODULE_3_kari_typeOf___default()('function');
+var isNumber = __WEBPACK_IMPORTED_MODULE_3_kari_typeOf___default()('number');
+var isPlainObject = __WEBPACK_IMPORTED_MODULE_2_kari_is___default()(Object);
+var isString = __WEBPACK_IMPORTED_MODULE_3_kari_typeOf___default()('string');
 
 /**
  * @private
@@ -904,11 +518,11 @@ var getStructuredObject = function getStructuredObject(properties) {
       values[_key] = arguments[_key];
     }
 
-    return __WEBPACK_IMPORTED_MODULE_3_kari_reduce___default()(function (structuredObject, property, index) {
+    return properties.reduce(function (structuredObject, property, index) {
       structuredObject[property] = values[index];
 
       return structuredObject;
-    }, {}, properties);
+    }, {});
   };
 };
 
@@ -926,15 +540,15 @@ var getStructuredObject = function getStructuredObject(properties) {
  */
 var getStructuredSelector = function getStructuredSelector(paths, selectorCreator) {
   var destinationKeys = Object.keys(paths);
-  var selectors = __WEBPACK_IMPORTED_MODULE_2_kari_map___default()(function (key) {
+  var selectors = destinationKeys.map(function (key) {
     return createIdentitySelector(paths[key]);
-  }, destinationKeys);
+  });
 
   return selectorCreator(selectors, getStructuredObject(destinationKeys));
 };
 
 /***/ }),
-/* 21 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -946,7 +560,7 @@ var _curry = __webpack_require__(0);
 
 var _curry2 = _interopRequireDefault(_curry);
 
-var _isEquivalent = __webpack_require__(25);
+var _isEquivalent = __webpack_require__(12);
 
 var _isEquivalent2 = _interopRequireDefault(_isEquivalent);
 
@@ -970,7 +584,7 @@ exports.default = (0, _curry2.default)(function equals(firstValue, secondValue) 
 // utils
 
 /***/ }),
-/* 22 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -979,7 +593,7 @@ exports.default = (0, _curry2.default)(function equals(firstValue, secondValue) 
 exports.__esModule = true;
 exports.default = isPlaceholder;
 
-var _ = __webpack_require__(23);
+var _ = __webpack_require__(11);
 
 var _2 = _interopRequireDefault(_);
 
@@ -999,7 +613,7 @@ function isPlaceholder(object) {
 } // placeholder
 
 /***/ }),
-/* 23 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1007,7 +621,7 @@ function isPlaceholder(object) {
 
 exports.__esModule = true;
 
-var _isFunction = __webpack_require__(24);
+var _isFunction = __webpack_require__(1);
 
 var _isFunction2 = _interopRequireDefault(_isFunction);
 
@@ -1023,29 +637,7 @@ var PLACEHOLDER = '__KARI_PARAMETER_PLACEHOLDER__';
 exports.default = (0, _isFunction2.default)(Symbol) ? Symbol(PLACEHOLDER) : PLACEHOLDER;
 
 /***/ }),
-/* 24 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
-exports.default = isFunction;
-/**
- * @function isFunction
- *
- * @description
- * test if the item a function
- *
- * @param {*} object the object to test
- * @returns {boolean} is the item a function
- */
-function isFunction(object) {
-  return typeof object === 'function';
-}
-
-/***/ }),
-/* 25 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1054,11 +646,11 @@ function isFunction(object) {
 exports.__esModule = true;
 exports.default = isEquivalent;
 
-var _getObjectClass = __webpack_require__(26);
+var _getObjectClass = __webpack_require__(13);
 
 var _getObjectClass2 = _interopRequireDefault(_getObjectClass);
 
-var _isNAN = __webpack_require__(29);
+var _isNAN = __webpack_require__(2);
 
 var _isNAN2 = _interopRequireDefault(_isNAN);
 
@@ -1205,7 +797,7 @@ function isEquivalent(firstValue, secondValue) {
 }
 
 /***/ }),
-/* 26 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1214,11 +806,11 @@ function isEquivalent(firstValue, secondValue) {
 exports.__esModule = true;
 exports.default = getObjectClass;
 
-var _isNull = __webpack_require__(27);
+var _isNull = __webpack_require__(14);
 
 var _isNull2 = _interopRequireDefault(_isNull);
 
-var _isUndefined = __webpack_require__(28);
+var _isUndefined = __webpack_require__(15);
 
 var _isUndefined2 = _interopRequireDefault(_isUndefined);
 
@@ -1247,7 +839,7 @@ function getObjectClass(object) {
 }
 
 /***/ }),
-/* 27 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1269,7 +861,7 @@ function isNull(object) {
 }
 
 /***/ }),
-/* 28 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1291,29 +883,7 @@ function isUndefined(object) {
 }
 
 /***/ }),
-/* 29 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
-exports.default = isNAN;
-/**
- * @function isNAN
- *
- * @description
- * test if the item is NaN
- *
- * @param {*} object the object to test
- * @returns {boolean} is the item is NaN
- */
-function isNAN(object) {
-  return object !== object;
-}
-
-/***/ }),
-/* 30 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1325,11 +895,11 @@ var _curry = __webpack_require__(0);
 
 var _curry2 = _interopRequireDefault(_curry);
 
-var _getPath = __webpack_require__(31);
+var _getPath = __webpack_require__(17);
 
 var _getPath2 = _interopRequireDefault(_getPath);
 
-var _isEmpty = __webpack_require__(33);
+var _isEmpty = __webpack_require__(19);
 
 var _isEmpty2 = _interopRequireDefault(_isEmpty);
 
@@ -1361,7 +931,7 @@ exports.default = (0, _curry2.default)(function get(path, object) {
 }); // methods
 
 /***/ }),
-/* 31 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1370,15 +940,15 @@ exports.default = (0, _curry2.default)(function get(path, object) {
 exports.__esModule = true;
 exports.default = getPath;
 
-var _getKey = __webpack_require__(32);
+var _getKey = __webpack_require__(18);
 
 var _getKey2 = _interopRequireDefault(_getKey);
 
-var _isArray = __webpack_require__(1);
+var _isArray = __webpack_require__(3);
 
 var _isArray2 = _interopRequireDefault(_isArray);
 
-var _isString = __webpack_require__(3);
+var _isString = __webpack_require__(4);
 
 var _isString2 = _interopRequireDefault(_isString);
 
@@ -1446,7 +1016,7 @@ function getPath(path) {
 }
 
 /***/ }),
-/* 32 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1470,7 +1040,7 @@ function getKey(key) {
 }
 
 /***/ }),
-/* 33 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1479,11 +1049,11 @@ function getKey(key) {
 exports.__esModule = true;
 exports.default = isEmpty;
 
-var _isArray = __webpack_require__(1);
+var _isArray = __webpack_require__(3);
 
 var _isArray2 = _interopRequireDefault(_isArray);
 
-var _isString = __webpack_require__(3);
+var _isString = __webpack_require__(4);
 
 var _isString2 = _interopRequireDefault(_isString);
 
@@ -1516,7 +1086,7 @@ function isEmpty(object) {
 }
 
 /***/ }),
-/* 34 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1528,206 +1098,77 @@ var _curry = __webpack_require__(0);
 
 var _curry2 = _interopRequireDefault(_curry);
 
-var _coalesceToArray = __webpack_require__(4);
+var _isFunction = __webpack_require__(1);
 
-var _coalesceToArray2 = _interopRequireDefault(_coalesceToArray);
+var _isFunction2 = _interopRequireDefault(_isFunction);
 
-var _isObject = __webpack_require__(5);
+var _isNAN = __webpack_require__(2);
 
-var _isObject2 = _interopRequireDefault(_isObject);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/**
- * @function mapArray
- *
- * @description
- * map the array to a new array based on the returns of the call with fn
- *
- * @param {function(*, number, Array<*>): *} fn the method to map with
- * @param {Array<*>} array the array of items to map
- * @returns {Array<*>} the mapped items
- */
-
-
-// utils
-function mapArray(fn, array) {
-  var newArray = [],
-      index = -1;
-
-  while (++index < array.length) {
-    newArray[index] = fn(array[index], index, array);
-  }
-
-  return newArray;
-}
-
-/**
- * @function mapObject
- *
- * @description
- * map the object to a new object based on the returns of the call with fn
- *
- * @param {function(*, string, Object): *} fn the method to map with
- * @param {Object} object the object of items to map
- * @returns {Object} the mapped items
- */
-// methods
-function mapObject(fn, object) {
-  var keys = Object.keys(object);
-
-  var newObject = {},
-      index = -1,
-      key = void 0;
-
-  while (++index < keys.length) {
-    key = keys[index];
-
-    newObject[key] = fn(object[key], key, object);
-  }
-
-  return newObject;
-}
-
-/**
- * @function map
- *
- * @description
- * map the collection based on the returns of the call with fn
- *
- * @param {function(*, (number|string), (Array<*>|Object)): *} fn the method to map with
- * @param {Array<*>|Object} collection the collection of items to map
- * @returns {Array<*>|Object} the mapped collection
- */
-exports.default = (0, _curry2.default)(function map(fn, collection) {
-  return (0, _isObject2.default)(collection) ? mapObject(fn, collection) : mapArray(fn, (0, _coalesceToArray2.default)(collection));
-});
-
-/***/ }),
-/* 35 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
-
-var _curry = __webpack_require__(0);
-
-var _curry2 = _interopRequireDefault(_curry);
-
-var _coalesceToArray = __webpack_require__(4);
-
-var _coalesceToArray2 = _interopRequireDefault(_coalesceToArray);
-
-var _isObject = __webpack_require__(5);
-
-var _isObject2 = _interopRequireDefault(_isObject);
-
-var _reduceArray = __webpack_require__(36);
-
-var _reduceArray2 = _interopRequireDefault(_reduceArray);
-
-var _reduceObject = __webpack_require__(37);
-
-var _reduceObject2 = _interopRequireDefault(_reduceObject);
+var _isNAN2 = _interopRequireDefault(_isNAN);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
- * @function reduce
+ * @function is
  *
  * @description
- * reduce the collection to a single value based on fn
+ * is the value an instance of the constructor passed, or if undefined / null is it equal
  *
- * @param {function(*, *, (number|string), (Array<*>|Object)): *} the method to reduce the collection with
- * @param {Array<*>|Object} collection the collection to reduce
- * @param {*} initialValue the initial value to start the reduction from
- * @returns {*} the reduced value
+ * @param {function|null|undefined} Constructor constructor function to test value against
+ * @param {*} value the value to test
+ * @returns {boolean} is the value an instance of the Constructor
  */
 
 
 // utils
-exports.default = (0, _curry2.default)(function reduce(fn, initialValue, collection) {
-  return (0, _isObject2.default)(collection) ? (0, _reduceObject2.default)(fn, collection, initialValue, Object.keys(collection)) : (0, _reduceArray2.default)(fn, (0, _coalesceToArray2.default)(collection), initialValue);
+exports.default = (0, _curry2.default)(function is(Constructor, value) {
+  if (value === Constructor) {
+    return true;
+  }
+
+  if ((0, _isFunction2.default)(Constructor)) {
+    /* eslint-disable eqeqeq */
+    return value != null && (
+    /* eslint-enable */
+    value === Constructor || value.constructor === Constructor);
+  }
+
+  return (0, _isNAN2.default)(Constructor) && (0, _isNAN2.default)(value);
 }); // methods
 
 /***/ }),
-/* 36 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 exports.__esModule = true;
-exports.default = reduceArray;
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; // methods
+
+
+var _curry = __webpack_require__(0);
+
+var _curry2 = _interopRequireDefault(_curry);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 /**
- * @function reduceArray
+ * @function typeOf
  *
  * @description
- * reduce the array to a new value based on the returns of the call with fn
+ * create a function checks if the value is typeof type
  *
- * @param {function(*, *, number, Array<*>): *} fn the method to map with
- * @param {Array<*>} array the array of items to map
- * @param {*} value the initial value of the reduction
- * @returns {*} the reduced array
+ * @param {*} value the value to test
+ * @returns {boolean} is the value typeof type
  */
-function reduceArray(fn, array, value) {
-  var index = -1;
-
-  if (value === void 0) {
-    value = array[0];
-    array = array.slice(1);
-  }
-
-  while (++index < array.length) {
-    value = fn(value, array[index], index, array);
-  }
-
-  return value;
-}
+exports.default = (0, _curry2.default)(function typeOf(type, value) {
+  return (typeof value === 'undefined' ? 'undefined' : _typeof(value)) === type;
+});
 
 /***/ }),
-/* 37 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
-exports.default = reduceObject;
-/**
- * @function reduceObject
- *
- * @description
- * reduce the object to a value based on the returns of the call with fn
- *
- * @param {function(*, string, Object): *} fn the method to map with
- * @param {Object} object the object of items to map
- * @param {*} value the initial value of the reduction
- * @param {Array<string>} keys the keys of the object
- * @returns {Object} the reduced object
- */
-function reduceObject(fn, object, value, keys) {
-  var index = -1,
-      key = void 0;
-
-  if (value === void 0) {
-    value = object[keys[0]];
-    keys = keys.slice(1);
-  }
-
-  while (++index < keys.length) {
-    key = keys[index];
-
-    value = fn(value, object[key], key, object);
-  }
-
-  return value;
-}
-
-/***/ }),
-/* 38 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
