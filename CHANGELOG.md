@@ -1,5 +1,8 @@
 # selectorator changelog
 
+### 3.1.1 & 1.2.1
+* Fully remove lodash (was still being used in index)
+
 ### 3.1.0 & 1.2.0
 * Add support for array and number paths
 * Remove `lodash` in favor of `kari` for better speed and footprint
