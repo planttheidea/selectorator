@@ -78,5 +78,5 @@
     "test:watch": "npm run test -- --watch",
     "transpile": "babel src --out-dir lib"
   },
-  "version": "1.2.0"
+  "version": "1.2.1"
 }
