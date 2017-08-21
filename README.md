@@ -45,7 +45,7 @@ const state = {
 console.log(getBarBaz(state)); // "bar baz"
 ```
 
-Not a whole lot of magic here, just simplifying the creation of the "identity selectors" that `reselect` requires, instead replacing them with a standardized dot- or bracket-notiation string for retrieval of a nested property in the state object.
+Not a whole lot of magic here, just simplifying the creation of the "identity selectors" that `reselect` requires, instead replacing them with a standardized dot- or bracket-notation string for retrieval of a nested property in the state object.
 
 That said, you can still use your own custom identity selectors, or compose selectors, if you so choose. Here is the example from the `reselect` README modified to use `selectorator`:
 

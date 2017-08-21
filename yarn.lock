@@ -3685,9 +3685,9 @@ just-extend@^1.1.22:
   version "1.1.22"
   resolved "https://registry.yarnpkg.com/just-extend/-/just-extend-1.1.22.tgz#3330af756cab6a542700c64b2e4e4aa062d52fff"
 
-kari@^0.6.0:
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/kari/-/kari-0.6.0.tgz#90abeaffade63746c84c644c3538d8d37a21c816"
+kari@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/kari/-/kari-0.7.0.tgz#a4400fa72ef0103f002242cbe9109131353ef922"
 
 kind-of@^3.0.2:
   version "3.2.2"

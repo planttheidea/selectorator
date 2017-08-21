@@ -7,19 +7,6 @@ import sinon from 'sinon';
 // src
 import * as utils from '../src/utils';
 
-test('if typeOf creates a method that checks if the value is the typeof type', (t) => {
-  const type = 'string';
-  const value = 'foo';
-
-  const fn = utils.typeOf(type);
-
-  t.is(typeof fn, 'function');
-
-  const result = fn(value);
-
-  t.true(result);
-});
-
 test('if createIdentitySelector creates a function that receives state and gets the value at the path passed', (t) => {
   const path = 'foo[0].bar[baz]';
   const value = 'foo-bar-baz';

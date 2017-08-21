@@ -1,13 +1,12 @@
 // external dependencies
-import identity from 'lodash/identity';
-import isArray from 'lodash/isArray';
-import isPlainObject from 'lodash/isPlainObject';
+import identity from 'kari/identity';
 
 // utils
 import {
   getSelectorCreator,
   getStandardSelector,
   getStructuredSelector,
+  isPlainObject,
   throwInvalidPathsError,
   throwNoPathsError
 } from './utils';
@@ -18,7 +17,7 @@ import {
 
 /**
  * @function createSelector
- * 
+ *
  * @description
  * create a selector without any boilerplate code
  *
@@ -41,7 +40,7 @@ import {
  * console.log(getFilteredItems(state)); // ['foo', 'foo-bar'];
  * console.log(getFilteredItems(state)); // ['foo', 'foo-bar'], pulled from cache;
  *
- * @param {Array<function|string>|Object} paths paths to retrieve from state as parameters in getComputedValue, or 
+ * @param {Array<function|string>|Object} paths paths to retrieve from state as parameters in getComputedValue, or
  * an object of key => path pairs that will assign path at state to key in structured selector
  * @param {function} [getComputedValue=identity] function that will accept the values at paths in state as parameters
  * and compute the next result
@@ -58,7 +57,7 @@ const createSelector = (paths, getComputedValue = identity, options = {}) => {
     return getStructuredSelector(paths, selectorCreator);
   }
 
-  if (!isArray(paths)) {
+  if (!Array.isArray(paths)) {
     throwInvalidPathsError();
   }
 

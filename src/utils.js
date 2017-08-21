@@ -1,29 +1,13 @@
 // external dependencies
 import equals from 'kari/equals';
 import get from 'kari/get';
-import map from 'kari/map';
-import reduce from 'kari/reduce';
+import is from 'kari/is';
+import typeOf from 'kari/typeOf';
 import {createSelector as createReselectSelector, createSelectorCreator, defaultMemoize} from 'reselect';
-
-/**
- * @private
- *
- * @function typeOf
- *
- * @description
- * creates a method that will return true or false if the value is the typeof the type passed
- *
- * @param {string} type the type to test against
- * @returns {function(*): boolean} the method to test if the value is the typeof type
- */
-export const typeOf = (type) => {
-  return (value) => {
-    return typeof value === type;
-  };
-};
 
 export const isFunction = typeOf('function');
 export const isNumber = typeOf('number');
+export const isPlainObject = is(Object);
 export const isString = typeOf('string');
 
 /**
@@ -150,15 +134,11 @@ export const getStandardSelector = (paths, selectorCreator, getComputedValue) =>
  */
 export const getStructuredObject = (properties) => {
   return (...values) => {
-    return reduce(
-      (structuredObject, property, index) => {
-        structuredObject[property] = values[index];
+    return properties.reduce((structuredObject, property, index) => {
+      structuredObject[property] = values[index];
 
-        return structuredObject;
-      },
-      {},
-      properties
-    );
+      return structuredObject;
+    }, {});
   };
 };
 
@@ -176,9 +156,9 @@ export const getStructuredObject = (properties) => {
  */
 export const getStructuredSelector = (paths, selectorCreator) => {
   const destinationKeys = Object.keys(paths);
-  const selectors = map((key) => {
+  const selectors = destinationKeys.map((key) => {
     return createIdentitySelector(paths[key]);
-  }, destinationKeys);
+  });
 
   return selectorCreator(selectors, getStructuredObject(destinationKeys));
 };
