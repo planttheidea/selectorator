@@ -1,5 +1,5 @@
 // external dependencies
-import identity from 'kari/identity';
+import {identity} from 'identitate';
 
 // utils
 import {
