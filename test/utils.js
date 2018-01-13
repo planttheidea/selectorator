@@ -1,11 +1,43 @@
 // test
 import test from 'ava';
-import equals from 'kari/equals';
+import {deepEqual as deepEquals} from 'fast-equals';
 import * as reselect from 'reselect';
 import sinon from 'sinon';
 
 // src
 import * as utils from '../src/utils';
+
+test('if isPlainObject will return false when object is not a plain object, true if it is', (t) => {
+  const object = {};
+  const tests = [null, undefined, 'string', 123, /regexp/, () => {}, object, new Map(), new Set(), Symbol('symbol')];
+
+  tests.forEach((test) => {
+    const comparator = test === object ? 'true' : 'false';
+
+    t[comparator](utils.isPlainObject(test));
+  });
+});
+
+test('if isSameValueZero will return true when strictly equal', (t) => {
+  const objectA = {};
+  const objectB = objectA;
+
+  t.true(utils.isSameValueZero(objectA, objectB));
+});
+
+test('if isSameValueZero will return true when both NaN', (t) => {
+  const objectA = NaN;
+  const objectB = NaN;
+
+  t.true(utils.isSameValueZero(objectA, objectB));
+});
+
+test('if isSameValueZero will return false when different objects', (t) => {
+  const objectA = {};
+  const objectB = {};
+
+  t.false(utils.isSameValueZero(objectA, objectB));
+});
 
 test('if createIdentitySelector creates a function that receives state and gets the value at the path passed', (t) => {
   const path = 'foo[0].bar[baz]';
@@ -84,54 +116,72 @@ test('if createIdentitySelector throws when path is not a function or string', (
   }, TypeError);
 });
 
-test('if getSelectorCreator returns the standard reselect createSelector function when passed no options', (t) => {
+test('if getSelectorCreator returns the correct createSelector function when passed no options', (t) => {
+  const stub = sinon.stub(reselect, 'createSelectorCreator').returnsArg(0);
+
   const result = utils.getSelectorCreator({});
 
-  t.is(result, reselect.createSelector);
-});
-
-test('if getSelectorCreator will call createSelectorCreator with defaultMemoize and equals if deepEqual is set to true', (t) => {
-  const stub = sinon.stub(reselect, 'createSelectorCreator').callsFake((memoizer, equalityCheck) => {
-    t.is(memoizer, reselect.defaultMemoize);
-    t.is(equalityCheck, equals);
-  });
-
-  utils.getSelectorCreator({deepEqual: true});
-
   t.true(stub.calledOnce);
+  t.deepEqual(stub.args[0], [reselect.defaultMemoize, utils.isSameValueZero]);
 
   stub.restore();
+
+  t.is(result, reselect.defaultMemoize);
+});
+
+test('if getSelectorCreator returns the correct createSelector function when deepEqual is true', (t) => {
+  const stub = sinon.stub(reselect, 'createSelectorCreator').returnsArg(0);
 
   const result = utils.getSelectorCreator({deepEqual: true});
 
-  t.is(typeof result, 'function');
-});
-
-test('if getSelectorCreator will call createSelectorCreator with custom memoizer', (t) => {
-  const memoize = sinon.stub();
-  const stub = sinon.stub(reselect, 'createSelectorCreator').callsFake((memoizer) => {
-    t.is(memoizer, memoize);
-  });
-
-  utils.getSelectorCreator({memoizer: memoize});
-
   t.true(stub.calledOnce);
+  t.deepEqual(stub.args[0], [reselect.defaultMemoize, deepEquals]);
 
   stub.restore();
+
+  t.is(result, reselect.defaultMemoize);
 });
 
-test('if getSelectorCreator will call createSelectorCreator with custom memoizer options', (t) => {
-  const option = () => {};
-  const stub = sinon.stub(reselect, 'createSelectorCreator').callsFake((memoizer, option1) => {
-    t.is(memoizer, reselect.defaultMemoize);
-    t.is(option1, option);
-  });
+test('if getSelectorCreator returns the correct createSelector function when isEqual is provided', (t) => {
+  const stub = sinon.stub(reselect, 'createSelectorCreator').returnsArg(0);
+  const isEqual = () => {};
 
-  utils.getSelectorCreator({memoizerParams: [option]});
+  const result = utils.getSelectorCreator({isEqual});
 
   t.true(stub.calledOnce);
+  t.deepEqual(stub.args[0], [reselect.defaultMemoize, isEqual]);
 
   stub.restore();
+
+  t.is(result, reselect.defaultMemoize);
+});
+
+test('if getSelectorCreator returns the correct createSelector function when custom memoizer is passed', (t) => {
+  const memoize = sinon.spy();
+  const stub = sinon.stub(reselect, 'createSelectorCreator').returnsArg(0);
+
+  const result = utils.getSelectorCreator({memoizer: memoize});
+
+  t.true(stub.calledOnce);
+  t.deepEqual(stub.args[0], [memoize, utils.isSameValueZero]);
+
+  stub.restore();
+
+  t.is(result, memoize);
+});
+
+test('if getSelectorCreator returns the correct createSelector function when custom memoizer options are passed', (t) => {
+  const stub = sinon.stub(reselect, 'createSelectorCreator').returnsArg(0);
+  const option = 'foo';
+
+  const result = utils.getSelectorCreator({memoizerParams: [option]});
+
+  t.true(stub.calledOnce);
+  t.deepEqual(stub.args[0], [reselect.defaultMemoize, utils.isSameValueZero, option]);
+
+  stub.restore();
+
+  t.is(result, reselect.defaultMemoize);
 });
 
 test('if getStandardSelector will create a selector function', (t) => {
