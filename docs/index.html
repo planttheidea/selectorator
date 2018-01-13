@@ -93,7 +93,7 @@
 <img src="https://img.shields.io/badge/coverage-100%25-brightgreen.svg"/>
 <img src="https://img.shields.io/badge/license-MIT-blue.svg"/></p>
 <p><code>selectorator</code> is an abstraction API for creating selectors via <a href="https://github.com/reactjs/reselect">reselect</a> with less boilerplate code.</p>
-<h3 id="table-of-contents">Table of contents</h3>
+<h2 id="table-of-contents">Table of contents</h2>
 <ul>
 <li><a href="#installation">Installation</a></li>
 <li><a href="#versions">Versions</a></li>
@@ -101,11 +101,11 @@
 <li><a href="#advanced-usage">Advanced usage</a></li>
 <li><a href="#development">Development</a></li>
 </ul>
-<h3 id="installation">Installation</h3>
-<pre class="prettyprint source"><code>$ npm i selectorator --save</code></pre><h3 id="versions">Versions</h3>
+<h2 id="installation">Installation</h2>
+<pre class="prettyprint source"><code>$ npm i selectorator --save</code></pre><h2 id="versions">Versions</h2>
 <p>Versions of <code>selectorator</code> on the <code>3.x.x</code> versions will use the <code>3.x.x</code> version of <code>reselect</code> as a dependency, and all major versions of <code>selectorator</code> will match the major versions of <code>reselect</code> going forward. If you wish to still use the <code>2.x.x</code> branch of <code>reselect</code> for your application, then you should continue using the <code>1.x.x</code> branch of <code>selectorator</code>. All future enhancements will be made to both branches, unless they are version-specific.</p>
 <p>If you would like to learn more about the breaking changes related to the major version change for <code>reselect</code>, please visit <a href="https://github.com/reactjs/reselect/blob/master/CHANGELOG.md">the <code>reselect</code> CHANGELOG</a>.</p>
-<h3 id="usage">Usage</h3>
+<h2 id="usage">Usage</h2>
 <pre class="prettyprint source lang-javascript"><code>import createSelector from 'selectorator';
 
 // selector created with single method call
@@ -153,9 +153,10 @@ const state = {
 
 console.log('subtotal: ', getSubtotal(state)); // 2.15
 console.log('tax: ', getTax(state)); // 0.172
-console.log('total: ', getTotal(state)); // {total: 2.322}</code></pre><h3 id="advanced-usage">Advanced usage</h3>
+console.log('total: ', getTotal(state)); // {total: 2.322}</code></pre><h2 id="advanced-usage">Advanced usage</h2>
 <p>All the capabilities that exist with <code>reselect</code> are still available using <code>selectorator</code>, they are just passed as an object of options to <code>createSelector</code>.</p>
-<p><strong>deepEqual</strong> <em>defaults to false</em></p>
+<h4 id="deepequal">deepEqual</h4>
+<p><em>defaults to false</em></p>
 <p>A common usage of custom selectors is to perform a deep equality check instead of the standard strict equality check when comparing values. To apply this, simply set <code>deepEqual</code> to <code>true</code>.</p>
 <pre class="prettyprint source lang-javascript"><code>import createSelector from 'selectorator';
 
@@ -165,7 +166,23 @@ const selectoratorOptions = {
 
 const getBaz = createSelector(['foo.bar.baz'], (baz) => {
   return !!baz;
-}, selectoratorOptions);</code></pre><p><strong>memoizer</strong> <em>defaults to <code>reselect</code> defaultMemoize</em></p>
+}, selectoratorOptions);</code></pre><h4 id="isequal">isEqual</h4>
+<p><em>defaults to isSameValueZero</em></p>
+<p>If you want to use a custom equality comparator, pass the method as this option.</p>
+<pre class="prettyprint source lang-javascript"><code>import createSelector from 'selectorator';
+
+const selectoratorOptions = {
+  // silly example checking current or next values related to &quot;foo&quot;
+  isEqual(currentFoo, nextFoo) {
+    return currentFoo === 'foo' || nextFoo !== 'foo';
+  }
+};
+
+const getFoo = createSelector(['foo'], (foo) => {
+  return !!foo;
+}, selectoratorOptions);</code></pre><p>Please note that if this parameter is provided and <code>deepEqual</code> is also set to <code>true</code>, <code>deepEqual</code> will take priority and the <code>isEqual</code> method will not be used.</p>
+<h4 id="memoizer">memoizer</h4>
+<p><em>defaults to <code>reselect</code> defaultMemoize</em></p>
 <p>If you want to use a custom memoizer, pass the method as this option. This will use <code>createSelectorCreator</code> from <code>reselect</code> internally, so consult their documentation on proper usage.</p>
 <pre class="prettyprint source lang-javascript"><code>import createSelector from 'selectorator';
 import moize from 'moize';
@@ -176,22 +193,19 @@ const selectoratorOptions = {
 
 const getFoo = createSelector(['foo'], (foo) => {
   return !!foo;
-}, selectoratorOptions);</code></pre><p><strong>memoizerParams</strong> <em>defaults to []</em></p>
-<p><code>reselect</code> allows you to pass parameters to the <code>memoizer</code> function, and this array will translate directly into those parameters.</p>
+}, selectoratorOptions);</code></pre><h4 id="memoizerparams">memoizerParams</h4>
+<p><em>defaults to []</em></p>
+<p><code>reselect</code> allows you to pass parameters to the <code>memoizer</code> function, and this array will translate directly into parameters <code>3</code>-<code>n</code>. This is useful if your <code>memoizer</code> uses something other than direct comparison for its equality test.</p>
 <pre class="prettyprint source lang-javascript"><code>import createSelector from 'selectorator';
 
 const selectoratorOptions = {
-  // silly example checking current or next values related to &quot;foo&quot;
-  memoizerParams: [
-    (currentFoo, nextFoo) => {
-      return currentFoo === 'foo' || nextFoo !== 'foo';
-    }
-  ]
+  memoizer: memoizerThatChecksEqualToEachOtherOrToSpecificValuePassed,
+  memoizerParams: ['specificValue']
 };
 
 const getFoo = createSelector(['foo'], (foo) => {
   return !!foo;
-}, selectoratorOptions);</code></pre><h3 id="development">Development</h3>
+}, selectoratorOptions);</code></pre><h2 id="development">Development</h2>
 <p>Standard stuff, clone the repo and <code>npm install</code> dependencies. The npm scripts available:</p>
 <ul>
 <li><code>build</code> =&gt; run webpack to build development <code>dist</code> file with NODE_ENV=development</li>

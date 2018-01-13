@@ -6,26 +6,26 @@
 
 `selectorator` is an abstraction API for creating selectors via [reselect](https://github.com/reactjs/reselect) with less boilerplate code.
 
-### Table of contents
+## Table of contents
 * [Installation](#installation)
 * [Versions](#versions)
 * [Usage](#usage)
 * [Advanced usage](#advanced-usage)
 * [Development](#development)
 
-### Installation
+## Installation
 
 ```
 $ npm i selectorator --save
 ```
 
-### Versions
+## Versions
 
 Versions of `selectorator` on the `3.x.x` versions will use the `3.x.x` version of `reselect` as a dependency, and all major versions of `selectorator` will match the major versions of `reselect` going forward. If you wish to still use the `2.x.x` branch of `reselect` for your application, then you should continue using the `1.x.x` branch of `selectorator`. All future enhancements will be made to both branches, unless they are version-specific.
 
 If you would like to learn more about the breaking changes related to the major version change for `reselect`, please visit [the `reselect` CHANGELOG](https://github.com/reactjs/reselect/blob/master/CHANGELOG.md).
 
-### Usage
+## Usage
 
 ```javascript
 import createSelector from 'selectorator';
@@ -84,11 +84,13 @@ console.log('tax: ', getTax(state)); // 0.172
 console.log('total: ', getTotal(state)); // {total: 2.322}
 ```
 
-### Advanced usage
+## Advanced usage
 
 All the capabilities that exist with `reselect` are still available using `selectorator`, they are just passed as an object of options to `createSelector`.
 
-**deepEqual** *defaults to false*
+#### deepEqual
+
+*defaults to false*
 
 A common usage of custom selectors is to perform a deep equality check instead of the standard strict equality check when comparing values. To apply this, simply set `deepEqual` to `true`.
 
@@ -104,7 +106,32 @@ const getBaz = createSelector(['foo.bar.baz'], (baz) => {
 }, selectoratorOptions);
 ```
 
-**memoizer** *defaults to `reselect` defaultMemoize*
+#### isEqual
+
+*defaults to isSameValueZero*
+
+If you want to use a custom equality comparator, pass the method as this option.
+
+```javascript
+import createSelector from 'selectorator';
+
+const selectoratorOptions = {
+  // silly example checking current or next values related to "foo"
+  isEqual(currentFoo, nextFoo) {
+    return currentFoo === 'foo' || nextFoo !== 'foo';
+  }
+};
+
+const getFoo = createSelector(['foo'], (foo) => {
+  return !!foo;
+}, selectoratorOptions);
+```
+
+Please note that if this parameter is provided and `deepEqual` is also set to `true`, `deepEqual` will take priority and the `isEqual` method will not be used.
+
+#### memoizer
+
+*defaults to `reselect` defaultMemoize*
 
 If you want to use a custom memoizer, pass the method as this option. This will use `createSelectorCreator` from `reselect` internally, so consult their documentation on proper usage.
 
@@ -121,20 +148,18 @@ const getFoo = createSelector(['foo'], (foo) => {
 }, selectoratorOptions);
 ```
 
-**memoizerParams** *defaults to []*
+#### memoizerParams
 
-`reselect` allows you to pass parameters to the `memoizer` function, and this array will translate directly into those parameters.
+*defaults to []*
+
+`reselect` allows you to pass parameters to the `memoizer` function, and this array will translate directly into parameters `3`-`n`. This is useful if your `memoizer` uses something other than direct comparison for its equality test.
 
 ```javascript
 import createSelector from 'selectorator';
 
 const selectoratorOptions = {
-  // silly example checking current or next values related to "foo"
-  memoizerParams: [
-    (currentFoo, nextFoo) => {
-      return currentFoo === 'foo' || nextFoo !== 'foo';
-    }
-  ]
+  memoizer: memoizerThatChecksEqualToEachOtherOrToSpecificValuePassed,
+  memoizerParams: ['specificValue']
 };
 
 const getFoo = createSelector(['foo'], (foo) => {
@@ -142,7 +167,7 @@ const getFoo = createSelector(['foo'], (foo) => {
 }, selectoratorOptions);
 ```
 
-### Development
+## Development
 
 Standard stuff, clone the repo and `npm install` dependencies. The npm scripts available:
 * `build` => run webpack to build development `dist` file with NODE_ENV=development
