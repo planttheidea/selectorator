@@ -1,28 +1,20 @@
-
+{
   "author": "planttheidea <tony.quetano@planttheidea.com>",
   "ava": {
     "babel": "inherit",
     "failFast": true,
-    "files": [
-      "./test/utils.js",
-      "./test/index.js"
-    ],
-    "require": [
-      "babel-register",
-      "babel-polyfill"
-    ],
+    "files": ["./test/utils.js", "./test/index.js"],
+    "require": ["babel-register", "babel-polyfill"],
     "verbose": true
   },
   "bugs": {
     "url": "https://github.com/planttheidea/selectorator/issues"
   },
   "dependencies": {
-    "kari": "^0.7.0",
-    "reselect": "^3.0.1"
     "fast-equals": "^1.0.6",
     "identitate": "^1.0.0",
-    "kari": "^0.7.0",
-    "reselect": "^2.5.4"
+    "reselect": "^2.5.4",
+    "unchanged": "^1.0.4"
   },
   "description": "Simplified generator of reselect selectors",
   "devDependencies": {
@@ -56,10 +48,7 @@
     "webpack-dev-server": "^2.10.1"
   },
   "homepage": "https://github.com/planttheidea/selectorator#readme",
-  "keywords": [
-    "reselect",
-    "selector"
-  ],
+  "keywords": ["reselect", "selector"],
   "license": "MIT",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -76,7 +65,8 @@
     "docs": "rimraf docs && jsdoc -c ./jsdoc.config.json && git add --all",
     "lint": "eslint --max-warnings 0 src",
     "prepublish": "if in-publish; then npm run prepublish:compile; fi",
-    "prepublish:compile": "npm run lint && npm run test:coverage && npm run clean && npm run transpile:lib && npm run transpile:es && npm run build && npm run build:minified && npm run docs",
+    "prepublish:compile":
+      "npm run lint && npm run test:coverage && npm run clean && npm run transpile:lib && npm run transpile:es && npm run build && npm run build:minified && npm run docs",
     "start": "npm run dev",
     "test": "NODE_ENV=test ava",
     "test:coverage": "nyc --cache npm test",
