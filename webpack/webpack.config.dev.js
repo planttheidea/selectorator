@@ -2,10 +2,10 @@
 
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const WebpackDashboard = require('webpack-dashboard/plugin');
 
 const defaultConfig = require('./webpack.config');
 
+const ROOT = path.resolve(__dirname, '..');
 const PORT = 3000;
 
 module.exports = Object.assign({}, defaultConfig, {
@@ -20,23 +20,20 @@ module.exports = Object.assign({}, defaultConfig, {
     stats: {
       colors: true,
       progress: true
-    },
-    watchOptions: {
-      ignored: /node_modules/
     }
   },
 
-  entry: [path.resolve(__dirname, 'DEV_ONLY', 'App.js')],
+  entry: [path.resolve(ROOT, 'DEV_ONLY', 'App.js')],
 
   module: Object.assign({}, defaultConfig.module, {
     rules: defaultConfig.module.rules.map((rule) => {
       if (rule.loader === 'babel-loader') {
         return Object.assign({}, rule, {
-          include: rule.include.concat([path.resolve(__dirname, 'DEV_ONLY')]),
-          options: Object.assign({}, rule.options, {
+          include: rule.include.concat([path.resolve(ROOT, 'DEV_ONLY')]),
+          options: {
             cacheDirectory: true,
-            presets: rule.options.presets.concat(['react'])
-          })
+            presets: ['react']
+          }
         });
       }
 
@@ -57,10 +54,5 @@ module.exports = Object.assign({}, defaultConfig, {
     publicPath: `http://localhost:${PORT}/`
   }),
 
-  plugins: defaultConfig.plugins.concat([
-    new HtmlWebpackPlugin(),
-    new WebpackDashboard({
-      port: 3210
-    })
-  ])
+  plugins: [...defaultConfig.plugins, new HtmlWebpackPlugin()]
 });
