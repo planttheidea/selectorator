@@ -19,7 +19,6 @@
   "dependencies": {
     "fast-equals": "^1.0.6",
     "identitate": "^1.0.0",
-    "kari": "^0.7.0",
     "reselect": "^3.0.1",
     "unchanged": "^1.0.4"
   },

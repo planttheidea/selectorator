@@ -4053,10 +4053,6 @@ just-extend@^1.1.26:
   version "1.1.27"
   resolved "https://registry.yarnpkg.com/just-extend/-/just-extend-1.1.27.tgz#ec6e79410ff914e472652abfa0e603c03d60e905"
 
-kari@^0.7.0:
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/kari/-/kari-0.7.0.tgz#a4400fa72ef0103f002242cbe9109131353ef922"
-
 killable@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/killable/-/killable-1.0.0.tgz#da8b84bd47de5395878f95d64d02f2449fe05e6b"
