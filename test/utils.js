@@ -142,6 +142,20 @@ test('if getSelectorCreator returns the correct createSelector function when dee
   t.is(result, reselect.defaultMemoize);
 });
 
+test('if getSelectorCreator returns the correct createSelector function when isEqual is provided', (t) => {
+  const stub = sinon.stub(reselect, 'createSelectorCreator').returnsArg(0);
+  const isEqual = () => {};
+
+  const result = utils.getSelectorCreator({isEqual});
+
+  t.true(stub.calledOnce);
+  t.deepEqual(stub.args[0], [reselect.defaultMemoize, isEqual]);
+
+  stub.restore();
+
+  t.is(result, reselect.defaultMemoize);
+});
+
 test('if getSelectorCreator returns the correct createSelector function when custom memoizer is passed', (t) => {
   const memoize = sinon.spy();
   const stub = sinon.stub(reselect, 'createSelectorCreator').returnsArg(0);

@@ -87,8 +87,8 @@ export const throwInvalidPathError = () => {
  * @description
  * based on the path passed, create the identity function for it or return the function itself
  *
- * @param {function|string} path nested path to retrieve from the state object
- * @returns {function} identity function to retrive value from state for given property
+ * @param {function(Object): *|string} path nested path to retrieve from the state object
+ * @returns {function(Object): *} identity function to retrive value from state for given property
  */
 export const createIdentitySelector = (path) => {
   const type = typeof path;
@@ -115,14 +115,15 @@ export const createIdentitySelector = (path) => {
  * get the creator function to use when generating the selector
  *
  * @param {boolean} [deepEqual=false] should the memoizer be based on strict equality
- * @param {function} [memoizer] function to memoize selectors (coalesces to defaultMemoize if params are provided)
+ * @param {function(*, *): boolean} [isEqual=isSameValueZero] the custom equality method to use when comparing values
+ * @param {function(function, function(*, *): boolean, ...Array<*>)} [memoizer=defaultMemoize] custom selector memoizer
  * @param {Array<*>} [memoizerParams=[]] custom parameters to pass to the memoizer function
  * @returns {function} function to create selector with
  */
-export const getSelectorCreator = ({deepEqual = false, memoizer, memoizerParams = []}) => {
+export const getSelectorCreator = ({deepEqual = false, isEqual = isSameValueZero, memoizer, memoizerParams = []}) => {
   const memoizerFn = memoizer || defaultMemoize;
 
-  return createSelectorCreator(memoizerFn, deepEqual ? isDeeplyEqual : isSameValueZero, ...memoizerParams);
+  return createSelectorCreator(memoizerFn, deepEqual ? isDeeplyEqual : isEqual, ...memoizerParams);
 };
 
 /**
@@ -133,8 +134,8 @@ export const getSelectorCreator = ({deepEqual = false, memoizer, memoizerParams 
  * @description
  * get a standard selector based on the paths and getComputedValue provided
  *
- * @param {Array<function|string>} paths paths to retrieve values from state from
- * @param {function} selectorCreator function to create selector with
+ * @param {Array<function(Object): *|string>} paths paths to retrieve values from state from
+ * @param {function(Array<function(Object): *>, function): function} selectorCreator function to create selector with
  * @param {function} getComputedValue function to compute values with, receiving properties in state based
  * on paths and returning computed values from them (defaults to pass-through identity function)
  * @returns {function} selector to return computed value from state
@@ -173,7 +174,7 @@ export const getStructuredObject = (properties) => {
  * get an object of property => selected value pairs bsaed on paths
  *
  * @param {Object} paths property => path pairs, where path is state value to retrieve and assign to property
- * @param {function} selectorCreator function used to create selector
+ * @param {function(Array<function(Object): *>, function): function} selectorCreator function to create selector with
  * @returns {function} selector to return structured values from state
  */
 export const getStructuredSelector = (paths, selectorCreator) => {

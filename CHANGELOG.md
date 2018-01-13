@@ -3,6 +3,7 @@
 ## 3.2.0 / 1.3.0
 
 * Support `SameValueZero` equality for default comparator
+* Support custom `isEqual` comparator (if not `deepEqual` or `isSameValueZero` default)
 * Remove `kari` dependency in favor of faster and more accurate `fast-equals` and `unchanged` dependencies
 
 ## 3.1.1 / 1.2.1
