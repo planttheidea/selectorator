@@ -33,6 +33,8 @@
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-2": "^6.24.1",
     "babel-register": "^6.26.0",
+    "benchmark": "^2.1.4",
+    "cli-table2": "^0.2.0",
     "eslint": "^4.15.0",
     "eslint-config-rapid7": "^2.11.1",
     "eslint-friendly-formatter": "^3.0.0",
@@ -46,6 +48,7 @@
     "moize": "^4.0.4",
     "nyc": "^11.4.1",
     "optimize-js-plugin": "^0.0.4",
+    "ora": "^2.0.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "rimraf": "^2.6.2",
@@ -67,6 +70,7 @@
     "url": "git+https://github.com/planttheidea/selectorator.git"
   },
   "scripts": {
+    "benchmark": "rimraf lib && npm run transpile:lib && node ./benchmark/index.js",
     "build": "NODE_ENV=development webpack --progress --colors --config=webpack/webpack.config.js",
     "build:minified": "NODE_ENV=production webpack --progress --colors --config=webpack/webpack.config.minified.js",
     "clean": "rimraf lib && rimraf es && rimraf dist",
