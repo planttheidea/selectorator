@@ -1,5 +1,6 @@
 // external dependencies
 import {deepEqual as isDeeplyEqual} from 'fast-equals';
+import {createIdentity} from 'identitate';
 import {createSelectorCreator, defaultMemoize} from 'reselect';
 import {get} from 'unchanged';
 
@@ -100,6 +101,14 @@ export const createIdentitySelector = (path) => {
   if (type === 'string' || type === 'number' || Array.isArray(path)) {
     return (state) => {
       return get(path, state);
+    };
+  }
+
+  if (isPlainObject(path)) {
+    const selectedIdentity = createIdentity(path.argIndex);
+
+    return function() {
+      return get(path.key, selectedIdentity.apply(null, arguments)); // eslint-disable-line prefer-spread
     };
   }
 
