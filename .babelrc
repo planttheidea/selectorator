@@ -5,6 +5,7 @@
         [
           "env",
           {
+            "exclude": ["transform-es2015-typeof-symbol"],
             "loose": true,
             "modules": false
           }
@@ -17,6 +18,7 @@
         [
           "env",
           {
+            "exclude": ["transform-es2015-typeof-symbol"],
             "loose": true,
             "modules": false
           }
@@ -29,6 +31,7 @@
         [
           "env",
           {
+            "exclude": ["transform-es2015-typeof-symbol"],
             "loose": true
           }
         ],
@@ -40,6 +43,7 @@
         [
           "env",
           {
+            "exclude": ["transform-es2015-typeof-symbol"],
             "loose": true,
             "modules": false
           }
@@ -52,6 +56,7 @@
         [
           "env",
           {
+            "exclude": ["transform-es2015-typeof-symbol"],
             "loose": true
           }
         ],
