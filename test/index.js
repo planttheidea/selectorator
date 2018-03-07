@@ -20,7 +20,7 @@ test('if createSelector calls getStructuredSelector when paths is an object', (t
 
 test('if createSelector throws when paths is not an array or object', (t) => {
   t.throws(() => {
-    createSelector(/foo/);
+    createSelector(false);
   }, TypeError);
 });
 

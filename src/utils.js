@@ -1,84 +1,10 @@
 // external dependencies
-import {deepEqual as isDeeplyEqual} from 'fast-equals';
+import {deepEqual as isDeeplyEqual, sameValueZeroEqual} from 'fast-equals';
 import {createIdentity} from 'identitate';
 import {createSelectorCreator, defaultMemoize} from 'reselect';
 import {get} from 'unchanged';
 
-/**
- * @private
- *
- * @function isPlainObject
- *
- * @description
- * is the object passed a plain object
- *
- * @param {*} object the object to test
- * @returns {boolean} is the object a plain object
- */
-export const isPlainObject = (object) => {
-  return !!object && object.constructor === Object;
-};
-
-/**
- * @private
- *
- * @function isSameValueZero
- *
- * @description
- * are the objects passed strictly equal or both NaN
- *
- * @param {*} objectA the object to compare against
- * @param {*} objectB the object to test
- * @returns {boolean} are the objects equal by the SameValueZero principle
- */
-export const isSameValueZero = (objectA, objectB) => {
-  return objectA === objectB || (objectA !== objectA && objectB !== objectB);
-};
-
-/**
- * @private
- *
- * @function throwInvalidPathsError
- *
- * @description
- * throw the error that the paths value is not of the correct type
- */
-export const throwInvalidPathsError = () => {
-  throw new TypeError(
-    'First parameter passed must be either an array or a plain object. If you are creating a ' +
-      'standard selector, pass an array of either properties on the state to retrieve, or custom selector functions. ' +
-      'If creating a structured selector, pass a plain object with source and destination properties, where source ' +
-      'is an array of properties or custom selector functions, and destination is an array of property names to ' +
-      'assign the values from source to.'
-  );
-};
-
-/**
- * @private
- *
- * @function throwNoPathsError
- *
- * @description
- * throw the error that no paths exist
- */
-export const throwNoPathsError = () => {
-  throw new ReferenceError('You have not provided any values for paths, so no values can be retrieved from state.');
-};
-
-/**
- * @private
- *
- * @function throwInvalidPathError
- *
- * @description
- * throw the error that the path type is not a string
- */
-export const throwInvalidPathError = () => {
-  throw new TypeError(
-    'Path must be a string type. It can be dot or bracket notation for nested values, for example: ' +
-      '"foo.bar" or "foo[0]".'
-  );
-};
+const hasOwnProperty = Object.prototype.hasOwnProperty;
 
 /**
  * @private
@@ -104,15 +30,29 @@ export const createIdentitySelector = (path) => {
     };
   }
 
-  if (isPlainObject(path)) {
-    const selectedIdentity = createIdentity(path.argIndex);
+  if (path && typeof path === 'object') {
+    if (!hasOwnProperty.call(path, 'path') || !hasOwnProperty.call(path, 'argIndex')) {
+      throw new ReferenceError(
+        'When providing an object path, you must provide the following properties:\n' +
+          '  * path: the path to retrieve, e.g. "foo.bar."\n' +
+          '  * argIndex: the index of the argument to retrieve the path from'
+      );
+    }
+
+    const selectorIdentity = createIdentity(path.argIndex);
 
     return function() {
-      return get(path.key, selectedIdentity.apply(null, arguments)); // eslint-disable-line prefer-spread
+      return get(path.path, selectorIdentity.apply(null, arguments)); // eslint-disable-line prefer-spread
     };
   }
 
-  throwInvalidPathError();
+  throw new TypeError(
+    'Path provided is of invalid type. It can be any one of the following values:\n' +
+      '  * Dot-bracket notation, e.g. "foo.bar" or "bar[0].baz"\n' +
+      '  * Number index, e.g. 0\n' +
+      '  * Object {key, argIndex}, e.g. {key: "foo.bar", argIndex: 1}\n' +
+      '  * Selector function'
+  );
 };
 
 /**
@@ -124,12 +64,17 @@ export const createIdentitySelector = (path) => {
  * get the creator function to use when generating the selector
  *
  * @param {boolean} [deepEqual=false] should the memoizer be based on strict equality
- * @param {function(*, *): boolean} [isEqual=isSameValueZero] the custom equality method to use when comparing values
+ * @param {function(*, *): boolean} [isEqual=sameValueZeroEqual] the custom equality method to use when comparing values
  * @param {function(function, function(*, *): boolean, ...Array<*>)} [memoizer=defaultMemoize] custom selector memoizer
  * @param {Array<*>} [memoizerParams=[]] custom parameters to pass to the memoizer function
  * @returns {function} function to create selector with
  */
-export const getSelectorCreator = ({deepEqual = false, isEqual = isSameValueZero, memoizer, memoizerParams = []}) => {
+export const getSelectorCreator = ({
+  deepEqual = false,
+  isEqual = sameValueZeroEqual,
+  memoizer,
+  memoizerParams = []
+}) => {
   const memoizerFn = memoizer || defaultMemoize;
 
   return createSelectorCreator(memoizerFn, deepEqual ? isDeeplyEqual : isEqual, ...memoizerParams);
