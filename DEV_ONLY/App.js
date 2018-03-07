@@ -69,6 +69,43 @@ console.log(
   })
 );
 
+const getMultipleParams = createSelector(
+  ['foo.bar', {path: 'baz', argIndex: 1}, {path: 0, argIndex: 2}],
+  (bar, baz, quz) => {
+    return [bar, baz, quz];
+  }
+);
+
+const first = {
+  foo: {
+    bar: 'baz'
+  }
+};
+const second = {
+  baz: 'quz'
+};
+const third = ['blah'];
+
+console.log(getMultipleParams(first, second, third));
+
+try {
+  createSelector();
+} catch (error) {
+  console.error(error);
+}
+
+try {
+  createSelector([]);
+} catch (error) {
+  console.error(error);
+}
+
+try {
+  createSelector([true]);
+} catch (error) {
+  console.error(error);
+}
+
 const App = () => {
   return (
     <div>
