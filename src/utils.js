@@ -50,7 +50,7 @@ export const createIdentitySelector = (path) => {
     'Path provided is of invalid type. It can be any one of the following values:\n' +
       '  * Dot-bracket notation, e.g. "foo.bar" or "bar[0].baz"\n' +
       '  * Number index, e.g. 0\n' +
-      '  * Object {key, argIndex}, e.g. {key: "foo.bar", argIndex: 1}\n' +
+      '  * Object {path, argIndex}, e.g. {path: "foo.bar", argIndex: 1}\n' +
       '  * Selector function'
   );
 };
