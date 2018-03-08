@@ -1,5 +1,9 @@
 # selectorator changelog
 
+## 3.3.0 / 1.4.0
+
+* Add support for `Object` paths to allow for shorthand usage on arguments other than first (resolves [#9](https://github.com/planttheidea/selectorator/issues/9))
+
 ## 3.2.0 / 1.3.1
 
 * Support `SameValueZero` equality for default comparator
