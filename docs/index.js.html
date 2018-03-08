@@ -74,14 +74,7 @@
 import {identity} from 'identitate';
 
 // utils
-import {
-  getSelectorCreator,
-  getStandardSelector,
-  getStructuredSelector,
-  isPlainObject,
-  throwInvalidPathsError,
-  throwNoPathsError
-} from './utils';
+import {getSelectorCreator, getStandardSelector, getStructuredSelector} from './utils';
 
 /**
  * @module selectorator
@@ -125,19 +118,25 @@ import {
 const createSelector = (paths, getComputedValue = identity, options = {}) => {
   const selectorCreator = getSelectorCreator(options);
 
-  if (isPlainObject(paths)) {
+  if (Array.isArray(paths)) {
+    if (!paths.length) {
+      throw new ReferenceError('You have not provided any values for paths, so no values can be retrieved from state.');
+    }
+
+    return getStandardSelector(paths, selectorCreator, getComputedValue);
+  }
+
+  if (paths &amp;&amp; typeof paths === 'object') {
     return getStructuredSelector(paths, selectorCreator);
   }
 
-  if (!Array.isArray(paths)) {
-    throwInvalidPathsError();
-  }
-
-  if (!paths.length) {
-    throwNoPathsError();
-  }
-
-  return getStandardSelector(paths, selectorCreator, getComputedValue);
+  throw new TypeError(
+    'First parameter passed must be either an array or a plain object. If you are creating a ' +
+      'standard selector, pass an array of either properties on the state to retrieve, or custom selector functions. ' +
+      'If creating a structured selector, pass a plain object with source and destination properties, where source ' +
+      'is an array of properties or custom selector functions, and destination is an array of property names to ' +
+      'assign the values from source to.'
+  );
 };
 
 export default createSelector;

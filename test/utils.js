@@ -1,43 +1,11 @@
 // test
 import test from 'ava';
-import {deepEqual as deepEquals} from 'fast-equals';
+import {deepEqual as deepEquals, sameValueZeroEqual} from 'fast-equals';
 import * as reselect from 'reselect';
 import sinon from 'sinon';
 
 // src
 import * as utils from '../src/utils';
-
-test('if isPlainObject will return false when object is not a plain object, true if it is', (t) => {
-  const object = {};
-  const tests = [null, undefined, 'string', 123, /regexp/, () => {}, object, new Map(), new Set(), Symbol('symbol')];
-
-  tests.forEach((test) => {
-    const comparator = test === object ? 'true' : 'false';
-
-    t[comparator](utils.isPlainObject(test));
-  });
-});
-
-test('if isSameValueZero will return true when strictly equal', (t) => {
-  const objectA = {};
-  const objectB = objectA;
-
-  t.true(utils.isSameValueZero(objectA, objectB));
-});
-
-test('if isSameValueZero will return true when both NaN', (t) => {
-  const objectA = NaN;
-  const objectB = NaN;
-
-  t.true(utils.isSameValueZero(objectA, objectB));
-});
-
-test('if isSameValueZero will return false when different objects', (t) => {
-  const objectA = {};
-  const objectB = {};
-
-  t.false(utils.isSameValueZero(objectA, objectB));
-});
 
 test('if createIdentitySelector creates a function that receives state and gets the value at the path passed', (t) => {
   const path = 'foo[0].bar[baz]';
@@ -110,9 +78,54 @@ test('if createIdentitySelector returns the function passed when passed a functi
   t.is(result, path);
 });
 
-test('if createIdentitySelector throws when path is not a function or string', (t) => {
+test('if createIdentitySelector will create a function that retrieves the path from the argument index requested', (t) => {
+  const path = 0;
+  const value = 'foo-bar-baz';
+  const state = [
+    {
+      bar: {
+        baz: 'not correct'
+      }
+    }
+  ];
+  const props = [
+    {
+      bar: {
+        baz: value
+      }
+    }
+  ];
+
+  const identity = utils.createIdentitySelector({argIndex: 1, path});
+
+  t.is(typeof identity, 'function');
+
+  const result = identity(state, props);
+
+  t.is(result, props[path]);
+});
+
+test('if createIdentitySelector throws when path is an object but does not have a path property', (t) => {
   t.throws(() => {
     utils.createIdentitySelector({});
+  }, ReferenceError);
+});
+
+test('if createIdentitySelector throws when path is an object but does not have an argIndex property', (t) => {
+  t.throws(() => {
+    utils.createIdentitySelector({path: 'foo'});
+  }, ReferenceError);
+});
+
+test('if createIdentitySelector throws when path is not a valid path type', (t) => {
+  t.throws(() => {
+    utils.createIdentitySelector(true);
+  }, TypeError);
+});
+
+test('if createIdentitySelector throws when path does not exist', (t) => {
+  t.throws(() => {
+    utils.createIdentitySelector();
   }, TypeError);
 });
 
@@ -122,7 +135,7 @@ test('if getSelectorCreator returns the correct createSelector function when pas
   const result = utils.getSelectorCreator({});
 
   t.true(stub.calledOnce);
-  t.deepEqual(stub.args[0], [reselect.defaultMemoize, utils.isSameValueZero]);
+  t.deepEqual(stub.args[0], [reselect.defaultMemoize, sameValueZeroEqual]);
 
   stub.restore();
 
@@ -163,7 +176,7 @@ test('if getSelectorCreator returns the correct createSelector function when cus
   const result = utils.getSelectorCreator({memoizer: memoize});
 
   t.true(stub.calledOnce);
-  t.deepEqual(stub.args[0], [memoize, utils.isSameValueZero]);
+  t.deepEqual(stub.args[0], [memoize, sameValueZeroEqual]);
 
   stub.restore();
 
@@ -177,7 +190,7 @@ test('if getSelectorCreator returns the correct createSelector function when cus
   const result = utils.getSelectorCreator({memoizerParams: [option]});
 
   t.true(stub.calledOnce);
-  t.deepEqual(stub.args[0], [reselect.defaultMemoize, utils.isSameValueZero, option]);
+  t.deepEqual(stub.args[0], [reselect.defaultMemoize, sameValueZeroEqual, option]);
 
   stub.restore();
 
@@ -239,22 +252,4 @@ test('if getStructuredSelector will map selectors to specific keys in selector f
     bar: 'bar',
     baz: 'baz'
   });
-});
-
-test('if throwInvalidPathError throws a type error when called', (t) => {
-  t.throws(() => {
-    utils.throwInvalidPathError();
-  }, TypeError);
-});
-
-test('if throwInvalidPathsError throws a type error when called', (t) => {
-  t.throws(() => {
-    utils.throwInvalidPathsError();
-  }, TypeError);
-});
-
-test('if throwNoPathsError throws a type error when called', (t) => {
-  t.throws(() => {
-    utils.throwNoPathsError();
-  }, ReferenceError);
 });
