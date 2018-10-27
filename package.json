@@ -63,5 +63,7 @@
     "test:coverage": "npm run test -- --coverage",
     "test:watch": "npm run test -- --watch"
   },
+  "sideEffects": false,
+  "types": "dist/index.d.ts",
   "version": "3.3.0"
 }
