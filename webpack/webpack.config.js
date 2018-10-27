@@ -1,48 +1,63 @@
-'use strict';
+"use strict";
 
-const path = require('path');
-const webpack = require('webpack');
-const eslintFriendlyFormatter = require('eslint-friendly-formatter');
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const path = require("path");
+const webpack = require("webpack");
 
-const ROOT = path.resolve(__dirname, '..');
+const ROOT = path.resolve(__dirname, "..");
 
 module.exports = {
-  cache: true,
+  devServer: {
+    contentBase: "./dist",
+    inline: true,
+    port: 3000,
+    stats: {
+      assets: false,
+      chunks: true,
+      chunkModules: false,
+      colors: true,
+      hash: false,
+      timings: true,
+      version: false
+    }
+  },
 
-  devtool: '#source-map',
+  devtool: "#source-map",
 
-  entry: [path.resolve(ROOT, 'src', 'index.js')],
+  entry: path.join(ROOT, "DEV_ONLY", "App.tsx"),
+
+  mode: "development",
 
   module: {
     rules: [
       {
-        enforce: 'pre',
-        include: [path.resolve(ROOT, 'src')],
-        loader: 'eslint-loader',
-        options: {
-          configFile: '.eslintrc',
-          emitError: true,
-          failOnError: true,
-          failOnWarning: true,
-          formatter: eslintFriendlyFormatter
-        },
-        test: /\.js$/
+        enforce: "pre",
+        include: [path.resolve(ROOT, "src")],
+        loader: "tslint-loader",
+        test: /\.ts$/
       },
       {
-        include: [path.resolve(ROOT, 'src')],
-        loader: 'babel-loader',
-        test: /\.js$/
+        include: [path.resolve(ROOT, "src"), /DEV_ONLY/],
+        loader: "ts-loader",
+        test: /\.tsx?$/
       }
     ]
   },
 
   output: {
-    filename: 'selectorator.js',
-    library: 'selectorator',
-    libraryTarget: 'umd',
-    path: path.resolve(ROOT, 'dist'),
+    filename: "selectorator.js",
+    library: "selectorator",
+    libraryTarget: "umd",
+    path: path.resolve(ROOT, "dist"),
     umdNamedDefine: true
   },
 
-  plugins: [new webpack.EnvironmentPlugin(['NODE_ENV'])]
+  plugins: [
+    new webpack.EnvironmentPlugin(["NODE_ENV"]),
+    new HtmlWebpackPlugin()
+  ],
+
+  resolve: {
+    extensions: [".ts", ".js"]
+  }
 };
