@@ -1,5 +1,9 @@
 # selectorator CHANGELOG
 
+## 4.0.1
+
+- Fix typings
+
 ## 4.0.0
 
 - Switch to using typescript for build

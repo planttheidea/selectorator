@@ -51,19 +51,18 @@
   "scripts": {
     "benchmark": "rimraf lib && npm run transpile:lib && node ./benchmark/index.js",
     "build": "NODE_ENV=production rollup -c",
-    "build:types": "cp src/types.ts dist/index.d.ts",
     "clean": "rimraf dist",
     "dev": "NODE_ENV=development webpack-dev-server --progress --colors --config=webpack/webpack.config.js",
     "lint": "NODE_ENV=test tslint 'src/*.ts'",
     "lint:fix": "npm run lint -- --fix",
     "prepublish": "if in-publish; then npm run prepublish:compile; fi",
-    "prepublish:compile": "npm run lint && npm run test:coverage && npm run clean && npm run build && npm run build:types",
+    "prepublish:compile": "npm run lint && npm run test:coverage && npm run clean && npm run build",
     "start": "npm run dev",
     "test": "NODE_PATH=. jest",
     "test:coverage": "npm run test -- --coverage",
     "test:watch": "npm run test -- --watch"
   },
   "sideEffects": false,
-  "types": "dist/index.d.ts",
-  "version": "4.0.0"
+  "types": "index.d.ts",
+  "version": "4.0.1"
 }
