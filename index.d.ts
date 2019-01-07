@@ -75,11 +75,11 @@ declare namespace selectorator {
    *
    * // getBarBaz5() has type signature: (state_0: State, state_1: string[]) => string;
    *
-   *   const getFlatBarBaz = createSelector({
+   *   const getStucturedBarBaz = createSelector({
    *     barBaz: getBarBaz,
    *   }});
    *
-   * // getFlatBarBaz() has type signature: (state_0: State, state_1: string[]) => string;
+   * // getStructuredBarBaz() has type signature: (state: any) => ({ barBaz: string });
    *
    * const state: State = {
    *  foo: {
@@ -93,7 +93,11 @@ declare namespace selectorator {
   export type Selector<State = undefined, Output = any> = {} extends State
     ? (state: any) => Output
     : (state: State) => Output;
-
+    /**
+     * @type SelectorMultiParam
+     * 
+     * @description similar to `Selector` but allows multiple params
+     */
   export type SelectorMultiParam<State extends any[] = any, Output = any> = (
     ...state: State
   ) => Output;
