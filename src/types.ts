@@ -27,10 +27,24 @@ declare namespace selectorator {
     | (string | number)[]
     | PathObject;
 
+  export type PathWithoutObject =
+    | Function
+    | string
+    | number
+    | (string | number)[];
+
   export interface Options {
     deepEqual?: boolean;
     isEqual?: Function;
     memoizer?: Function;
     memoizerParams?: any[];
   }
+
+  export type Selector<State = undefined, Output = any> = {} extends State
+    ? (state: any) => Output
+    : (state: State) => Output;
+
+  export type SelectorMultiParam<State extends any[] = any, Output = any> = (
+    ...state: State
+  ) => Output;
 }
