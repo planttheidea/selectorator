@@ -9,9 +9,9 @@ document.body.style.color = '#d5d5d5';
 document.body.style.margin = '0';
 document.body.style.padding = '0';
 
-const getSubtotal = createSelector<{ shop: any}, number>(
+const getSubtotal = createSelector<{ shop: any }, number>(
   ['shop.items'],
-  (items: {value: number}[]) => {
+  (items: { value: number }[]) => {
     return items.reduce((sum: number, { value }) => {
       return sum + value;
     },                  0);
@@ -29,7 +29,7 @@ const getTax = createSelector(
 
 const getTotal = createSelector(
   [getSubtotal, getTax],
-  (subtotal: number, tax:number) => {
+  (subtotal: number, tax: number) => {
     return subtotal + tax;
   },
 );
@@ -80,7 +80,10 @@ console.log(
   }),
 );
 
-const getMultipleParams = createSelector<[PlainObject, PlainObject, string[]], string[]>(
+const getMultipleParams = createSelector<
+  [PlainObject, PlainObject, string[]],
+  string[]
+>(
   ['foo.bar', { path: 'baz', argIndex: 1 }, { path: 0, argIndex: 2 }],
   (bar: string, baz: string, quz: string) => {
     return [bar, baz, quz];
@@ -100,7 +103,7 @@ const third = ['blah'];
 console.log(getMultipleParams(first, second, third));
 
 try {
-  createSelector(null as any);  // fix for strict mode
+  createSelector(null as any); // fix for strict mode
 } catch (error) {
   console.error(error);
 }

@@ -1,5 +1,6 @@
 {
   "author": "planttheidea <tony.quetano@planttheidea.com>",
+  "browser": "dist/selectorator.js",
   "bugs": {
     "url": "https://github.com/planttheidea/selectorator/issues"
   },
@@ -11,31 +12,29 @@
   },
   "description": "Simplified generator of reselect selectors",
   "devDependencies": {
-    "@types/jest": "^23.3.5",
-    "@types/react": "^16.4.18",
-    "@types/react-dom": "^16.0.9",
+    "@types/jest": "^23.3.12",
+    "@types/react": "^16.7.18",
+    "@types/react-dom": "^16.0.11",
     "cli-table2": "^0.2.0",
     "cross-env": "^5.2.0",
     "html-webpack-plugin": "^3.2.0",
     "in-publish": "^2.0.0",
     "jest": "^23.6.0",
     "moize": "^5.4.1",
-    "react": "^16.6.0",
-    "react-dom": "^16.6.0",
-    "rollup": "^0.66.6",
-    "rollup-plugin-commonjs": "^9.2.0",
-    "rollup-plugin-node-resolve": "^3.4.0",
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0",
+    "rollup": "^1.0.2",
     "rollup-plugin-typescript": "^1.0.0",
     "rollup-plugin-uglify": "^6.0.0",
-    "ts-jest": "^23.10.4",
-    "ts-loader": "^5.2.2",
-    "tslint": "^5.11.0",
-    "tslint-config-airbnb": "^5.11.0",
+    "ts-jest": "^23.10.5",
+    "ts-loader": "^5.3.3",
+    "tslint": "^5.12.0",
+    "tslint-config-airbnb": "^5.11.1",
     "tslint-loader": "^3.5.4",
-    "typescript": "^3.1.3",
-    "webpack": "^4.20.2",
-    "webpack-cli": "^3.1.2",
-    "webpack-dev-server": "^3.1.9"
+    "typescript": "^3.2.2",
+    "webpack": "^4.28.1",
+    "webpack-cli": "^3.2.1",
+    "webpack-dev-server": "^3.1.14"
   },
   "homepage": "https://github.com/planttheidea/selectorator#readme",
   "keywords": [
@@ -43,7 +42,8 @@
     "selector"
   ],
   "license": "MIT",
-  "main": "dist/selectorator.js",
+  "main": "dist/selectorator.cjs.js",
+  "module": "dist/selectorator.esm.js",
   "name": "selectorator",
   "repository": {
     "type": "git",

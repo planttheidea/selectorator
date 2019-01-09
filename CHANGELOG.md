@@ -1,5 +1,10 @@
 # selectorator CHANGELOG
 
+## 4.0.2
+
+- Improved typings (thanks to PR [#13](https://github.com/planttheidea/selectorator/pull/13) by [@Dudeonyx](https://github.com/Dudeonyx))
+- Provide targeted builds for ESM / CommonJS / UMD consumption
+
 ## 4.0.1
 
 - Fix typings

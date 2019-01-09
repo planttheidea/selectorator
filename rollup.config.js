@@ -1,40 +1,46 @@
 import typescript from "rollup-plugin-typescript";
 import { uglify } from "rollup-plugin-uglify";
 
-export default [
-  {
-    external: ["identitate", "fast-equals", "reselect", "unchanged"],
-    input: "src/index.ts",
-    output: {
-      exports: "named",
-      globals: {
-        identitate: "identitate",
-        "fast-equals": "fe",
-        reselect: "Reselect",
-        unchanged: "unchanged"
-      },
-      name: "selectorator",
-      file: "dist/selectorator.js",
-      format: "umd",
-      sourcemap: true
+import pkg from "./package.json";
+
+const UMD_CONFIG = {
+  external: ["identitate", "fast-equals", "reselect", "unchanged"],
+  input: "src/index.ts",
+  output: {
+    exports: "named",
+    file: pkg.browser,
+    format: "umd",
+    globals: {
+      identitate: "identitate",
+      "fast-equals": "fe",
+      reselect: "Reselect",
+      unchanged: "unchanged"
     },
-    plugins: [typescript()]
+    name: pkg.name,
+    sourcemap: true
   },
-  {
-    external: ["identitate", "fast-equals", "reselect", "unchanged"],
-    input: "src/index.ts",
-    output: {
-      exports: "named",
-      globals: {
-        identitate: "identitate",
-        "fast-equals": "fe",
-        reselect: "Reselect",
-        unchanged: "unchanged"
-      },
-      name: "selectorator",
-      file: "dist/selectorator.min.js",
-      format: "umd"
-    },
-    plugins: [typescript(), uglify()]
-  }
-];
+  plugins: [typescript()]
+};
+
+const FORMATTED_CONFIG = Object.assign({}, UMD_CONFIG, {
+  output: [
+    Object.assign({}, UMD_CONFIG.output, {
+      file: pkg.main,
+      format: "cjs"
+    }),
+    Object.assign({}, UMD_CONFIG.output, {
+      file: pkg.module,
+      format: "es"
+    })
+  ]
+});
+
+const MINIFIED_CONFIG = Object.assign({}, UMD_CONFIG, {
+  output: Object.assign({}, UMD_CONFIG.output, {
+    file: pkg.browser.replace(".js", ".min.js"),
+    sourcemap: false
+  }),
+  plugins: UMD_CONFIG.plugins.concat([uglify()])
+});
+
+export default [UMD_CONFIG, FORMATTED_CONFIG, MINIFIED_CONFIG];
