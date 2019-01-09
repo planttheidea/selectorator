@@ -3,6 +3,8 @@ import { uglify } from "rollup-plugin-uglify";
 
 import pkg from "./package.json";
 
+const { assign } = Object;
+
 const UMD_CONFIG = {
   external: ["identitate", "fast-equals", "reselect", "unchanged"],
   input: "src/index.ts",
@@ -22,21 +24,21 @@ const UMD_CONFIG = {
   plugins: [typescript()]
 };
 
-const FORMATTED_CONFIG = Object.assign({}, UMD_CONFIG, {
+const FORMATTED_CONFIG = assign({}, UMD_CONFIG, {
   output: [
-    Object.assign({}, UMD_CONFIG.output, {
+    assign({}, UMD_CONFIG.output, {
       file: pkg.main,
       format: "cjs"
     }),
-    Object.assign({}, UMD_CONFIG.output, {
+    assign({}, UMD_CONFIG.output, {
       file: pkg.module,
       format: "es"
     })
   ]
 });
 
-const MINIFIED_CONFIG = Object.assign({}, UMD_CONFIG, {
-  output: Object.assign({}, UMD_CONFIG.output, {
+const MINIFIED_CONFIG = assign({}, UMD_CONFIG, {
+  output: assign({}, UMD_CONFIG.output, {
     file: pkg.browser.replace(".js", ".min.js"),
     sourcemap: false
   }),
