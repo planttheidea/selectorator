@@ -124,7 +124,7 @@ export const getSelectorCreator = ({
   const memoizerFn: Function = memoizer || defaultMemoize;
   const equals: Function = deepEqual ? isDeeplyEqual : isEqual;
 
-  return createSelectorCreator.call(
+  return (createSelectorCreator as any).call(  // fix strict mode error
     null,
     memoizerFn,
     equals,
@@ -198,7 +198,7 @@ export const getStructuredSelector = (
 ): Function => {
   const destinationKeys: string[] = Object.keys(paths);
   const selectors: Function[] = destinationKeys.map(
-    (key: string): Function => createIdentitySelector(paths[key]),
+    (key) => createIdentitySelector(paths[key]),
   );
 
   return selectorCreator(selectors, getStructuredObject(destinationKeys));

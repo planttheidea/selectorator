@@ -12,6 +12,7 @@
 * [Versions](#versions)
 * [Usage](#usage)
   * [Shorthand types](#shorthand-types)
+  * [TypeScript](#TypeScript)
 * [Options](#options)
   * [deepEqual](#deepequal)
   * [isEqual](#isequal)
@@ -90,7 +91,7 @@ console.log("tax: ", getTax(state)); // 0.172
 console.log("total: ", getTotal(state)); // {total: 2.322}
 ```
 
-#### Shorthand types
+### Shorthand types
 
 The following types of shorthand are available for parameter selector creation:
 
@@ -103,11 +104,76 @@ The following types of shorthand are available for parameter selector creation:
 
 Please note that the `Object` usage is the only approach that will allow for selection of parameters. All other shorthands will pull from the first parameter.
 
+### TypeScript
+
+Selectorator now supports two optional type parameters, it accepts an Input type param (usually the redux state) and the expected output type.
+
+When creating a selector that accepts multiple params, the state should be array of the input types example
+
+i.e `createSelector<[State, number[], boolean], string>`
+
+```js
+  import createSelector from "selectorator";
+  
+  interface State {
+    foo: {
+      bar: string;
+    };
+    baz: string;
+  };
+                        // State is input type, string is output type
+  const getBarBaz = createSelector<State, string>(
+    ["foo.bar", "baz"],
+    (bar, baz) => {
+      return `${bar} ${baz}`;
+  });
+  
+  // getBarBaz() has type signature: (state: State) => string;
+  
+  const getBarBaz2 = createSelector<any, string>(
+    ["foo.bar", "baz"],
+    (bar, baz) => {
+      return `${bar} ${baz}`;
+  });
+  
+  // getBarBaz2() has type signature: (state: any) => string;
+  
+  const getBarBaz3 = createSelector(
+    ["foo.bar", "baz"],
+    (bar, baz) => {
+      return `${bar} ${baz}`;
+  });
+  
+  // getBarBaz3() has type signature: (state: any) => any;
+  
+  const getBarBaz4 = createSelector(
+    ["foo.bar", "baz", { path: 0, argIndex: 2 }],
+    (bar, baz) => {
+      return `${bar} ${baz}`;
+  });
+  
+  // getBarBaz4() has type signature: (...state: any[]) => any;
+  
+  const getBarBazQux5 = createSelector<[State, string[]], string>(
+    ["foo.bar", "baz", { path: 0, argIndex: 2 }],
+    (bar, baz) => {
+      return `${bar} ${baz}`;
+  });
+  
+  // getBarBaz5() has type signature: (state_0: State, state_1: string[]) => string;
+  
+  const getStucturedBarBaz = createSelector({
+    barBaz: getBarBaz,
+  });
+  
+  // getStructuredBarBaz() has type signature: (state: any) => ({ barBaz: string });
+```
+
 ## Options
 
 All the capabilities that exist with `reselect` are still available using `selectorator`, they are just passed as an object of options to `createSelector`.
 
-#### deepEqual
+### deepEqual
 
 _defaults to false_
 
@@ -129,7 +195,7 @@ const getBaz = createSelector(
 );
 ```
 
-#### isEqual
+### isEqual
 
 _defaults to isSameValueZero_
 
@@ -156,7 +222,7 @@ const getFoo = createSelector(
 
 Please note that if this parameter is provided and `deepEqual` is also set to `true`, `deepEqual` will take priority and the `isEqual` method will not be used.
 
-#### memoizer
+### memoizer
 
 _defaults to `reselect` defaultMemoize_
 
@@ -179,7 +245,7 @@ const getFoo = createSelector(
 );
 ```
 
-#### memoizerParams
+### memoizerParams
 
 _defaults to []_
 
