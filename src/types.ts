@@ -7,13 +7,6 @@ declare module 'identitate' {
   function createIdentity(argIndex: number): Function;
 }
 
-declare module 'unchanged' {
-  function get(
-    path: string | number | (string | number)[],
-    object: PlainObject | any[],
-  ): any;
-}
-
 declare namespace selectorator {
   export interface PathObject {
     argIndex: number;

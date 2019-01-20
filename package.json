@@ -8,7 +8,7 @@
     "fast-equals": "^1.2.1",
     "identitate": "^1.0.0",
     "reselect": "^4.0.0",
-    "unchanged": "^1.0.7"
+    "unchanged": "^2.0.1"
   },
   "description": "Simplified generator of reselect selectors",
   "devDependencies": {

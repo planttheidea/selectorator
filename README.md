@@ -8,17 +8,17 @@
 
 ## Table of contents
 
-* [Installation](#installation)
-* [Versions](#versions)
-* [Usage](#usage)
-  * [Shorthand types](#shorthand-types)
-  * [TypeScript](#TypeScript)
-* [Options](#options)
-  * [deepEqual](#deepequal)
-  * [isEqual](#isequal)
-  * [memoizer](#memoizer)
-  * [memoizerOptions](#memoizerOptions)
-* [Development](#development)
+- [Installation](#installation)
+- [Versions](#versions)
+- [Usage](#usage)
+  - [Shorthand types](#shorthand-types)
+  - [TypeScript](#TypeScript)
+- [Options](#options)
+  - [deepEqual](#deepequal)
+  - [isEqual](#isequal)
+  - [memoizer](#memoizer)
+  - [memoizerOptions](#memoizerOptions)
+- [Development](#development)
 
 ## Installation
 
@@ -28,7 +28,7 @@ $ npm i selectorator --save
 
 ## Versions
 
-Versions of `selectorator` on the `3.x.x` versions will use the `3.x.x` version of `reselect` as a dependency, and all major versions of `selectorator` will match the major versions of `reselect` going forward. If you wish to still use the `2.x.x` branch of `reselect` for your application, then you should continue using the `1.x.x` branch of `selectorator`. All future enhancements will be made to both branches, unless they are version-specific.
+Versions of `selectorator` on or above `3.x.x` will use the corresponding major version of `reselect` as a dependency. If you wish to still use the `2.x.x` branch of `reselect` for your application, then you should continue using the `1.x.x` branch of `selectorator`.
 
 If you would like to learn more about the breaking changes related to the major version change for `reselect`, please visit [the `reselect` CHANGELOG](https://github.com/reactjs/reselect/blob/master/CHANGELOG.md).
 
@@ -38,9 +38,12 @@ If you would like to learn more about the breaking changes related to the major 
 import createSelector from "selectorator";
 
 // selector created with single method call
-const getBarBaz = createSelector(["foo.bar", "baz"], (bar, baz) => {
-  return `${bar} ${baz}`;
-});
+const getBarBaz = createSelector(
+  ["foo.bar", "baz"],
+  (bar, baz) => {
+    return `${bar} ${baz}`;
+  }
+);
 
 const state = {
   foo: {
@@ -58,11 +61,14 @@ That said, you can still use your own custom identity selectors, or compose sele
 
 ```javascript
 // subtotal built using simple method
-const getSubtotal = createSelector(["shop.items"], items => {
-  return items.reduce((sum, { value }) => {
-    return sum + value;
-  }, 0);
-});
+const getSubtotal = createSelector(
+  ["shop.items"],
+  items => {
+    return items.reduce((sum, { value }) => {
+      return sum + value;
+    }, 0);
+  }
+);
 
 // tax builtrued with simple method combined with other selector
 const getTax = createSelector(
@@ -73,11 +79,14 @@ const getTax = createSelector(
 );
 
 // total build entirely with other selectors
-const getTotal = createSelector([getSubtotal, getTax], (subtotal, tax) => {
-  return {
-    total: subtotal + tax
-  };
-});
+const getTotal = createSelector(
+  [getSubtotal, getTax],
+  (subtotal, tax) => {
+    return {
+      total: subtotal + tax
+    };
+  }
+);
 
 const state = {
   shop: {
@@ -95,12 +104,12 @@ console.log("total: ", getTotal(state)); // {total: 2.322}
 
 The following types of shorthand are available for parameter selector creation:
 
-* Pulls from state:
-  * `string` => `'foo[0].bar'
-  * `number` => `0`
-  * `Array` => `['foo', 0, 'bar']`
-* Pulls from specific argument:
-  * `Object` => `{path: 'foo[0].bar', argIndex: 1}`
+- Pulls from state:
+  - `string` => `'foo[0].bar'
+  - `number` => `0`
+  - `Array` => `['foo', 0, 'bar']`
+- Pulls from specific argument:
+  - `Object` => `{path: 'foo[0].bar', argIndex: 1}`
 
 Please note that the `Object` usage is the only approach that will allow for selection of parameters. All other shorthands will pull from the first parameter.
 
@@ -114,7 +123,7 @@ i.e `createSelector<[State, number[], boolean], string>`
 
 ```js
   import createSelector from "selectorator";
-  
+
   interface State {
     foo: {
       bar: string;
@@ -127,45 +136,45 @@ i.e `createSelector<[State, number[], boolean], string>`
     (bar, baz) => {
       return `${bar} ${baz}`;
   });
-  
+
   // getBarBaz() has type signature: (state: State) => string;
-  
+
   const getBarBaz2 = createSelector<any, string>(
     ["foo.bar", "baz"],
     (bar, baz) => {
       return `${bar} ${baz}`;
   });
-  
+
   // getBarBaz2() has type signature: (state: any) => string;
-  
+
   const getBarBaz3 = createSelector(
     ["foo.bar", "baz"],
     (bar, baz) => {
       return `${bar} ${baz}`;
   });
-  
+
   // getBarBaz3() has type signature: (state: any) => any;
-  
+
   const getBarBaz4 = createSelector(
     ["foo.bar", "baz", { path: 0, argIndex: 2 }],
     (bar, baz) => {
       return `${bar} ${baz}`;
   });
-  
+
   // getBarBaz4() has type signature: (...state: any[]) => any;
-  
+
   const getBarBazQux5 = createSelector<[State, string[]], string>(
     ["foo.bar", "baz", { path: 0, argIndex: 2 }],
     (bar, baz) => {
       return `${bar} ${baz}`;
   });
-  
+
   // getBarBaz5() has type signature: (state_0: State, state_1: string[]) => string;
-  
+
   const getStucturedBarBaz = createSelector({
     barBaz: getBarBaz,
   });
-  
+
   // getStructuredBarBaz() has type signature: (state: any) => ({ barBaz: string });
 ```
 
@@ -272,14 +281,14 @@ const getFoo = createSelector(
 
 Standard stuff, clone the repo and `npm install` dependencies. The npm scripts available:
 
-* `build` => run webpack to build development `dist` file with NODE_ENV=development
-* `build:minifed` => run webpack to build production `dist` file with NODE_ENV=production
-* `dev` => run webpack dev server to run example app (playground!)
-* `docs` => builds the docs via `jsdoc`
-* `lint` => run ESLint against all files in the `src` folder
-* `prepublish` => runs `prepublish:compile`
-* `prepublish:compile` => run `lint`, `test:coverage`, `transpile`, `build`, `build:minified`, and `docs`
-* `test` => run AVA test functions with `NODE_ENV=test`
-* `test:coverage` => run `test` but with `nyc` for coverage checker
-* `test:watch` => run `test`, but with persistent watcher
-* `transpile` => run babel against all files in `src` to create files in `lib`
+- `build` => run webpack to build development `dist` file with NODE_ENV=development
+- `build:minifed` => run webpack to build production `dist` file with NODE_ENV=production
+- `dev` => run webpack dev server to run example app (playground!)
+- `docs` => builds the docs via `jsdoc`
+- `lint` => run ESLint against all files in the `src` folder
+- `prepublish` => runs `prepublish:compile`
+- `prepublish:compile` => run `lint`, `test:coverage`, `transpile`, `build`, `build:minified`, and `docs`
+- `test` => run AVA test functions with `NODE_ENV=test`
+- `test:coverage` => run `test` but with `nyc` for coverage checker
+- `test:watch` => run `test`, but with persistent watcher
+- `transpile` => run babel against all files in `src` to create files in `lib`

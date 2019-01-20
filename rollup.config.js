@@ -3,42 +3,42 @@ import { uglify } from "rollup-plugin-uglify";
 
 import pkg from "./package.json";
 
-const { assign } = Object;
+const GLOBALS = {
+  identitate: "identitate",
+  "fast-equals": "fe",
+  reselect: "Reselect",
+  unchanged: "unchanged"
+};
 
 const UMD_CONFIG = {
-  external: ["identitate", "fast-equals", "reselect", "unchanged"],
+  external: Object.keys(GLOBALS),
   input: "src/index.ts",
   output: {
     exports: "named",
     file: pkg.browser,
     format: "umd",
-    globals: {
-      identitate: "identitate",
-      "fast-equals": "fe",
-      reselect: "Reselect",
-      unchanged: "unchanged"
-    },
+    globals: GLOBALS,
     name: pkg.name,
     sourcemap: true
   },
   plugins: [typescript()]
 };
 
-const FORMATTED_CONFIG = assign({}, UMD_CONFIG, {
+const FORMATTED_CONFIG = Object.assign({}, UMD_CONFIG, {
   output: [
-    assign({}, UMD_CONFIG.output, {
+    Object.assign({}, UMD_CONFIG.output, {
       file: pkg.main,
       format: "cjs"
     }),
-    assign({}, UMD_CONFIG.output, {
+    Object.assign({}, UMD_CONFIG.output, {
       file: pkg.module,
       format: "es"
     })
   ]
 });
 
-const MINIFIED_CONFIG = assign({}, UMD_CONFIG, {
-  output: assign({}, UMD_CONFIG.output, {
+const MINIFIED_CONFIG = Object.assign({}, UMD_CONFIG, {
+  output: Object.assign({}, UMD_CONFIG.output, {
     file: pkg.browser.replace(".js", ".min.js"),
     sourcemap: false
   }),
