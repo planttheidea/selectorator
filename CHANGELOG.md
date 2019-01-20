@@ -1,5 +1,9 @@
 # selectorator CHANGELOG
 
+## 4.0.3
+
+- Update `unchanged` dependency for faster `get` operations cross-browser
+
 ## 4.0.2
 
 - Improved typings (thanks to PR [#13](https://github.com/planttheidea/selectorator/pull/13) by [@Dudeonyx](https://github.com/Dudeonyx))
