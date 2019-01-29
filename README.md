@@ -70,7 +70,7 @@ const getSubtotal = createSelector(
   }
 );
 
-// tax builtrued with simple method combined with other selector
+// tax built with simple method combined with other selector
 const getTax = createSelector(
   [getSubtotal, "shop.taxPercent"],
   (subtotal, taxPercent) => {
