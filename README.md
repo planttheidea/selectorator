@@ -40,15 +40,11 @@ import createSelector from "selectorator";
 // selector created with single method call
 const getBarBaz = createSelector(
   ["foo.bar", "baz"],
-  (bar, baz) => {
-    return `${bar} ${baz}`;
-  }
+  (bar, baz) => `${bar} ${baz}`
 );
 
 const state = {
-  foo: {
-    bar: "bar"
-  },
+  foo: { bar: "bar" },
   baz: "baz"
 };
 
@@ -63,29 +59,19 @@ That said, you can still use your own custom identity selectors, or compose sele
 // subtotal built using simple method
 const getSubtotal = createSelector(
   ["shop.items"],
-  items => {
-    return items.reduce((sum, { value }) => {
-      return sum + value;
-    }, 0);
-  }
+  items => items.reduce((sum, { value }) => sum + value, 0)
 );
 
 // tax built with simple method combined with other selector
 const getTax = createSelector(
   [getSubtotal, "shop.taxPercent"],
-  (subtotal, taxPercent) => {
-    return subtotal * (taxPercent / 100);
-  }
+  (subtotal, taxPercent) => subtotal * (taxPercent / 100)
 );
 
 // total build entirely with other selectors
 const getTotal = createSelector(
   [getSubtotal, getTax],
-  (subtotal, tax) => {
-    return {
-      total: subtotal + tax
-    };
-  }
+  (subtotal, tax) => ({ total: subtotal + tax })
 );
 
 const state = {
@@ -105,7 +91,7 @@ console.log("total: ", getTotal(state)); // {total: 2.322}
 The following types of shorthand are available for parameter selector creation:
 
 - Pulls from state:
-  - `string` => `'foo[0].bar'
+  - `string` => `'foo[0].bar'`
   - `number` => `0`
   - `Array` => `['foo', 0, 'bar']`
 - Pulls from specific argument:
@@ -133,47 +119,40 @@ i.e `createSelector<[State, number[], boolean], string>`
                         // State is input type, string is output type
   const getBarBaz = createSelector<State, string>(
     ["foo.bar", "baz"],
-    (bar, baz) => {
-      return `${bar} ${baz}`;
-  });
+    (bar, baz) => `${bar} ${baz}`
+  );
 
   // getBarBaz() has type signature: (state: State) => string;
 
   const getBarBaz2 = createSelector<any, string>(
     ["foo.bar", "baz"],
-    (bar, baz) => {
-      return `${bar} ${baz}`;
-  });
+    (bar, baz) => `${bar} ${baz}`
+  );
 
   // getBarBaz2() has type signature: (state: any) => string;
 
   const getBarBaz3 = createSelector(
     ["foo.bar", "baz"],
-    (bar, baz) => {
-      return `${bar} ${baz}`;
-  });
+    (bar, baz) => `${bar} ${baz}`
+  );
 
   // getBarBaz3() has type signature: (state: any) => any;
 
   const getBarBaz4 = createSelector(
     ["foo.bar", "baz", { path: 0, argIndex: 2 }],
-    (bar, baz) => {
-      return `${bar} ${baz}`;
-  });
+    (bar, baz) => `${bar} ${baz}`
+  );
 
   // getBarBaz4() has type signature: (...state: any[]) => any;
 
   const getBarBazQux5 = createSelector<[State, string[]], string>(
     ["foo.bar", "baz", { path: 0, argIndex: 2 }],
-    (bar, baz) => {
-      return `${bar} ${baz}`;
-  });
+    (bar, baz) => `${bar} ${baz}`
+  );
 
   // getBarBaz5() has type signature: (state_0: State, state_1: string[]) => string;
 
-  const getStucturedBarBaz = createSelector({
-    barBaz: getBarBaz,
-  });
+  const getStucturedBarBaz = createSelector({ barBaz: getBarBaz });
 
   // getStructuredBarBaz() has type signature: (state: any) => ({ barBaz: string });
 ```
@@ -191,15 +170,11 @@ A common usage of custom selectors is to perform a deep equality check instead o
 ```javascript
 import createSelector from "selectorator";
 
-const selectoratorOptions = {
-  deepEqual: true
-};
+const selectoratorOptions = { deepEqual: true };
 
 const getBaz = createSelector(
   ["foo.bar.baz"],
-  baz => {
-    return !!baz;
-  },
+  baz => !!baz,
   selectoratorOptions
 );
 ```
@@ -222,9 +197,7 @@ const selectoratorOptions = {
 
 const getFoo = createSelector(
   ["foo"],
-  foo => {
-    return !!foo;
-  },
+  foo => !!foo,
   selectoratorOptions
 );
 ```
@@ -241,15 +214,11 @@ If you want to use a custom memoizer, pass the method as this option. This will 
 import createSelector from "selectorator";
 import moize from "moize";
 
-const selectoratorOptions = {
-  memoizer: moize
-};
+const selectoratorOptions = { memoizer: moize };
 
 const getFoo = createSelector(
   ["foo"],
-  foo => {
-    return !!foo;
-  },
+  foo => !!foo,
   selectoratorOptions
 );
 ```
@@ -270,9 +239,7 @@ const selectoratorOptions = {
 
 const getFoo = createSelector(
   ["foo"],
-  foo => {
-    return !!foo;
-  },
+  foo => !!foo,
   selectoratorOptions
 );
 ```
