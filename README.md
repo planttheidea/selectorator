@@ -9,7 +9,6 @@ less boilerplate code.
 
 ## Table of contents
 
-- [Installation](#installation)
 - [Versions](#versions)
 - [Usage](#usage)
   - [Shorthand types](#shorthand-types)
@@ -19,13 +18,6 @@ less boilerplate code.
   - [isEqual](#isequal)
   - [memoizer](#memoizer)
   - [memoizerOptions](#memoizerOptions)
-- [Development](#development)
-
-## Installation
-
-```
-$ npm i selectorator --save
-```
 
 ## Versions
 
@@ -38,8 +30,8 @@ visit [the `reselect` CHANGELOG](https://github.com/reactjs/reselect/blob/master
 
 ## Usage
 
-```javascript
-import createSelector from 'selectorator';
+```ts
+import { createSelector } from 'selectorator';
 
 // selector created with single method call
 const getBarBaz = createSelector(['foo.bar', 'baz'], (bar, baz) => `${bar} ${baz}`);
@@ -59,7 +51,7 @@ state object.
 That said, you can still use your own custom identity selectors, or compose selectors, if you so choose. Here is the
 example from the `reselect` README modified to use `selectorator`:
 
-```javascript
+```ts
 // subtotal built using simple method
 const getSubtotal = createSelector(['shop.items'], (items) => items.reduce((sum, { value }) => sum + value, 0));
 
@@ -110,54 +102,42 @@ When creating a selector that accepts multiple params, the state should be array
 
 i.e `createSelector<[State, number[], boolean], string>`
 
-```js
-  import createSelector from "selectorator";
+```ts
+import { createSelector } from 'selectorator';
 
-  interface State {
-    foo: {
-      bar: string;
-    };
-    baz: string;
+interface State {
+  foo: {
+    bar: string;
   };
-                        // State is input type, string is output type
-  const getBarBaz = createSelector<State, string>(
-    ["foo.bar", "baz"],
-    (bar, baz) => `${bar} ${baz}`
-  );
+  baz: string;
+}
+// State is input type, string is output type
+const getBarBaz = createSelector<State, string>(['foo.bar', 'baz'], (bar, baz) => `${bar} ${baz}`);
 
-  // getBarBaz() has type signature: (state: State) => string;
+// getBarBaz() has type signature: (state: State) => string;
 
-  const getBarBaz2 = createSelector<any, string>(
-    ["foo.bar", "baz"],
-    (bar, baz) => `${bar} ${baz}`
-  );
+const getBarBaz2 = createSelector<any, string>(['foo.bar', 'baz'], (bar, baz) => `${bar} ${baz}`);
 
-  // getBarBaz2() has type signature: (state: any) => string;
+// getBarBaz2() has type signature: (state: any) => string;
 
-  const getBarBaz3 = createSelector(
-    ["foo.bar", "baz"],
-    (bar, baz) => `${bar} ${baz}`
-  );
+const getBarBaz3 = createSelector(['foo.bar', 'baz'], (bar, baz) => `${bar} ${baz}`);
 
-  // getBarBaz3() has type signature: (state: any) => any;
+// getBarBaz3() has type signature: (state: any) => any;
 
-  const getBarBaz4 = createSelector(
-    ["foo.bar", "baz", { path: 0, argIndex: 2 }],
-    (bar, baz) => `${bar} ${baz}`
-  );
+const getBarBaz4 = createSelector(['foo.bar', 'baz', { path: 0, argIndex: 2 }], (bar, baz) => `${bar} ${baz}`);
 
-  // getBarBaz4() has type signature: (...state: any[]) => any;
+// getBarBaz4() has type signature: (...state: any[]) => any;
 
-  const getBarBazQux5 = createSelector<[State, string[]], string>(
-    ["foo.bar", "baz", { path: 0, argIndex: 2 }],
-    (bar, baz) => `${bar} ${baz}`
-  );
+const getBarBazQux5 = createSelector<[State, string[]], string>(
+  ['foo.bar', 'baz', { path: 0, argIndex: 2 }],
+  (bar, baz) => `${bar} ${baz}`,
+);
 
-  // getBarBaz5() has type signature: (state_0: State, state_1: string[]) => string;
+// getBarBaz5() has type signature: (state_0: State, state_1: string[]) => string;
 
-  const getStucturedBarBaz = createSelector({ barBaz: getBarBaz });
+const getStucturedBarBaz = createSelector({ barBaz: getBarBaz });
 
-  // getStructuredBarBaz() has type signature: (state: any) => ({ barBaz: string });
+// getStructuredBarBaz() has type signature: (state: any) => ({ barBaz: string });
 ```
 
 ## Options
@@ -172,8 +152,8 @@ _defaults to false_
 A common usage of custom selectors is to perform a deep equality check instead of the standard strict equality check
 when comparing values. To apply this, simply set `deepEqual` to `true`.
 
-```javascript
-import createSelector from 'selectorator';
+```ts
+import { createSelector } from 'selectorator';
 
 const selectoratorOptions = { deepEqual: true };
 
@@ -186,8 +166,8 @@ _defaults to isSameValueZero_
 
 If you want to use a custom equality comparator, pass the method as this option.
 
-```javascript
-import createSelector from 'selectorator';
+```ts
+import { createSelector } from 'selectorator';
 
 const selectoratorOptions = {
   // silly example checking current or next values related to "foo"
@@ -204,14 +184,14 @@ the `isEqual` method will not be used.
 
 ### memoizer
 
-_defaults to `reselect` defaultMemoize_
+_defaults to `reselect` lruMemoize_
 
 If you want to use a custom memoizer, pass the method as this option. This will use `createSelectorCreator` from
 `reselect` internally, so consult their documentation on proper usage.
 
 ```javascript
-import createSelector from 'selectorator';
-import moize from 'moize';
+import { createSelector } from 'selectorator';
+import { memoize } from 'micro-memoize';
 
 const selectoratorOptions = { memoizer: moize };
 
@@ -225,8 +205,8 @@ _defaults to []_
 `reselect` allows you to pass parameters to the `memoizer` function, and this array will translate directly into
 parameters `3`-`n`. This is useful if your `memoizer` uses something other than direct comparison for its equality test.
 
-```javascript
-import createSelector from 'selectorator';
+```ts
+import { createSelector } from 'selectorator';
 
 const selectoratorOptions = {
   memoizer: memoizerThatChecksEqualToEachOtherOrToSpecificValuePassed,
@@ -235,19 +215,3 @@ const selectoratorOptions = {
 
 const getFoo = createSelector(['foo'], (foo) => !!foo, selectoratorOptions);
 ```
-
-## Development
-
-Standard stuff, clone the repo and `npm install` dependencies. The npm scripts available:
-
-- `build` => run webpack to build development `dist` file with NODE_ENV=development
-- `build:minifed` => run webpack to build production `dist` file with NODE_ENV=production
-- `dev` => run webpack dev server to run example app (playground!)
-- `docs` => builds the docs via `jsdoc`
-- `lint` => run ESLint against all files in the `src` folder
-- `prepublish` => runs `prepublish:compile`
-- `prepublish:compile` => run `lint`, `test:coverage`, `transpile`, `build`, `build:minified`, and `docs`
-- `test` => run AVA test functions with `NODE_ENV=test`
-- `test:coverage` => run `test` but with `nyc` for coverage checker
-- `test:watch` => run `test`, but with persistent watcher
-- `transpile` => run babel against all files in `src` to create files in `lib`
