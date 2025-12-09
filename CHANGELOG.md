@@ -6,7 +6,8 @@
 
 ## 4.0.2
 
-- Improved typings (thanks to PR [#13](https://github.com/planttheidea/selectorator/pull/13) by [@Dudeonyx](https://github.com/Dudeonyx))
+- Improved typings (thanks to PR [#13](https://github.com/planttheidea/selectorator/pull/13) by
+  [@Dudeonyx](https://github.com/Dudeonyx))
 - Provide targeted builds for ESM / CommonJS / UMD consumption
 
 ## 4.0.1
@@ -20,7 +21,8 @@
 
 ## 3.3.0 / 1.4.0
 
-- Add support for `Object` paths to allow for shorthand usage on arguments other than first (resolves [#9](https://github.com/planttheidea/selectorator/issues/9))
+- Add support for `Object` paths to allow for shorthand usage on arguments other than first (resolves
+  [#9](https://github.com/planttheidea/selectorator/issues/9))
 
 ## 3.2.0 / 1.3.1
 
