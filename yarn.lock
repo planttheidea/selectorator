@@ -2251,13 +2251,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"curriable@npm:^1.3.0":
-  version: 1.3.0
-  resolution: "curriable@npm:1.3.0"
-  checksum: 10c0/bcc5ad7218063fb3ba46ef182b86540d9edfcc6ee40799083e69ad2f09bbd3b5bd0310777a5bdfabacba067ed30465a12f6e98d108d04643c7ae5a6f10e45d55
-  languageName: node
-  linkType: hard
-
 "data-uri-to-buffer@npm:^6.0.2":
   version: 6.0.2
   resolution: "data-uri-to-buffer@npm:6.0.2"
@@ -5065,13 +5058,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pathington@npm:^1.1.7":
-  version: 1.1.7
-  resolution: "pathington@npm:1.1.7"
-  checksum: 10c0/fc7ec7208e3dd5014364f68b2b48d7d37d1afdc3530e539464795629db9865c07c0dbb3d18351328d6b1033436bb32d9addaf11dd864901fccb3823ac6ce97e7
-  languageName: node
-  linkType: hard
-
 "pathington@npm:^2.1.0":
   version: 2.1.0
   resolution: "pathington@npm:2.1.0"
@@ -5656,7 +5642,6 @@ __metadata:
     reselect: "npm:^5.1.1"
     rollup: "npm:^4.53.3"
     typescript: "npm:^5.9.3"
-    unchanged: "npm:^2.2.1"
     vite: "npm:^7.2.7"
     vitest: "npm:^4.0.15"
   languageName: unknown
@@ -6333,16 +6318,6 @@ __metadata:
     has-symbols: "npm:^1.1.0"
     which-boxed-primitive: "npm:^1.1.1"
   checksum: 10c0/7dbd35ab02b0e05fe07136c72cb9355091242455473ec15057c11430129bab38b7b3624019b8778d02a881c13de44d63cd02d122ee782fb519e1de7775b5b982
-  languageName: node
-  linkType: hard
-
-"unchanged@npm:^2.2.1":
-  version: 2.2.1
-  resolution: "unchanged@npm:2.2.1"
-  dependencies:
-    curriable: "npm:^1.3.0"
-    pathington: "npm:^1.1.7"
-  checksum: 10c0/9f8a18430a108d10e75b25784594628a28e7b5a605df479e7dae74dcf5f15102e93dec126a0304e107c0570446cf8df028e450f2eaa623c815f265b6fca3d1fb
   languageName: node
   linkType: hard
 

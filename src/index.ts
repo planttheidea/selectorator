@@ -1,6 +1,6 @@
 import { identity } from 'identitate';
 import { INVALID_ARRAY_PATHS_MESSAGE, INVALID_PATHS_MESSAGE } from './constants.js';
-import type { AnyFn, AnyPath, Options, PathObject, Selector, SelectorMultiParam } from './internalTypes.js';
+import type { AnyFn, AnyPath, AnyPathWithoutObject, Options, Selector, SelectorMultiParam } from './internalTypes.js';
 import { getSelectorCreator, getStandardSelector, getStructuredSelector } from './utils.js';
 
 /**
@@ -27,10 +27,12 @@ import { getSelectorCreator, getStandardSelector, getStructuredSelector } from '
  */
 // when path is empty
 export function createSelector<Path extends never>(paths: Path[]): never;
-// overload for getIdentity
-export function createSelector<Path extends AnyPath, State, Output>(paths: Path[]): Selector<State, Output>;
 // overload for getIdentity - multiParam
-export function createSelector<Path extends PathObject, State extends any[], Output>(
+export function createSelector<Path extends AnyPathWithoutObject, State, Output>(
+  paths: Path[],
+): Selector<State, Output>;
+// overload for getIdentity
+export function createSelector<Path extends AnyPath, State extends any[], Output>(
   paths: Path[],
 ): SelectorMultiParam<State, Output>;
 // overload for structured
@@ -43,6 +45,12 @@ export function createSelector<Path extends object, State, Output extends Record
   }
 >;
 // overload for standard selector
+export function createSelector<
+  Path extends AnyPathWithoutObject,
+  State,
+  _Output,
+  GetComputedValue extends (state: State) => any,
+>(paths: Path[], getComputedValue: GetComputedValue, options?: Options): Selector<State, ReturnType<GetComputedValue>>;
 export function createSelector<
   Path extends AnyPath,
   State extends any[],

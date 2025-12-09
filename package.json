@@ -8,8 +8,7 @@
     "fast-equals": "^5.3.3",
     "identitate": "^2.0.0",
     "pathington": "^2.1.0",
-    "reselect": "^5.1.1",
-    "unchanged": "^2.2.1"
+    "reselect": "^5.1.1"
   },
   "description": "Simplified generator of reselect selectors",
   "devDependencies": {

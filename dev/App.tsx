@@ -94,6 +94,15 @@ const third = ['blah'];
 
 console.log('mutiple params', getMultipleParams(first, second, third));
 
+const getStructuredParams = createSelector(
+  ['first.foo.bar', 'second.baz', 'third[0]'],
+  (bar: string, baz: string, quz: string) => {
+    return [bar, baz, quz];
+  },
+);
+
+console.log('structured params', getStructuredParams({ first, second, third }));
+
 // try {
 //   createSelector(null as any); // fix for strict mode
 // } catch (error) {

@@ -7,6 +7,7 @@ interface PathObject {
 }
 type UnchangedPath = number | string;
 type AnyPath = Selector<any, any> | Path | PathItem | PathObject;
+type AnyPathWithoutObject = Exclude<AnyPath, PathObject>;
 interface Options {
   deepEqual?: boolean;
   isEqual?: <Value>(a: Value, b: Value) => boolean;
@@ -39,8 +40,10 @@ type SelectorMultiParam<State extends unknown[], Output> = (...state: State) => 
  * console.log(getFilteredItems(state)); // ['foo', 'foo-bar'], pulled from cache;
  */
 declare function createSelector<Path extends never>(paths: Path[]): never;
-declare function createSelector<Path extends AnyPath, State, Output>(paths: Path[]): Selector<State, Output>;
-declare function createSelector<Path extends PathObject, State extends any[], Output>(
+declare function createSelector<Path extends AnyPathWithoutObject, State, Output>(
+  paths: Path[],
+): Selector<State, Output>;
+declare function createSelector<Path extends AnyPath, State extends any[], Output>(
   paths: Path[],
 ): SelectorMultiParam<State, Output>;
 declare function createSelector<Path extends object, State, Output extends Record<string, AnyFn>>(
@@ -51,6 +54,12 @@ declare function createSelector<Path extends object, State, Output extends Recor
     [Key in keyof Output]: Output[Key] extends (...args: any[]) => infer Return ? Return : any;
   }
 >;
+declare function createSelector<
+  Path extends AnyPathWithoutObject,
+  State,
+  _Output,
+  GetComputedValue extends (state: State) => any,
+>(paths: Path[], getComputedValue: GetComputedValue, options?: Options): Selector<State, ReturnType<GetComputedValue>>;
 declare function createSelector<
   Path extends AnyPath,
   State extends any[],
