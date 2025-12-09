@@ -3083,13 +3083,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-equals@npm:^3.0.1":
-  version: 3.0.3
-  resolution: "fast-equals@npm:3.0.3"
-  checksum: 10c0/ec59372c3f0604fe1569814dd5f86bbe46a5e8ec049f8eda49ce9ab0218e1700c9b7fdef5fe8253453788829a6b2aae6af5f9003f376aed1117f9194b2a7578c
-  languageName: node
-  linkType: hard
-
 "fast-equals@npm:^5.3.3":
   version: 5.3.3
   resolution: "fast-equals@npm:5.3.3"
@@ -3121,6 +3114,13 @@ __metadata:
   version: 2.0.6
   resolution: "fast-levenshtein@npm:2.0.6"
   checksum: 10c0/111972b37338bcb88f7d9e2c5907862c280ebf4234433b95bc611e518d192ccb2d38119c4ac86e26b668d75f7f3894f4ff5c4982899afced7ca78633b08287c4
+  languageName: node
+  linkType: hard
+
+"fast-stringify@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "fast-stringify@npm:4.0.0"
+  checksum: 10c0/2470fd297a78cf28df3d45310a8b5546ef7400f78966f18ff43c52e233df646b8d19a6834eeefd3661971bf608c23f5b866f29b387cd29d571d55254b56c4007
   languageName: node
   linkType: hard
 
@@ -4427,10 +4427,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"micro-memoize@npm:^4.1.2":
-  version: 4.2.0
-  resolution: "micro-memoize@npm:4.2.0"
-  checksum: 10c0/e8bc7252d7424b68276ec346b5f21802633f753c3927e73b60e311d734e8645917ff619728f91b8f49d5f1f1d9285e6f0abf2c378b02bf33e2decb1de8e5cc14
+"micro-memoize@npm:^5.1.1":
+  version: 5.1.1
+  resolution: "micro-memoize@npm:5.1.1"
+  dependencies:
+    fast-equals: "npm:^5.3.3"
+    fast-stringify: "npm:^4.0.0"
+  checksum: 10c0/5d02cd3eb92e77c4b6ee9c555055c306de6beed300d77d4ee37d5e1539a2973051e374071369bc5423a132275c729f082d3e119233597d0891f64a3ac45340a1
   languageName: node
   linkType: hard
 
@@ -4581,16 +4584,6 @@ __metadata:
   dependencies:
     minipass: "npm:^7.1.2"
   checksum: 10c0/5aad75ab0090b8266069c9aabe582c021ae53eb33c6c691054a13a45db3b4f91a7fb1bd79151e6b4e9e9a86727b522527c0a06ec7d45206b745d54cd3097bcec
-  languageName: node
-  linkType: hard
-
-"moize@npm:^6.1.7":
-  version: 6.1.7
-  resolution: "moize@npm:6.1.7"
-  dependencies:
-    fast-equals: "npm:^3.0.1"
-    micro-memoize: "npm:^4.1.2"
-  checksum: 10c0/769dd315b5e8f3a603341a3ed06787ee13ed301372d4f9a1fe56e290d79614bcb8002438648b4a1cc93473ec03954d30457bfb30b66adece94c8fa76c13b42b6
   languageName: node
   linkType: hard
 
@@ -5654,7 +5647,8 @@ __metadata:
     eslint: "npm:^9.39.1"
     fast-equals: "npm:^5.3.3"
     identitate: "npm:^2.0.0"
-    moize: "npm:^6.1.7"
+    micro-memoize: "npm:^5.1.1"
+    pathington: "npm:^2.1.0"
     prettier: "npm:^3.7.4"
     react: "npm:^19.2.1"
     react-dom: "npm:^19.2.1"

@@ -1,14 +1,12 @@
-// external dependencies
-import * as fe from 'fast-equals';
-import * as reselect from 'reselect';
+/* eslint-disable @typescript-eslint/no-empty-function */
 
-// src
-import createSelector from '../src';
-import * as utils from '../src/utils';
+import { describe, expect, test, vi } from 'vitest';
+import { createSelector } from '../src/index.js';
+import * as utils from '../src/utils.js';
 
 describe('createSelector', () => {
-  it('should call getStructuredSelector when paths is an object', () => {
-    const spy = jest.spyOn(utils, 'getStructuredSelector');
+  test('calls getStructuredSelector when paths is an object', () => {
+    const spy = vi.spyOn(utils, 'getStructuredSelector');
 
     createSelector({
       foo: 'bar',
@@ -19,18 +17,21 @@ describe('createSelector', () => {
     spy.mockRestore();
   });
 
-  it('should throw when paths is not an array nor an object', () => {
-    // @ts-ignore
-    expect(() => createSelector(false)).toThrow();
+  test('throws when paths is not an array nor an object', () => {
+    expect(() =>
+      createSelector(
+        // @ts-expect-error - Testing error condition
+        false,
+      ),
+    ).toThrow();
   });
 
-  it('should throw when paths is an empty array', () => {
-    // @ts-ignore
+  test('throws when paths is an empty array', () => {
     expect(() => createSelector([])).toThrow();
   });
 
-  it('should call getSelectorCreator with the options passed', () => {
-    const spy = jest.spyOn(utils, 'getSelectorCreator');
+  test('calls getSelectorCreator with the options passed', () => {
+    const spy = vi.spyOn(utils, 'getSelectorCreator');
 
     const paths = ['foo'];
     const handler = () => {};
@@ -46,8 +47,8 @@ describe('createSelector', () => {
     spy.mockRestore();
   });
 
-  it('should return an identity function when getComputedValue is not provided', () => {
-    const spy = jest.spyOn(utils, 'getStandardSelector');
+  test('returns an identity function when getComputedValue is not provided', () => {
+    const spy = vi.spyOn(utils, 'getStandardSelector');
 
     const selector = createSelector(['foo.bar.baz']);
 
@@ -68,8 +69,8 @@ describe('createSelector', () => {
     expect(result).toBe(baz);
   });
 
-  it('should returns the handler function when getComputedValue is provided', () => {
-    const spy = jest.spyOn(utils, 'getStandardSelector');
+  test('returns the handler function when getComputedValue is provided', () => {
+    const spy = vi.spyOn(utils, 'getStandardSelector');
 
     const selector = createSelector(['foo.bar.baz'], (baz: string) => baz === 'baz');
 

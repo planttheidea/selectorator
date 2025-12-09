@@ -1,10 +1,10 @@
-// external dependencies
 import { deepEqual as isDeeplyEqual } from 'fast-equals';
 import { createIdentity } from 'identitate';
+import type { Path, PathItem } from 'pathington';
+import { parse } from 'pathington';
 import { createSelectorCreator, lruMemoize } from 'reselect';
-import { get } from 'unchanged';
 import { INVALID_OBJECT_PATH_MESSAGE, INVALID_PATH_MESSAGE } from './constants.js';
-import type { AnyFn, AnyPath, Options, PathObject, UnchangedPath } from './internalTypes.js';
+import type { AnyFn, AnyPath, Options, PathObject } from './internalTypes.js';
 
 // eslint-disable-next-line @typescript-eslint/unbound-method
 const hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -19,53 +19,74 @@ export function isFunctionPath(path: AnyPath): path is AnyFn {
 /**
  * is the path an object
  */
-export function isObjectPath(path: AnyPath): path is PathObject {
-  return !!path && typeof path === 'object';
+export function isObjectPath(path: any): path is PathObject {
+  return !!path && typeof path === 'object' && !Array.isArray(path);
 }
 
-/**
- * is the path an unchanged path value
- */
-export function isUnchangedPath(path: AnyPath, nested?: boolean): path is UnchangedPath {
-  const type = typeof path;
-
-  return (
-    type === 'string'
-    || type === 'number'
-    || (!nested && Array.isArray(path) && path.every((item) => isUnchangedPath(item, true)))
-  );
+export function isPathItem(path: any): path is PathItem {
+  return path != null && (typeof path === 'string' || typeof path === 'number' || typeof path === 'symbol');
 }
 
 /**
  * based on the path passed, create the identity function for it or return the function itself
  */
-export function createIdentitySelector(path: AnyPath): AnyFn {
+export function createIdentitySelector(path: AnyPath) {
   if (isFunctionPath(path)) {
     return path;
   }
 
-  if (isUnchangedPath(path)) {
-    return <State>(state: State) =>
-      get(
-        // @ts-expect-error - Types from `unchanged` are still kind of weak
-        path,
-        state,
-      );
-  }
-
   if (isObjectPath(path)) {
     if (hasOwnProperty.call(path, 'path') && hasOwnProperty.call(path, 'argIndex')) {
-      const selectorIdentity = createIdentity(path.argIndex);
+      const { argIndex, path: objectPath } = path;
 
-      return function (...args: any[]) {
-        return get(path.path, selectorIdentity(...args));
-      };
+      const selectorIdentity = createIdentity(argIndex);
+      const parsedPath: Path | null = isPathItem(objectPath)
+        ? parse(objectPath)
+        : Array.isArray(objectPath) && objectPath.every(isPathItem)
+          ? parse(objectPath)
+          : null;
+
+      if (parsedPath != null) {
+        return function (...args: any[]) {
+          return getDeep(parsedPath, selectorIdentity(...args));
+        };
+      }
     }
 
     throw new ReferenceError(INVALID_OBJECT_PATH_MESSAGE);
   }
 
+  const parsedPath = isPathItem(path)
+    ? parse(path)
+    : Array.isArray(path) && path.every(isPathItem)
+      ? parse(path)
+      : null;
+
+  if (parsedPath != null) {
+    return <State>(state: State) => getDeep(parsedPath, state);
+  }
+
   throw new TypeError(INVALID_PATH_MESSAGE);
+}
+
+function getDeep<State>(path: Path, state: State) {
+  if (state == null) {
+    return;
+  }
+
+  let value: any = state;
+
+  for (let index = 0, length = path.length; index < length; ++index) {
+    const pathItem = path[index] as keyof typeof state;
+
+    value = value[pathItem];
+
+    if (value == null && index < length - 1) {
+      return;
+    }
+  }
+
+  return value;
 }
 
 /**

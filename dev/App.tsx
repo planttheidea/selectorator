@@ -1,26 +1,27 @@
-import moize from 'moize';
-import createSelector from '../src/index.js';
+import { memoize } from 'micro-memoize';
+import { createSelector } from '../src/index.js';
 
 document.body.style.backgroundColor = '#1d1d1d';
 document.body.style.color = '#d5d5d5';
 document.body.style.margin = '0';
 document.body.style.padding = '0';
 
-const getSubtotal = createSelector<{ shop: any }, number>(
+interface Item {
+  value: number;
+}
+
+const getSubtotal = createSelector(
   ['shop.items'],
-  (items: Array<{ value: number }>) => {
-    return items.reduce((sum: number, { value }) => {
+  (items: Item[]) => {
+    return items.reduce<number>((sum, { value }) => {
       return sum + value;
     }, 0);
   },
-  {
-    memoizer: moize.simple,
-  },
+  { memoizer: memoize },
 );
 const getTax = createSelector([getSubtotal, 'shop.taxPercent'], (subtotal: number, taxPercent: number) => {
   return subtotal * (taxPercent / 100);
 });
-
 const getTotal = createSelector([getSubtotal, getTax], (subtotal: number, tax: number) => {
   return subtotal + tax;
 });
@@ -49,7 +50,7 @@ console.log('structured state', getFlattedState(state));
 
 const getFoo = createSelector(
   ['foo'],
-  (foo: string): PlainObject => {
+  (foo: string) => {
     return {
       bar: foo,
     };
@@ -74,36 +75,36 @@ console.log(
   }),
 );
 
-const getMultipleParams = createSelector<[PlainObject, PlainObject, string[]], string[]>(
+const getMultipleParams = createSelector(
   ['foo.bar', { path: 'baz', argIndex: 1 }, { path: 0, argIndex: 2 }],
   (bar: string, baz: string, quz: string) => {
     return [bar, baz, quz];
   },
 );
 
-const first: PlainObject = {
+const first = {
   foo: {
     bar: 'baz',
   },
 };
-const second: PlainObject = {
+const second = {
   baz: 'quz',
 };
 const third = ['blah'];
 
-console.log(getMultipleParams(first, second, third));
+console.log('mutiple params', getMultipleParams(first, second, third));
 
-try {
-  createSelector(null as any); // fix for strict mode
-} catch (error) {
-  console.error(error);
-}
+// try {
+//   createSelector(null as any); // fix for strict mode
+// } catch (error) {
+//   console.error(error);
+// }
 
-try {
-  createSelector([]);
-} catch (error) {
-  console.error(error);
-}
+// try {
+//   createSelector([]);
+// } catch (error) {
+//   console.error(error);
+// }
 
 export function App() {
   return (
