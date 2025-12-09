@@ -71,10 +71,7 @@ describe('createSelector', () => {
   it('should returns the handler function when getComputedValue is provided', () => {
     const spy = jest.spyOn(utils, 'getStandardSelector');
 
-    const selector = createSelector(
-      ['foo.bar.baz'],
-      (baz: string) => baz === 'baz',
-    );
+    const selector = createSelector(['foo.bar.baz'], (baz: string) => baz === 'baz');
 
     expect(spy).toHaveBeenCalledTimes(1);
 

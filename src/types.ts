@@ -13,18 +13,9 @@ declare namespace selectorator {
     path: string | number | (string | number)[];
   }
 
-  export type Path =
-    | Function
-    | string
-    | number
-    | (string | number)[]
-    | PathObject;
+  export type Path = Function | string | number | (string | number)[] | PathObject;
 
-  export type PathWithoutObject =
-    | Function
-    | string
-    | number
-    | (string | number)[];
+  export type PathWithoutObject = Function | string | number | (string | number)[];
 
   export interface Options {
     deepEqual?: boolean;
@@ -37,7 +28,5 @@ declare namespace selectorator {
     ? (state: any) => Output
     : (state: State) => Output;
 
-  export type SelectorMultiParam<State extends any[] = any, Output = any> = (
-    ...state: State
-  ) => Output;
+  export type SelectorMultiParam<State extends any[] = any, Output = any> = (...state: State) => Output;
 }

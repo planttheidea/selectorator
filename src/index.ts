@@ -2,17 +2,10 @@
 import { identity } from 'identitate';
 
 // constants
-import {
-  INVALID_ARRAY_PATHS_MESSAGE,
-  INVALID_PATHS_MESSAGE,
-} from './constants';
+import { INVALID_ARRAY_PATHS_MESSAGE, INVALID_PATHS_MESSAGE } from './constants';
 
 // utils
-import {
-  getSelectorCreator,
-  getStandardSelector,
-  getStructuredSelector,
-} from './utils';
+import { getSelectorCreator, getStandardSelector, getStructuredSelector } from './utils';
 
 /**
  * @module selectorator
@@ -64,15 +57,11 @@ function createSelector<State extends any[], Output = any>( // overload for getI
 ): selectorator.SelectorMultiParam<State, Output>;
 
 function createSelector<State, Output extends PlainObject = PlainObject>( // overload for structured
-  paths: Output,                                                        // selectors
+  paths: Output, // selectors
 ): selectorator.Selector<
   State,
   {
-    [key in keyof Output]: Output[key] extends ((
-      ...args: any[]
-    ) => infer Return)
-      ? Return
-      : any
+    [key in keyof Output]: Output[key] extends (...args: any[]) => infer Return ? Return : any;
   }
 >;
 
@@ -83,7 +72,7 @@ function createSelector<State, Output>( // overload for standard selector
 ): selectorator.Selector<State, Output>;
 
 function createSelector<State extends any[], Output>( // overload for selectors with path objects
-  paths: selectorator.Path[],                        // for multiple parameters.
+  paths: selectorator.Path[], // for multiple parameters.
   getComputedValue: (...args: any) => Output,
   options?: selectorator.Options,
 ): selectorator.SelectorMultiParam<State, Output>;

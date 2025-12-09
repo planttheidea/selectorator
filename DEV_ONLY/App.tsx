@@ -14,30 +14,27 @@ const getSubtotal = createSelector<{ shop: any }, number>(
   (items: { value: number }[]) => {
     return items.reduce((sum: number, { value }) => {
       return sum + value;
-    },                  0);
+    }, 0);
   },
   {
     memoizer: moize.simple,
   },
 );
-const getTax = createSelector(
-  [getSubtotal, 'shop.taxPercent'],
-  (subtotal: number, taxPercent: number) => {
-    return subtotal * (taxPercent / 100);
-  },
-);
+const getTax = createSelector([getSubtotal, 'shop.taxPercent'], (subtotal: number, taxPercent: number) => {
+  return subtotal * (taxPercent / 100);
+});
 
-const getTotal = createSelector(
-  [getSubtotal, getTax],
-  (subtotal: number, tax: number) => {
-    return subtotal + tax;
-  },
-);
+const getTotal = createSelector([getSubtotal, getTax], (subtotal: number, tax: number) => {
+  return subtotal + tax;
+});
 
 const state = {
   shop: {
     taxPercent: 8,
-    items: [{ name: 'apple', value: 1.2 }, { name: 'orange', value: 0.95 }],
+    items: [
+      { name: 'apple', value: 1.2 },
+      { name: 'orange', value: 0.95 },
+    ],
   },
 };
 
@@ -80,10 +77,7 @@ console.log(
   }),
 );
 
-const getMultipleParams = createSelector<
-  [PlainObject, PlainObject, string[]],
-  string[]
->(
+const getMultipleParams = createSelector<[PlainObject, PlainObject, string[]], string[]>(
   ['foo.bar', { path: 'baz', argIndex: 1 }, { path: 0, argIndex: 2 }],
   (bar: string, baz: string, quz: string) => {
     return [bar, baz, quz];

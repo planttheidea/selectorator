@@ -1,7 +1,4 @@
-.idea
-.nyc_output
+.yarn
 coverage
-node_modules
 dist
-*.log
-.vscode/settings.json
+node_modules

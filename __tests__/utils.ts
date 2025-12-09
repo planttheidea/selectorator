@@ -128,9 +128,7 @@ describe('getSelectorCreator', () => {
     original = reselect.createSelectorCreator;
 
     // @ts-ignore
-    reselect.createSelectorCreator = jest
-      .fn()
-      .mockImplementation((arg: any) => arg);
+    reselect.createSelectorCreator = jest.fn().mockImplementation((arg: any) => arg);
   });
 
   afterEach(() => {
@@ -142,10 +140,7 @@ describe('getSelectorCreator', () => {
     const result = getSelectorCreator({});
 
     expect(reselect.createSelectorCreator).toHaveBeenCalledTimes(1);
-    expect(reselect.createSelectorCreator).toHaveBeenLastCalledWith(
-      reselect.defaultMemoize,
-      fe.sameValueZeroEqual,
-    );
+    expect(reselect.createSelectorCreator).toHaveBeenLastCalledWith(reselect.defaultMemoize, fe.sameValueZeroEqual);
 
     // @ts-ignore
     reselect.createSelectorCreator.mockReset();
@@ -157,10 +152,7 @@ describe('getSelectorCreator', () => {
     const result = getSelectorCreator({ deepEqual: true });
 
     expect(reselect.createSelectorCreator).toHaveBeenCalledTimes(1);
-    expect(reselect.createSelectorCreator).toHaveBeenLastCalledWith(
-      reselect.defaultMemoize,
-      fe.deepEqual,
-    );
+    expect(reselect.createSelectorCreator).toHaveBeenLastCalledWith(reselect.defaultMemoize, fe.deepEqual);
 
     // @ts-ignore
     reselect.createSelectorCreator.mockReset();
@@ -174,10 +166,7 @@ describe('getSelectorCreator', () => {
     const result = getSelectorCreator({ isEqual });
 
     expect(reselect.createSelectorCreator).toHaveBeenCalledTimes(1);
-    expect(reselect.createSelectorCreator).toHaveBeenLastCalledWith(
-      reselect.defaultMemoize,
-      isEqual,
-    );
+    expect(reselect.createSelectorCreator).toHaveBeenLastCalledWith(reselect.defaultMemoize, isEqual);
 
     // @ts-ignore
     reselect.createSelectorCreator.mockReset();
@@ -237,7 +226,7 @@ describe('getStructureObject', () => {
       object[key] = key;
 
       return object;
-    },                               {});
+    }, {});
 
     const result = generator(state.foo, state.bar, state.baz);
 

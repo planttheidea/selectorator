@@ -21,10 +21,7 @@ const hasOwnProperty = Object.prototype.hasOwnProperty;
  * @param type the typeof value for the path
  * @returns is the path a function
  */
-export const isFunctionPath = (
-  path: selectorator.Path,
-  type: string,
-): path is Function => type === 'function';
+export const isFunctionPath = (path: selectorator.Path, type: string): path is Function => type === 'function';
 
 /**
  * @private
@@ -38,10 +35,8 @@ export const isFunctionPath = (
  * @param type the typeof value for the path
  * @returns is the path an object
  */
-export const isObjectPath = (
-  path: selectorator.Path,
-  type: string,
-): path is selectorator.PathObject => !!path && type === 'object';
+export const isObjectPath = (path: selectorator.Path, type: string): path is selectorator.PathObject =>
+  !!path && type === 'object';
 
 /**
  * @private
@@ -55,10 +50,7 @@ export const isObjectPath = (
  * @param type the typeof value for the path
  * @returns is the path an unchanged path value
  */
-export const isUnchangedPath = (
-  path: selectorator.Path,
-  type: string,
-): path is string | number | (string | number)[] =>
+export const isUnchangedPath = (path: selectorator.Path, type: string): path is string | number | (string | number)[] =>
   type === 'string' || type === 'number' || Array.isArray(path);
 
 /**
@@ -84,10 +76,7 @@ export const createIdentitySelector = (path: selectorator.Path): Function => {
   }
 
   if (isObjectPath(path, type)) {
-    if (
-      hasOwnProperty.call(path, 'path') &&
-      hasOwnProperty.call(path, 'argIndex')
-    ) {
+    if (hasOwnProperty.call(path, 'path') && hasOwnProperty.call(path, 'argIndex')) {
       const selectorIdentity: Function = createIdentity(path.argIndex);
 
       return function () {
@@ -124,7 +113,8 @@ export const getSelectorCreator = ({
   const memoizerFn: Function = memoizer || defaultMemoize;
   const equals: Function = deepEqual ? isDeeplyEqual : isEqual;
 
-  return (createSelectorCreator as any).call(  // fix strict mode error
+  return (createSelectorCreator as any).call(
+    // fix strict mode error
     null,
     memoizerFn,
     equals,
@@ -150,8 +140,7 @@ export const getStandardSelector = (
   paths: selectorator.Path[],
   selectorCreator: Function,
   getComputedValue: Function,
-): Function =>
-  selectorCreator(paths.map(createIdentitySelector), getComputedValue);
+): Function => selectorCreator(paths.map(createIdentitySelector), getComputedValue);
 
 /**
  * @private
@@ -164,21 +153,14 @@ export const getStandardSelector = (
  * @param properties properties to assign values from state to
  * @returns object of property => selected value pairs
  */
-export const getStructuredObject = (properties: string[]): Function => (
-  ...values: any[]
-) =>
-  properties.reduce(
-    (
-      structuredObject: PlainObject,
-      property: string,
-      index: number,
-    ): PlainObject => {
+export const getStructuredObject =
+  (properties: string[]): Function =>
+  (...values: any[]) =>
+    properties.reduce((structuredObject: PlainObject, property: string, index: number): PlainObject => {
       structuredObject[property] = values[index];
 
       return structuredObject;
-    },
-    {},
-  );
+    }, {});
 
 /**
  * @private
@@ -192,14 +174,9 @@ export const getStructuredObject = (properties: string[]): Function => (
  * @param selectorCreator function to create selector with
  * @returns selector to return structured values from state
  */
-export const getStructuredSelector = (
-  paths: PlainObject,
-  selectorCreator: Function,
-): Function => {
+export const getStructuredSelector = (paths: PlainObject, selectorCreator: Function): Function => {
   const destinationKeys: string[] = Object.keys(paths);
-  const selectors: Function[] = destinationKeys.map(
-    (key) => createIdentitySelector(paths[key]),
-  );
+  const selectors: Function[] = destinationKeys.map((key) => createIdentitySelector(paths[key]));
 
   return selectorCreator(selectors, getStructuredObject(destinationKeys));
 };

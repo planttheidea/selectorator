@@ -8,18 +8,9 @@ declare namespace selectorator {
     path: string | number | (string | number)[];
   }
 
-  export type Path =
-    | Function
-    | string
-    | number
-    | (string | number)[]
-    | PathObject;
+  export type Path = Function | string | number | (string | number)[] | PathObject;
 
-  export type PathWithoutObject =
-    | Function
-    | string
-    | number
-    | (string | number)[];
+  export type PathWithoutObject = Function | string | number | (string | number)[];
 
   export interface Options {
     deepEqual?: boolean;
@@ -93,22 +84,19 @@ declare namespace selectorator {
   export type Selector<State = undefined, Output = any> = {} extends State
     ? (state: any) => Output
     : (state: State) => Output;
-    /**
-     * @type SelectorMultiParam
-     * 
-     * @description similar to `Selector` but allows multiple params
-     */
-  export type SelectorMultiParam<State extends any[] = any, Output = any> = (
-    ...state: State
-  ) => Output;
+  /**
+   * @type SelectorMultiParam
+   *
+   * @description similar to `Selector` but allows multiple params
+   */
+  export type SelectorMultiParam<State extends any[] = any, Output = any> = (...state: State) => Output;
 }
 
-export default function createSelector< // overload to signify errors when path is empty
+export default function createSelector<
+  // overload to signify errors when path is empty
   State extends never,
-  Output extends never
->( 
-  paths: never[], 
-): never;
+  Output extends never,
+>(paths: never[]): never;
 
 export default function createSelector<State, Output = any>( // overload for getIdentity
   paths: selectorator.PathWithoutObject[],
@@ -118,17 +106,18 @@ export default function createSelector<State extends any[], Output = any>( // ov
   paths: selectorator.Path[],
 ): selectorator.SelectorMultiParam<State, Output>;
 
-export default function createSelector< // overload for structured selectors
+export default function createSelector<
+  // overload for structured selectors
   State,
-  Output extends PlainObject = PlainObject
+  Output extends PlainObject = PlainObject,
 >(
   paths: Output,
 ): selectorator.Selector<
   State,
   {
-    [key in keyof Output]: Output[key] extends ((...args: any[]) => infer Return) // checks if Output[key] is a function
-      ? Return                                                              // if so infer it's return value else use any
-      : any
+    [key in keyof Output]: Output[key] extends (...args: any[]) => infer Return // checks if Output[key] is a function
+      ? Return // if so infer it's return value else use any
+      : any;
   }
 >;
 

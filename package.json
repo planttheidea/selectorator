@@ -1,70 +1,95 @@
 {
   "author": "planttheidea <tony.quetano@planttheidea.com>",
-  "browser": "dist/selectorator.js",
+  "browser": "dist/umd/index.js",
   "bugs": {
     "url": "https://github.com/planttheidea/selectorator/issues"
   },
   "dependencies": {
-    "fast-equals": "^1.2.1",
-    "identitate": "^1.0.0",
-    "reselect": "^4.0.0",
-    "unchanged": "^2.0.1"
+    "fast-equals": "^5.3.3",
+    "identitate": "^2.0.0",
+    "reselect": "^5.1.1",
+    "unchanged": "^2.2.1"
   },
   "description": "Simplified generator of reselect selectors",
   "devDependencies": {
-    "@types/jest": "^24.0.15",
-    "@types/react": "^16.8.23",
-    "@types/react-dom": "^16.8.4",
+    "@planttheidea/build-tools": "^1.2.3",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "@vitest/coverage-v8": "^4.0.15",
     "cli-table2": "^0.2.0",
-    "cross-env": "^5.2.0",
-    "html-webpack-plugin": "^3.2.0",
-    "in-publish": "^2.0.0",
-    "jest": "^24.8.0",
-    "moize": "^5.4.4",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
-    "rollup": "^1.16.7",
-    "rollup-plugin-typescript": "^1.0.1",
-    "rollup-plugin-uglify": "^6.0.2",
-    "ts-jest": "^24.0.2",
-    "ts-loader": "^6.0.4",
-    "tslib": "^1.10.0",
-    "tslint": "^5.18.0",
-    "tslint-config-airbnb": "^5.11.1",
-    "tslint-loader": "^3.5.4",
-    "typescript": "^3.5.3",
-    "webpack": "^4.35.3",
-    "webpack-cli": "^3.3.5",
-    "webpack-dev-server": "^3.7.2"
+    "eslint": "^9.39.1",
+    "moize": "^6.1.7",
+    "prettier": "^3.7.4",
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1",
+    "release-it": "^19.0.6",
+    "rollup": "^4.53.3",
+    "typescript": "^5.9.3",
+    "vite": "^7.2.7",
+    "vitest": "^4.0.15"
   },
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/es/index.d.mts",
+        "default": "./dist/es/index.mjs"
+      },
+      "require": {
+        "types": "./dist/cjs/index.d.cts",
+        "default": "./dist/cjs/index.cjs"
+      },
+      "default": {
+        "types": "./dist/umd/index.d.ts",
+        "default": "./dist/umd/index.js"
+      }
+    }
+  },
+  "files": [
+    "dist",
+    "CHANGELOG.md",
+    "LICENSE",
+    "README.md",
+    "index.d.ts",
+    "package.json"
+  ],
   "homepage": "https://github.com/planttheidea/selectorator#readme",
   "keywords": [
     "reselect",
     "selector"
   ],
   "license": "MIT",
-  "main": "dist/selectorator.cjs.js",
-  "module": "dist/selectorator.esm.js",
+  "main": "dist/cjs/index.cjs",
+  "module": "dist/es/index.mjs",
   "name": "selectorator",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/planttheidea/selectorator.git"
   },
   "scripts": {
-    "benchmark": "rimraf lib && npm run transpile:lib && node ./benchmark/index.js",
-    "build": "cross-env NODE_ENV=production rollup -c",
-    "clean": "rimraf dist",
-    "dev": "cross-env NODE_ENV=development webpack-dev-server --progress --colors --config=webpack/webpack.config.js",
-    "lint": "cross-env NODE_ENV=test tslint 'src/*.ts'",
+    "benchmark": "npm run build && node ./benchmark/index.js",
+    "build": "npm run clean && npm run build:dist && npm run build:types",
+    "build:dist": "NODE_ENV=production rollup -c config/rollup.config.js",
+    "build:types": "pti fix-types -l dist",
+    "clean": "rm -rf dist",
+    "clean:cjs": "rm -rf dist/cjs",
+    "clean:es": "rm -rf dist/es",
+    "clean:umd": "rm -rf dist/umd",
+    "dev": "vite --config=config/vite.config.ts",
+    "format": "prettier . --log-level=warn --write",
+    "format:check": "prettier . --log-level=warn --check",
+    "lint": "eslint --max-warnings=0",
     "lint:fix": "npm run lint -- --fix",
-    "prepublish": "if in-publish; then npm run prepublish:compile; fi",
-    "prepublish:compile": "npm run lint && npm run test:coverage && npm run clean && npm run build",
+    "release:alpha": "release-it --config=config/release-it/alpha.json",
+    "release:beta": "release-it --config=config/release-it/beta.json",
+    "release:rc": "release-it --config=config/release-it/rc.json",
+    "release:scripts": "npm run format:check && npm run typecheck && npm run lint && npm run test && npm run build",
+    "release:stable": "release-it --config=config/release-it/stable.json",
     "start": "npm run dev",
-    "test": "cross-env NODE_PATH=. jest",
-    "test:coverage": "npm run test -- --coverage",
-    "test:watch": "npm run test -- --watch"
+    "test": "vitest run --config=config/vitest.config.ts",
+    "typecheck": "tsc --noEmit"
   },
   "sideEffects": false,
-  "types": "index.d.ts",
+  "type": "module",
+  "types": "./index.d.ts",
   "version": "4.0.3"
 }
