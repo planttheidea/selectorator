@@ -1,54 +1,7 @@
 import { identity } from 'identitate';
 import { INVALID_ARRAY_PATHS_MESSAGE, INVALID_PATHS_MESSAGE } from './constants.js';
-import type {
-  AnyFn,
-  AnyPath,
-  AnyPathWithoutObject,
-  Options,
-  Select,
-  Selector,
-  SelectorMultiParam,
-} from './internalTypes.js';
+import type { AnyFn, AnyPath, AnyPathWithoutObject, Options, Selector, SelectorMultiParam } from './internalTypes.js';
 import { getSelectorCreator, getStandardSelector, getStructuredSelector } from './utils.js';
-
-function createSelector_NEW<State>(options: Options = {}) {
-  const selectorCreator = getSelectorCreator(options);
-
-  // when path is empty
-  function selector<const Paths extends never[]>(paths: Paths): never;
-  // When a handler is passed
-  function selector<const Paths extends AnyPath[], SelectComputedValue extends Select<State, Paths, any>>(
-    paths: Paths,
-    getComputedValue: SelectComputedValue,
-  ): (state: State) => ReturnType<SelectComputedValue>;
-  // implementation
-  function selector<const Paths extends AnyPath[], SelectComputedValue extends Select<State, Paths, any>>(
-    paths: Paths,
-    getComputedValue: SelectComputedValue = identity as SelectComputedValue,
-  ): (state: State) => ReturnType<SelectComputedValue> {
-    if (Array.isArray(paths)) {
-      if (!paths.length) {
-        throw new ReferenceError(INVALID_ARRAY_PATHS_MESSAGE);
-      }
-
-      return getStandardSelector(paths, selectorCreator, getComputedValue);
-    }
-
-    if (
-      typeof paths === 'object'
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      && paths != null
-    ) {
-      return getStructuredSelector(paths, selectorCreator);
-    }
-
-    throw new TypeError(INVALID_PATHS_MESSAGE);
-  }
-
-  return selector;
-}
-
-const test = createSelector_NEW<{ foo: { bar: string } }>()(['foo.bar'], (value) => [value])({ foo: { bar: 'baz' } });
 
 /**
  * Create a selector without any boilerplate code
@@ -108,7 +61,7 @@ export function createSelector<
   getComputedValue: GetComputedValue,
   options?: Options,
 ): SelectorMultiParam<State, ReturnType<GetComputedValue>>;
-// actual implementation - no changes
+// actual implementation - no changesE
 export function createSelector<Path extends AnyPath, _State, _Output, GetComputedValue extends (...args: any[]) => any>(
   paths: Path[],
   getComputedValue: GetComputedValue = identity as GetComputedValue,
