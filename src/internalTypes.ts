@@ -81,7 +81,7 @@ type SelectInputs<Params extends unknown[], Paths extends unknown[], Values exte
 
 export type IdentitySelect<Params extends unknown[], Paths extends unknown[]> = (
   ...params: Params
-) => SelectInputs<WidenUnknown<Params>, Paths>;
+) => SelectInputs<WidenUnknown<Params>, Paths>[0];
 
 export type CustomSelect<Params extends unknown[]> = (...params: WidenUnknown<Params>) => any;
 

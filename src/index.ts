@@ -10,7 +10,7 @@ import type {
   Selector,
   SelectorMultiParam,
 } from './internalTypes.js';
-import { getSelectorCreator, getStandardSelector, getStructuredSelector, identitySelector } from './utils.js';
+import { getSelectorCreator, getStandardSelector, getStructuredSelector } from './utils.js';
 
 function createSelector_NEW<Args>(options: Options = {}) {
   type Params = Args extends unknown[] ? Args : [Args];
@@ -18,7 +18,7 @@ function createSelector_NEW<Args>(options: Options = {}) {
   const selectorCreator = getSelectorCreator(options);
 
   // When no handler is passed
-  function selector<const Paths extends Array<AnyPath<Params>>>(
+  function selector<const Paths extends [AnyPath<Params>]>(
     paths: Paths,
     getComputedValue?: undefined,
   ): IdentitySelect<Params, Paths>;
@@ -30,7 +30,7 @@ function createSelector_NEW<Args>(options: Options = {}) {
   // implementation
   function selector<const Paths extends Array<AnyPath<Params>>, SelectComputedValue extends Select<Params, Paths, any>>(
     paths: Paths,
-    getComputedValue = identitySelector as SelectComputedValue,
+    getComputedValue = identity as SelectComputedValue,
   ) {
     if (Array.isArray(paths)) {
       if (!paths.length) {

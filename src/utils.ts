@@ -9,10 +9,6 @@ import type { AnyFn, AnyPath, Options, PathObject } from './internalTypes.js';
 // eslint-disable-next-line @typescript-eslint/unbound-method
 const hasOwnProperty = Object.prototype.hasOwnProperty;
 
-export function identitySelector<Params extends unknown[]>(...params: Params): Params {
-  return params;
-}
-
 /**
  * is the path a functions
  */
