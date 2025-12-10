@@ -3,6 +3,45 @@ import { INVALID_ARRAY_PATHS_MESSAGE, INVALID_PATHS_MESSAGE } from './constants.
 import type { AnyFn, AnyPath, AnyPathWithoutObject, Options, Selector, SelectorMultiParam } from './internalTypes.js';
 import { getSelectorCreator, getStandardSelector, getStructuredSelector } from './utils.js';
 
+function createTest<State>() {
+  return <const Path, Fn extends (value: Path extends keyof State ? State[Path] : undefined) => any>(
+    path: Path,
+    handler: Fn,
+  ) => {
+    return (state: State): ReturnType<Fn> => {
+      return handler(state[path]);
+    };
+  };
+}
+
+const test = createTest<{ foo: string }>()('foo', (value) => [value])({ foo: 'baz' });
+
+/**
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ * MAKE THIS PARTIAL APPLICATION FOR BEST TYPING
+ *
+ * const selector = createSelector<State>()(['path.to.thing', 'other.path']);
+ * const selector = createSelector<State>()(['path.to.thing', 'other.path'], (thing, path) => [thing, path]);
+ * const selector = createSelector<State>(options)(['path.to.thing', 'other.path']);
+ * const selector = createSelector<State>(options)(['path.to.thing', 'other.path'], (thing, path) => [thing, path]);
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ */
+
 /**
  * Create a selector without any boilerplate code
  *
