@@ -1,20 +1,21 @@
 import type { ParsePath, Path, PathItem } from 'pathington';
 
-export type IsAny<T> = 0 extends 1 & NoInfer<T> ? true : false;
-export type IsNull<T> = [T] extends [null] ? true : false;
-export type IsKnown<T> = IsAny<T> extends false ? (IsUnknown<T> extends false ? true : false) : false;
-export type IsUnknown<T> = unknown extends T ? (IsNull<T> extends false ? true : false) : false;
-
 export type AnyFn = (...args: any[]) => any;
+
+export type UnchangedPath = number | string;
+export type AnyPathWithoutObject = Exclude<AnyPath<any>, PathObject>;
+
+export type Selector<State, Output> = (state: State) => Output;
+export type SelectorMultiParam<State extends unknown[], Output> = (...state: State) => Output;
+
+/* ----------------------------------------- */
 
 export interface PathObject {
   argIndex: number;
   path: UnchangedPath | UnchangedPath[];
 }
 
-export type UnchangedPath = number | string;
-export type AnyPath = Selector<any, any> | Path | PathItem | PathObject;
-export type AnyPathWithoutObject = Exclude<AnyPath, PathObject>;
+export type AnyPath<Params extends unknown[]> = CustomSelect<Params> | Path | PathItem | PathObject;
 
 export interface Options {
   deepEqual?: boolean;
@@ -23,51 +24,67 @@ export interface Options {
   memoizerParams?: any[];
 }
 
-export type Selector<State, Output> = (state: State) => Output;
-export type SelectorMultiParam<State extends unknown[], Output> = (...state: State) => Output;
+export type IsAny<T> = 0 extends 1 & NoInfer<T> ? true : false;
+export type IsNull<T> = [T] extends [null] ? true : false;
+export type IsKnown<T> = IsAny<T> extends false ? (IsUnknown<T> extends false ? true : false) : false;
+export type IsUnknown<T> = unknown extends T ? (IsNull<T> extends false ? true : false) : false;
 
-/* ----------------------------------------- */
+type PickArray<Value extends unknown[], Index extends number> = Value[Index];
+type PickObject<Value extends object, Key extends keyof Value> = Value[Key];
 
-type PickArray<U extends unknown[], I extends number> = U[I];
-type PickObject<U extends object, K extends keyof U> = U[K];
+type WidenUnknown<T extends unknown[], Result extends any[] = []> = T extends [infer Head, ...infer Tail]
+  ? IsUnknown<Head> extends true
+    ? WidenUnknown<Tail, [...Result, any]>
+    : WidenUnknown<Tail, [...Result, Head]>
+  : Result;
 
-type PickDeepInternal<U, P extends unknown[]> = unknown extends U
-  ? unknown
-  : P extends [infer Next, ...infer Rest]
-    ? U extends object
-      ? Next extends keyof U
-        ? PickDeepInternal<PickObject<U, Next>, Rest>
-        : undefined
-      : U extends unknown[]
-        ? Next extends number
-          ? PickDeepInternal<PickArray<U, Next>, Rest>
+type PickDeepInternal<Value, Property extends unknown[]> =
+  IsUnknown<Value> extends true
+    ? unknown
+    : Property extends [infer Next, ...infer Rest]
+      ? Value extends object
+        ? Next extends keyof Value
+          ? PickDeepInternal<PickObject<Value, Next>, Rest>
           : undefined
-        : undefined
-    : U;
+        : Value extends unknown[]
+          ? Next extends number
+            ? PickDeepInternal<PickArray<Value, Next>, Rest>
+            : undefined
+          : undefined
+      : Value;
 
-export type PickDeepInternalNormalized<U, P> = P extends unknown[]
-  ? PickDeepInternal<U, P>
-  : P extends readonly unknown[]
-    ? PickDeepInternal<U, [...P]>
+export type PickDeepInternalNormalized<Value, Property> = Property extends unknown[]
+  ? PickDeepInternal<Value, Property>
+  : Property extends readonly unknown[]
+    ? PickDeepInternal<Value, [...Property]>
     : // When it cannot be narrowly determined, widen to ensure false positives / negatives are avoided.
       any;
 
-export type PickDeep<State, P extends Path | PathItem> = PickDeepInternalNormalized<State, ParsePath<P>>;
+export type PickDeep<Params, Property extends Path | PathItem> = PickDeepInternalNormalized<
+  Params,
+  ParsePath<Property>
+>;
 
-type SelectValues<State, Paths extends AnyPath[], Values extends unknown[] = []> = Paths extends [
-  infer P,
-  ...infer R extends AnyPath[],
+type SelectInputs<Params extends unknown[], Paths extends unknown[], Values extends unknown[] = []> = Paths extends [
+  infer Property,
+  ...infer Remaining,
 ]
-  ? P extends Path | PathItem
-    ? SelectValues<State, R, [...Values, PickDeep<State, P>]>
-    : P extends AnyFn // manual selector
-      ? ReturnType<P>
-      : never // path object
+  ? Property extends Path | PathItem
+    ? SelectInputs<Params, Remaining, [...Values, PickDeep<Params[0], Property>]>
+    : Property extends PathObject
+      ? SelectInputs<Params, Remaining, [...Values, PickDeep<Params[Property['argIndex']], Property['path']>]>
+      : Property extends CustomSelect<Params>
+        ? SelectInputs<Params, Remaining, [...Values, ReturnType<Property>]>
+        : // This should never happen, but if it does then make it obvious
+          SelectInputs<Params, Remaining, [...Values, never]>
   : Values;
 
-export type Select<State, Paths extends AnyPath[], Result> =
-  IsKnown<State> extends false
-    ? (...states: any[]) => Result
-    : State extends unknown[]
-      ? (...states: State) => Result
-      : (...values: SelectValues<State, Paths>) => Result;
+export type IdentitySelect<Params extends unknown[], Paths extends unknown[]> = (
+  ...params: Params
+) => SelectInputs<WidenUnknown<Params>, Paths>;
+
+export type CustomSelect<Params extends unknown[]> = (...params: WidenUnknown<Params>) => any;
+
+export type Select<Params extends unknown[], Paths extends unknown[], Result> = (
+  ...values: SelectInputs<WidenUnknown<Params>, Paths>
+) => Result;

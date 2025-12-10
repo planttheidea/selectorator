@@ -4,28 +4,34 @@ import type {
   AnyFn,
   AnyPath,
   AnyPathWithoutObject,
+  IdentitySelect,
   Options,
   Select,
   Selector,
   SelectorMultiParam,
 } from './internalTypes.js';
-import { getSelectorCreator, getStandardSelector, getStructuredSelector } from './utils.js';
+import { getSelectorCreator, getStandardSelector, getStructuredSelector, identitySelector } from './utils.js';
 
-function createSelector_NEW<State>(options: Options = {}) {
+function createSelector_NEW<Args>(options: Options = {}) {
+  type Params = Args extends unknown[] ? Args : [Args];
+
   const selectorCreator = getSelectorCreator(options);
 
-  // when path is empty
-  function selector<const Paths extends never[]>(paths: Paths): never;
+  // When no handler is passed
+  function selector<const Paths extends Array<AnyPath<Params>>>(
+    paths: Paths,
+    getComputedValue?: undefined,
+  ): IdentitySelect<Params, Paths>;
   // When a handler is passed
-  function selector<const Paths extends AnyPath[], SelectComputedValue extends Select<State, Paths, any>>(
+  function selector<const Paths extends Array<AnyPath<Params>>, SelectComputedValue extends Select<Params, Paths, any>>(
     paths: Paths,
     getComputedValue: SelectComputedValue,
-  ): (state: State) => ReturnType<SelectComputedValue>;
+  ): (...params: Params) => ReturnType<SelectComputedValue>;
   // implementation
-  function selector<const Paths extends AnyPath[], SelectComputedValue extends Select<State, Paths, any>>(
+  function selector<const Paths extends Array<AnyPath<Params>>, SelectComputedValue extends Select<Params, Paths, any>>(
     paths: Paths,
-    getComputedValue: SelectComputedValue = identity as SelectComputedValue,
-  ): (state: State) => ReturnType<SelectComputedValue> {
+    getComputedValue = identitySelector as SelectComputedValue,
+  ) {
     if (Array.isArray(paths)) {
       if (!paths.length) {
         throw new ReferenceError(INVALID_ARRAY_PATHS_MESSAGE);
@@ -48,7 +54,40 @@ function createSelector_NEW<State>(options: Options = {}) {
   return selector;
 }
 
-const test = createSelector_NEW<{ foo: { bar: string } }>()(['foo.bar'], (value) => [value])({ foo: { bar: 'baz' } });
+interface State {
+  foo: { bar: string };
+}
+interface Props {
+  baz: number;
+}
+
+const test = createSelector_NEW<State>()(['foo.bar'], (value) => ({ value }))({ foo: { bar: 'baz' } });
+const testAny = createSelector_NEW<any>()(['foo.bar'], (value) => ({ value }))({ foo: { bar: 'baz' } });
+const testUnknown = createSelector_NEW<unknown>()(['foo.bar'], (value) => ({ value }))({ foo: { bar: 'baz' } });
+const testIdentity = createSelector_NEW<State>()([['foo', 'bar']])({ foo: { bar: 'baz' } });
+const testPathObject = createSelector_NEW<[State, Props]>()(['foo', { argIndex: 1, path: 'baz' }], (foo, baz) => ({
+  foo,
+  baz,
+}))({ foo: { bar: 'baz' } }, { baz: 123 });
+const testCustom = createSelector_NEW<State>()(
+  ['foo', (state) => ({ result: state.foo.bar })],
+  (foo, { result }) => `${foo.bar}${result}`,
+)({
+  foo: { bar: 'baz' },
+});
+const testCustomIdentity = createSelector_NEW<State>()(['foo', (state) => ({ result: state.foo.bar })])({
+  foo: { bar: 'baz' },
+});
+const testAll = createSelector_NEW<[State, Props]>()(
+  ['foo', ['foo', 'bar'], (_, props) => props.baz, { argIndex: 1, path: ['baz'] }],
+  (foo, bar, bazCustom, bazObject) => ({ foo, bar, bazCustom, bazObject }),
+)({ foo: { bar: 'baz' } }, { baz: 123 });
+const testAllIdentity = createSelector_NEW<[State, Props]>()([
+  'foo',
+  ['foo', 'bar'],
+  (_, props) => props.baz,
+  { argIndex: 1, path: ['baz'] },
+])({ foo: { bar: 'baz' } }, { baz: 123 });
 
 /**
  * Create a selector without any boilerplate code

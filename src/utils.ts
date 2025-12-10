@@ -9,10 +9,14 @@ import type { AnyFn, AnyPath, Options, PathObject } from './internalTypes.js';
 // eslint-disable-next-line @typescript-eslint/unbound-method
 const hasOwnProperty = Object.prototype.hasOwnProperty;
 
+export function identitySelector<Params extends unknown[]>(...params: Params): Params {
+  return params;
+}
+
 /**
  * is the path a functions
  */
-export function isFunctionPath(path: AnyPath): path is AnyFn {
+export function isFunctionPath<Params extends unknown[]>(path: AnyPath<Params>): path is AnyFn {
   return typeof path === 'function';
 }
 
@@ -30,7 +34,7 @@ export function isPathItem(path: any): path is PathItem {
 /**
  * based on the path passed, create the identity function for it or return the function itself
  */
-export function createIdentitySelector(path: AnyPath) {
+export function createIdentitySelector<Params extends unknown[]>(path: AnyPath<Params>) {
   if (isFunctionPath(path)) {
     return path;
   }
@@ -107,7 +111,11 @@ export function getSelectorCreator({
 /**
  * get a standard selector based on the paths and getComputedValue provided
  */
-export function getStandardSelector(paths: AnyPath[], selectorCreator: AnyFn, getComputedValue: AnyFn): AnyFn {
+export function getStandardSelector<Paths extends Array<AnyPath<any[]>>>(
+  paths: Paths,
+  selectorCreator: AnyFn,
+  getComputedValue: AnyFn,
+): AnyFn {
   return selectorCreator(paths.map(createIdentitySelector), getComputedValue);
 }
 
