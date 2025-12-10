@@ -1,5 +1,10 @@
 import type { ParsePath, Path, PathItem } from 'pathington';
 
+export type IsAny<T> = 0 extends 1 & NoInfer<T> ? true : false;
+export type IsNull<T> = [T] extends [null] ? true : false;
+export type IsKnown<T> = IsAny<T> extends false ? (IsUnknown<T> extends false ? true : false) : false;
+export type IsUnknown<T> = unknown extends T ? (IsNull<T> extends false ? true : false) : false;
+
 export type AnyFn = (...args: any[]) => any;
 
 export interface PathObject {
@@ -60,6 +65,9 @@ type SelectValues<State, Paths extends AnyPath[], Values extends unknown[] = []>
       : never // path object
   : Values;
 
-export type Select<State, Paths extends AnyPath[], Result> = State extends unknown[]
-  ? (...states: State) => Result
-  : (...values: SelectValues<State, Paths>) => Result;
+export type Select<State, Paths extends AnyPath[], Result> =
+  IsKnown<State> extends false
+    ? (...states: any[]) => Result
+    : State extends unknown[]
+      ? (...states: State) => Result
+      : (...values: SelectValues<State, Paths>) => Result;
