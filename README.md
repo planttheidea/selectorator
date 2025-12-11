@@ -88,7 +88,7 @@ const state = {
 
 console.log('subtotal: ', getSubtotal(state)); // 2.15
 console.log('tax: ', getTax(state)); // 0.172
-console.log('total: ', getTotal(state)); // {2.322}
+console.log('total: ', getTotal(state)); // 2.322
 ```
 
 ## Selection types
@@ -111,7 +111,7 @@ If passing multiple parameters (e.g., `selector(state, props)`), you can leverag
 which argument to select from.
 
 ```ts
-const getThings = createSelector<State>()({
+const getThings = createSelector<[State, Props]>()({
   stateThing: 'thing',
   propsThing: { argIndex: 1, path: 'thing' },
 });
