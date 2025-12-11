@@ -6,6 +6,7 @@
 
 - Update syntax to curry-based for good typing (`createSelector<State>()(InputSelector[], (...Inputs) => Result)`)
 - Remove custom options in favor of pass-through of `reselect` options
+- Now an ESM package (`"type": "module"`)
 
 ## 4.0.3
 
