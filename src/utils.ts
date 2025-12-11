@@ -1,10 +1,10 @@
-import { deepEqual as isDeeplyEqual } from 'fast-equals';
 import { createIdentity } from 'identitate';
-import type { Path, PathItem } from 'pathington';
+import type { Path as PathArray, PathItem } from 'pathington';
 import { parse } from 'pathington';
+import type { CreateSelectorOptions } from 'reselect';
 import { createSelectorCreator, lruMemoize } from 'reselect';
 import { INVALID_OBJECT_PATH_MESSAGE, INVALID_PATH_MESSAGE } from './constants.js';
-import type { AnyFn, AnyPath, Options, PathObject } from './internalTypes.js';
+import type { AnyFn, Path, PathObject } from './internalTypes.js';
 
 // eslint-disable-next-line @typescript-eslint/unbound-method
 const hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -12,7 +12,7 @@ const hasOwnProperty = Object.prototype.hasOwnProperty;
 /**
  * is the path a functions
  */
-export function isFunctionPath<Params extends unknown[]>(path: AnyPath<Params>): path is AnyFn {
+export function isFunctionPath<Params extends unknown[]>(path: Path<Params>): path is AnyFn {
   return typeof path === 'function';
 }
 
@@ -30,7 +30,7 @@ export function isPathItem(path: any): path is PathItem {
 /**
  * based on the path passed, create the identity function for it or return the function itself
  */
-export function createIdentitySelector<Params extends unknown[]>(path: AnyPath<Params>) {
+export function createIdentitySelector<Params extends unknown[]>(path: Path<Params>) {
   if (isFunctionPath(path)) {
     return path;
   }
@@ -40,7 +40,7 @@ export function createIdentitySelector<Params extends unknown[]>(path: AnyPath<P
       const { argIndex, path: objectPath } = path;
 
       const selectorIdentity = createIdentity(argIndex);
-      const parsedPath: Path | null = isPathItem(objectPath)
+      const parsedPath: PathItem[] | null = isPathItem(objectPath)
         ? parse(objectPath)
         : Array.isArray(objectPath) && objectPath.every(isPathItem)
           ? parse(objectPath)
@@ -69,7 +69,7 @@ export function createIdentitySelector<Params extends unknown[]>(path: AnyPath<P
   throw new TypeError(INVALID_PATH_MESSAGE);
 }
 
-function getDeep<State>(path: Path, state: State) {
+function getDeep<State>(path: PathArray, state: State) {
   if (state == null) {
     return;
   }
@@ -93,21 +93,23 @@ function getDeep<State>(path: Path, state: State) {
  * get the creator function to use when generating the selector
  */
 export function getSelectorCreator({
-  deepEqual = false,
-  isEqual = Object.is,
-  memoizer,
-  memoizerParams = [],
-}: Options): AnyFn {
-  const memoizerFn: AnyFn = memoizer ?? lruMemoize;
-  const equals: AnyFn = deepEqual ? isDeeplyEqual : isEqual;
-
-  return createSelectorCreator(memoizerFn, equals, ...memoizerParams);
+  argsMemoize,
+  argsMemoizeOptions,
+  memoize,
+  memoizeOptions,
+}: CreateSelectorOptions): AnyFn {
+  return createSelectorCreator({
+    argsMemoize,
+    argsMemoizeOptions,
+    memoize: memoize ?? lruMemoize,
+    memoizeOptions,
+  });
 }
 
 /**
  * get a standard selector based on the paths and getComputedValue provided
  */
-export function getStandardSelector<Paths extends Array<AnyPath<any[]>>>(
+export function getStandardSelector<Paths extends Array<Path<any[]>>>(
   paths: Paths,
   selectorCreator: AnyFn,
   getComputedValue: AnyFn,

@@ -1,21 +1,17 @@
-import type { ParsePath, Path, PathItem } from 'pathington';
+import type { ParsePath, Path as PathArray, PathItem } from 'pathington';
+import type { DefaultMemoizeFields } from 'reselect';
 
 export type AnyFn = (...args: any[]) => any;
-
-export type UnchangedPath = number | string;
-export type AnyPathWithoutObject = Exclude<AnyPath<any>, PathObject>;
-
-export type Selector<State, Output> = (state: State) => Output;
-export type SelectorMultiParam<State extends unknown[], Output> = (...state: State) => Output;
 
 /* ----------------------------------------- */
 
 export interface PathObject {
   argIndex: number;
-  path: UnchangedPath | UnchangedPath[];
+  path: PathingtonPath;
 }
 
-export type AnyPath<Params extends unknown[]> = CustomSelect<Params> | Path | PathItem | PathObject;
+export type PathingtonPath = PathArray | PathItem;
+export type Path<Params extends unknown[]> = ManualSelectInput<Params> | PathingtonPath | PathObject;
 
 export interface Options {
   deepEqual?: boolean;
@@ -60,31 +56,34 @@ export type PickDeepInternalNormalized<Value, Property> = Property extends unkno
     : // When it cannot be narrowly determined, widen to ensure false positives / negatives are avoided.
       any;
 
-export type PickDeep<Params, Property extends Path | PathItem> = PickDeepInternalNormalized<
-  Params,
-  ParsePath<Property>
->;
+export type PickDeep<Params, Property extends PathingtonPath> = PickDeepInternalNormalized<Params, ParsePath<Property>>;
 
 type SelectInputs<Params extends unknown[], Paths extends unknown[], Values extends unknown[] = []> = Paths extends [
   infer Property,
   ...infer Remaining,
 ]
-  ? Property extends Path | PathItem
+  ? Property extends PathingtonPath
     ? SelectInputs<Params, Remaining, [...Values, PickDeep<Params[0], Property>]>
     : Property extends PathObject
       ? SelectInputs<Params, Remaining, [...Values, PickDeep<Params[Property['argIndex']], Property['path']>]>
-      : Property extends CustomSelect<Params>
+      : Property extends ManualSelectInput<Params>
         ? SelectInputs<Params, Remaining, [...Values, ReturnType<Property>]>
         : // This should never happen, but if it does then make it obvious
           SelectInputs<Params, Remaining, [...Values, never]>
   : Values;
 
-export type IdentitySelect<Params extends unknown[], Paths extends unknown[]> = (
+export type IdentitySelectorFn<Params extends unknown[], Paths extends unknown[]> = (
   ...params: Params
 ) => SelectInputs<WidenUnknown<Params>, Paths>[0];
+export type IdentitySelector<Params extends unknown[], Paths extends unknown[]> = IdentitySelectorFn<Params, Paths>
+  & DefaultMemoizeFields;
 
-export type CustomSelect<Params extends unknown[]> = (...params: WidenUnknown<Params>) => any;
+export type ManualSelectInput<Params extends unknown[]> = (...params: WidenUnknown<Params>) => any;
 
-export type Select<Params extends unknown[], Paths extends unknown[], Result> = (
+export type ComputeValue<Params extends unknown[], Paths extends unknown[], Result> = (
   ...values: SelectInputs<WidenUnknown<Params>, Paths>
 ) => Result;
+
+export type StandardSelectorFn<Params extends unknown[], Result> = (...params: Params) => Result;
+export type StandardSelector<Params extends unknown[], Result> = StandardSelectorFn<Params, Result>
+  & DefaultMemoizeFields;
