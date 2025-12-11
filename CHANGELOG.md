@@ -1,5 +1,12 @@
 # selectorator CHANGELOG
 
+## 5.0.0
+
+### Breaking changes
+
+- Update syntax to curry-based for good typing (`createSelector<State>()(InputSelector[], (...Inputs) => Result)`)
+- Remove custom options in favor of pass-through of `reselect` options
+
 ## 4.0.3
 
 - Update `unchanged` dependency for faster `get` operations cross-browser
