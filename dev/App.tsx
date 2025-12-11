@@ -42,13 +42,19 @@ console.log('subtotal: ', getSubtotal(state));
 console.log('tax: ', getTax(state));
 console.log('total: ', getTotal(state));
 
-// const getFlattedState = createSelector({
-//   items: 'shop.items',
-//   subtotal: getSubtotal,
-//   tax: getTax,
-//   total: getTotal,
-// });
-// console.log('structured state', getFlattedState(state));
+const getFlattedState = createSelector<State>()(
+  {
+    items: 'shop.items',
+    subtotal: getSubtotal,
+    tax: getTax,
+    total: getTotal,
+  },
+  (items, subtotal, tax, total) => {
+    return [items, subtotal, tax, total];
+  },
+);
+const flattenedState = getFlattedState(state);
+console.log('structured state', flattenedState);
 
 const getFoo = createSelector<{ foo: string }>()(['foo'], (foo: string) => {
   return {

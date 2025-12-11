@@ -1,14 +1,27 @@
 import { identity } from 'identitate';
 import type { CreateSelectorOptions } from 'reselect';
 import { INVALID_ARRAY_PATHS_MESSAGE, INVALID_PATHS_MESSAGE } from './constants.js';
-import type { Path, ComputeValue, IdentitySelector, StandardSelector } from './internalTypes.js';
-import { getSelectorCreator, getStandardSelector, getStructuredSelector } from './utils.js';
+import type {
+  Path,
+  ComputeValue,
+  IdentitySelector,
+  StandardSelector,
+  PathStructured,
+  ComputeStructuredValue,
+  IdentityStructuredSelector,
+} from './internalTypes.js';
+import {
+  getSelectorCreator,
+  getStandardSelector,
+  getStructuredIdentitySelector,
+  getStructuredSelector,
+} from './utils.js';
 
 /**
  * Create a selector without any boilerplate code
  *
  * @example
- * import createSelector from 'selectorator';
+ * import { createSelector } from 'selectorator';
  *
  * const getFilteredItems = createSelector(['items', 'filter.value'], (items, filterValue) => {
  *   return items.filter((item) => {
@@ -31,27 +44,34 @@ export function createSelector<Args>(options: CreateSelectorOptions = {}) {
 
   const selectorCreator = getSelectorCreator(options);
 
-  // When no handler is passed
+  // When using standard paths
   function selector<const Paths extends [Path<Params>]>(
     paths: Paths,
     getComputedValue?: undefined,
   ): IdentitySelector<Params, Paths>;
-  // When a handler is passed
   function selector<const Paths extends Array<Path<Params>>, GetComputedValue extends ComputeValue<Params, Paths, any>>(
     paths: Paths,
     getComputedValue: GetComputedValue,
   ): StandardSelector<Params, ReturnType<GetComputedValue>>;
+  // When using a structured selector
+  function selector<const Paths extends PathStructured<Params>>(
+    paths: Paths,
+  ): IdentityStructuredSelector<Params, Paths>;
+  function selector<
+    const Paths extends PathStructured<Params>,
+    GetComputedValue extends ComputeStructuredValue<Params, Paths, any>,
+  >(paths: Paths, getComputedValue: GetComputedValue): StandardSelector<Params, ReturnType<GetComputedValue>>;
   // implementation
   function selector<const Paths extends Array<Path<Params>>, GetComputedValue extends ComputeValue<Params, Paths, any>>(
     paths: Paths,
-    getComputedValue = identity as GetComputedValue,
+    getComputedValue?: GetComputedValue,
   ) {
     if (Array.isArray(paths)) {
       if (!paths.length) {
         throw new ReferenceError(INVALID_ARRAY_PATHS_MESSAGE);
       }
 
-      return getStandardSelector(paths, selectorCreator, getComputedValue);
+      return getStandardSelector(paths, selectorCreator, getComputedValue ?? identity) as any;
     }
 
     if (
@@ -59,7 +79,7 @@ export function createSelector<Args>(options: CreateSelectorOptions = {}) {
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       && paths != null
     ) {
-      return getStructuredSelector(paths, selectorCreator);
+      return getStructuredSelector(paths, selectorCreator, getComputedValue ?? getStructuredIdentitySelector(paths));
     }
 
     throw new TypeError(INVALID_PATHS_MESSAGE);

@@ -1,10 +1,18 @@
 import { createIdentity } from 'identitate';
 import type { Path as PathArray, PathItem } from 'pathington';
 import { parse } from 'pathington';
-import type { CreateSelectorOptions } from 'reselect';
+import type { CreateSelectorFunction, CreateSelectorOptions } from 'reselect';
 import { createSelectorCreator, lruMemoize } from 'reselect';
 import { INVALID_OBJECT_PATH_MESSAGE, INVALID_PATH_MESSAGE } from './constants.js';
-import type { AnyFn, Path, PathObject } from './internalTypes.js';
+import type {
+  AnyFn,
+  ComputeValue,
+  Path,
+  PathObject,
+  PathStructured,
+  SelectStructuredInputs,
+  StructuredValues,
+} from './internalTypes.js';
 
 // eslint-disable-next-line @typescript-eslint/unbound-method
 const hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -97,7 +105,7 @@ export function getSelectorCreator({
   argsMemoizeOptions,
   memoize,
   memoizeOptions,
-}: CreateSelectorOptions): AnyFn {
+}: CreateSelectorOptions) {
   return createSelectorCreator({
     argsMemoize,
     argsMemoizeOptions,
@@ -109,11 +117,11 @@ export function getSelectorCreator({
 /**
  * get a standard selector based on the paths and getComputedValue provided
  */
-export function getStandardSelector<Paths extends Array<Path<any[]>>>(
-  paths: Paths,
-  selectorCreator: AnyFn,
-  getComputedValue: AnyFn,
-): AnyFn {
+export function getStandardSelector<
+  const Params extends unknown[],
+  const Paths extends Array<Path<Params>>,
+  GetComputedValue extends ComputeValue<Params, Paths, any>,
+>(paths: Paths, selectorCreator: CreateSelectorFunction, getComputedValue: GetComputedValue) {
   return selectorCreator(paths.map(createIdentitySelector), getComputedValue);
 }
 
@@ -129,12 +137,39 @@ export function getStructuredObject(properties: string[]): AnyFn {
     }, {});
   };
 }
+
 /**
  * get an object of property => selected value pairs bsaed on paths
  */
-export function getStructuredSelector(paths: Record<string, any>, selectorCreator: AnyFn): AnyFn {
-  const destinationKeys = Object.keys(paths);
-  const selectors = destinationKeys.map((key) => createIdentitySelector(paths[key]));
+export function getStructuredSelector(
+  paths: PathStructured<any[]>,
+  selectorCreator: CreateSelectorFunction,
+  getComputedValue: AnyFn,
+) {
+  const selectors = Object.keys(paths).map((key) =>
+    createIdentitySelector(
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      paths[key]!,
+    ),
+  );
 
-  return selectorCreator(selectors, getStructuredObject(destinationKeys));
+  return selectorCreator(selectors, getComputedValue);
+}
+
+/**
+ * get an object of property => selected value pairs bsaed on paths
+ */
+export function getStructuredIdentitySelector<
+  const Params extends unknown[],
+  const Paths extends PathStructured<Params>,
+>(paths: Paths) {
+  const properties = Object.keys(paths);
+
+  return function structuredObject(...values: StructuredValues<Params, Paths>) {
+    return properties.reduce<Record<string, any>>((structuredObject, property, index) => {
+      structuredObject[property] = values[index];
+
+      return structuredObject;
+    }, {}) as SelectStructuredInputs<Params, Paths>;
+  };
 }
