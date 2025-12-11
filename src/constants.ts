@@ -11,11 +11,7 @@ export const INVALID_PATHS_MESSAGE = [
   'names to assign the values from source to.',
 ].join(' ');
 
-export const INVALID_OBJECT_PATH_MESSAGE = `
-When providing an object path, you must provide the following properties:
-  * path: the path to retrieve, e.g. "foo.bar"
-  * argIndx: the index of the argument to retrieve the path from
-`.trim();
+export const INVALID_OBJECT_PATH_MESSAGE = 'When providing an object path, you must provide the `path` property.';
 
 export const INVALID_PATH_MESSAGE = `
 Path provided is of invalid type. It can be any one of the following values:

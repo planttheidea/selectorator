@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 
+import { memoize } from 'micro-memoize';
 import { describe, expect, test, vi } from 'vitest';
 import { createSelector } from '../src/index.js';
 import * as utils from '../src/utils.js';
@@ -8,9 +9,11 @@ describe('createSelector', () => {
   test('calls getStructuredSelector when paths is an object', () => {
     const spy = vi.spyOn(utils, 'getStructuredSelector');
 
-    createSelector({
-      foo: 'bar',
-    });
+    interface State {
+      foo: string;
+    }
+
+    createSelector<State>()({ foo: 'bar' });
 
     expect(spy).toHaveBeenCalledTimes(1);
 
@@ -19,7 +22,7 @@ describe('createSelector', () => {
 
   test('throws when paths is not an array nor an object', () => {
     expect(() =>
-      createSelector(
+      createSelector()(
         // @ts-expect-error - Testing error condition
         false,
       ),
@@ -27,7 +30,12 @@ describe('createSelector', () => {
   });
 
   test('throws when paths is an empty array', () => {
-    expect(() => createSelector([])).toThrow();
+    expect(() =>
+      createSelector()(
+        // @ts-expect-error - Testing error condition
+        [],
+      ),
+    ).toThrow();
   });
 
   test('calls getSelectorCreator with the options passed', () => {
@@ -35,11 +43,9 @@ describe('createSelector', () => {
 
     const paths = ['foo'];
     const handler = () => {};
-    const options = {
-      isEqual: () => false,
-    };
+    const options = { memoize };
 
-    createSelector(paths, handler, options);
+    createSelector(options)(paths, handler);
 
     expect(spy).toHaveBeenCalledTimes(1);
     expect(spy).toHaveBeenLastCalledWith(options);
@@ -50,41 +56,49 @@ describe('createSelector', () => {
   test('returns an identity function when getComputedValue is not provided', () => {
     const spy = vi.spyOn(utils, 'getStandardSelector');
 
-    const selector = createSelector(['foo.bar.baz']);
+    interface State {
+      foo: {
+        bar: {
+          baz: string;
+        };
+      };
+    }
+
+    const selector = createSelector<State>()(['foo.bar.baz']);
 
     expect(spy).toHaveBeenCalledTimes(1);
 
     spy.mockRestore();
 
-    const baz = 'baz';
-
     const result = selector({
       foo: {
-        bar: {
-          baz,
-        },
+        bar: { baz: 'baz' },
       },
     });
 
-    expect(result).toBe(baz);
+    expect(result).toBe('baz');
   });
 
   test('returns the handler function when getComputedValue is provided', () => {
     const spy = vi.spyOn(utils, 'getStandardSelector');
 
-    const selector = createSelector(['foo.bar.baz'], (baz: string) => baz === 'baz');
+    interface State {
+      foo: {
+        bar: {
+          baz: string;
+        };
+      };
+    }
+
+    const selector = createSelector<State>()(['foo.bar.baz'], (baz: string) => baz === 'baz');
 
     expect(spy).toHaveBeenCalledTimes(1);
 
     spy.mockRestore();
 
-    const baz = 'baz';
-
     const result = selector({
       foo: {
-        bar: {
-          baz,
-        },
+        bar: { baz: 'baz' },
       },
     });
 

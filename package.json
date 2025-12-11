@@ -5,7 +5,6 @@
     "url": "https://github.com/planttheidea/selectorator/issues"
   },
   "dependencies": {
-    "fast-equals": "^5.3.3",
     "identitate": "^2.0.0",
     "pathington": "^2.1.0",
     "reselect": "^5.1.1"
@@ -16,8 +15,8 @@
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "@vitest/coverage-v8": "^4.0.15",
-    "cli-table2": "^0.2.0",
     "eslint": "^9.39.1",
+    "fast-equals": "^5.3.3",
     "micro-memoize": "^5.1.1",
     "prettier": "^3.7.4",
     "react": "^19.2.1",
