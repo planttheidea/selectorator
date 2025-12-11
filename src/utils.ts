@@ -2,7 +2,7 @@ import { createIdentity } from 'identitate';
 import type { Path as PathArray, PathItem } from 'pathington';
 import { parse } from 'pathington';
 import type { CreateSelectorFunction, CreateSelectorOptions } from 'reselect';
-import { createSelectorCreator, lruMemoize } from 'reselect';
+import { createSelectorCreator, weakMapMemoize } from 'reselect';
 import { INVALID_OBJECT_PATH_MESSAGE, INVALID_PATH_MESSAGE } from './constants.js';
 import type {
   AnyFn,
@@ -103,13 +103,15 @@ function getDeep<State>(path: PathArray, state: State) {
 export function getSelectorCreator({
   argsMemoize,
   argsMemoizeOptions,
+  devModeChecks,
   memoize,
   memoizeOptions,
 }: CreateSelectorOptions) {
   return createSelectorCreator({
     argsMemoize,
     argsMemoizeOptions,
-    memoize: memoize ?? lruMemoize,
+    devModeChecks,
+    memoize: memoize ?? weakMapMemoize,
     memoizeOptions,
   });
 }

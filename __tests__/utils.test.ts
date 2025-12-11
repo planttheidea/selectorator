@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 
-import { deepEqual } from 'fast-equals';
-import { createSelector, createSelectorCreator, lruMemoize } from 'reselect';
+import { deepEqual, shallowEqual } from 'fast-equals';
+import { createSelector, createSelectorCreator, weakMapMemoize } from 'reselect';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import {
   createIdentitySelector,
   getSelectorCreator,
   getStandardSelector,
+  getStructuredIdentitySelector,
   getStructuredObject,
   getStructuredSelector,
 } from '../src/utils.js';
@@ -155,48 +156,38 @@ describe('getSelectorCreator', () => {
     const result = getSelectorCreator({});
 
     expect(mockCreateSelectorCreator).toHaveBeenCalledTimes(1);
-    expect(mockCreateSelectorCreator).toHaveBeenLastCalledWith(lruMemoize, Object.is);
+    expect(mockCreateSelectorCreator).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        memoize: weakMapMemoize,
+      }),
+    );
 
     mockCreateSelectorCreator.mockReset();
 
-    expect(result).toBe(lruMemoize);
+    expect(result).toEqual({ memoize: weakMapMemoize });
   });
 
-  test('returns the correct createSelector when deepEqual is true', () => {
-    const result = getSelectorCreator({ deepEqual: true });
+  test('returns the correct createSelector when custom options are applied', () => {
+    const result = getSelectorCreator({
+      argsMemoizeOptions: { resultEqualityCheck: shallowEqual },
+      memoizeOptions: { resultEqualityCheck: deepEqual },
+    });
+
+    expect(result).toEqual({
+      argsMemoizeOptions: { resultEqualityCheck: shallowEqual },
+      memoize: weakMapMemoize,
+      memoizeOptions: { resultEqualityCheck: deepEqual },
+    });
 
     expect(mockCreateSelectorCreator).toHaveBeenCalledTimes(1);
-    expect(mockCreateSelectorCreator).toHaveBeenLastCalledWith(lruMemoize, deepEqual);
+    expect(mockCreateSelectorCreator).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        argsMemoizeOptions: { resultEqualityCheck: shallowEqual },
+        memoizeOptions: { resultEqualityCheck: deepEqual },
+      }),
+    );
 
     mockCreateSelectorCreator.mockReset();
-
-    expect(result).toBe(lruMemoize);
-  });
-
-  test('returns the correct createSelector when isEqual is provided', () => {
-    const isEqual = (a: any, b: any) => a === b;
-
-    const result = getSelectorCreator({ isEqual });
-
-    expect(mockCreateSelectorCreator).toHaveBeenCalledTimes(1);
-    expect(mockCreateSelectorCreator).toHaveBeenLastCalledWith(lruMemoize, isEqual);
-
-    mockCreateSelectorCreator.mockReset();
-
-    expect(result).toBe(lruMemoize);
-  });
-
-  test('returns the correct createSelector when custom memoizer options are provided', () => {
-    const memoizerParams = ['foo'];
-
-    const result = getSelectorCreator({ memoizerParams });
-
-    expect(mockCreateSelectorCreator).toHaveBeenCalledTimes(1);
-    expect(mockCreateSelectorCreator).toHaveBeenLastCalledWith(lruMemoize, Object.is, ...memoizerParams);
-
-    mockCreateSelectorCreator.mockReset();
-
-    expect(result).toBe(lruMemoize);
   });
 });
 
@@ -211,7 +202,7 @@ describe('getStandardSelector', () => {
       },
     };
 
-    const selector = getStandardSelector(path, createSelector, handler);
+    const selector = getStandardSelector(path, createSelector, handler as any);
 
     const result = selector(state);
 
@@ -254,8 +245,30 @@ describe('getStructuredSelector', () => {
       foo: 'bar',
     };
 
-    const selector = getStructuredSelector(paths, createSelector);
+    const selector = getStructuredSelector(paths, createSelector, (foo, bar, quz) => [foo, bar, quz]);
+    const result = selector(state);
 
+    expect(result).toEqual(['foo', 'bar', 'quz']);
+  });
+
+  test('maps selectors to specific keys in identity function', () => {
+    const paths = {
+      foo: 'bar.baz',
+      bar: 'foo',
+      baz: 'baz.foo',
+    };
+
+    const state = {
+      bar: {
+        baz: 'foo',
+      },
+      baz: {
+        foo: 'quz',
+      },
+      foo: 'bar',
+    };
+
+    const selector = getStructuredSelector(paths, createSelector, getStructuredIdentitySelector(paths));
     const result = selector(state);
 
     expect(result).toEqual({
