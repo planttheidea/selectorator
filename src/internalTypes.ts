@@ -6,7 +6,7 @@ export type AnyFn = (...args: any[]) => any;
 /* ----------------------------------------- */
 
 export interface PathObject {
-  argIndex: number;
+  argIndex?: number;
   path: PathingtonPath;
 }
 
@@ -69,7 +69,9 @@ type SelectInputs<Params extends unknown[], Paths extends unknown[], Values exte
   ? Property extends PathingtonPath
     ? SelectInputs<Params, Remaining, [...Values, PickDeep<Params[0], Property>]>
     : Property extends PathObject
-      ? SelectInputs<Params, Remaining, [...Values, PickDeep<Params[Property['argIndex']], Property['path']>]>
+      ? Property['argIndex'] extends number
+        ? SelectInputs<Params, Remaining, [...Values, PickDeep<Params[Property['argIndex']], Property['path']>]>
+        : SelectInputs<Params, Remaining, [...Values, PickDeep<Params[0], Property['path']>]>
       : Property extends ManualSelectInput<Params>
         ? SelectInputs<Params, Remaining, [...Values, ReturnType<Property>]>
         : // This should never happen, but if it does then make it obvious
@@ -99,7 +101,9 @@ export type SelectStructuredInputs<Params extends unknown[], Paths extends Recor
   [Property in keyof Paths]: Paths[Property] extends PathingtonPath
     ? PickDeep<Params[0], Paths[Property]>
     : Paths[Property] extends PathObject
-      ? PickDeep<Params[Paths[Property]['argIndex']], Paths[Property]['path']>
+      ? Paths[Property]['argIndex'] extends number
+        ? Paths[Property]['argIndex']
+        : PickDeep<Params[0], Paths[Property]['path']>
       : Paths[Property] extends ManualSelectInput<Params>
         ? ReturnType<Paths[Property]>
         : never;

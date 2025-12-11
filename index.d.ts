@@ -2,7 +2,7 @@ import { DefaultMemoizeFields, CreateSelectorOptions } from 'reselect';
 import { Path as Path$1, PathItem, ParsePath } from 'pathington';
 
 interface PathObject {
-  argIndex: number;
+  argIndex?: number;
   path: PathingtonPath;
 }
 type PathingtonPath = Path$1 | PathItem;
@@ -45,7 +45,9 @@ type SelectInputs<Params extends unknown[], Paths extends unknown[], Values exte
   ? Property extends PathingtonPath
     ? SelectInputs<Params, Remaining, [...Values, PickDeep<Params[0], Property>]>
     : Property extends PathObject
-      ? SelectInputs<Params, Remaining, [...Values, PickDeep<Params[Property['argIndex']], Property['path']>]>
+      ? Property['argIndex'] extends number
+        ? SelectInputs<Params, Remaining, [...Values, PickDeep<Params[Property['argIndex']], Property['path']>]>
+        : SelectInputs<Params, Remaining, [...Values, PickDeep<Params[0], Property['path']>]>
       : Property extends ManualSelectInput<Params>
         ? SelectInputs<Params, Remaining, [...Values, ReturnType<Property>]>
         : SelectInputs<Params, Remaining, [...Values, never]>
@@ -70,7 +72,9 @@ type SelectStructuredInputs<Params extends unknown[], Paths extends Record<strin
   [Property in keyof Paths]: Paths[Property] extends PathingtonPath
     ? PickDeep<Params[0], Paths[Property]>
     : Paths[Property] extends PathObject
-      ? PickDeep<Params[Paths[Property]['argIndex']], Paths[Property]['path']>
+      ? Paths[Property]['argIndex'] extends number
+        ? Paths[Property]['argIndex']
+        : PickDeep<Params[0], Paths[Property]['path']>
       : Paths[Property] extends ManualSelectInput<Params>
         ? ReturnType<Paths[Property]>
         : never;

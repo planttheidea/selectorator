@@ -5,6 +5,7 @@ import { createSelector, createSelectorCreator, weakMapMemoize } from 'reselect'
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import {
   createIdentitySelector,
+  getDeep,
   getSelectorCreator,
   getStandardSelector,
   getStructuredIdentitySelector,
@@ -84,24 +85,58 @@ describe('createIdentitySelector', () => {
     expect(result).toBe(state[0]);
   });
 
-  test('creates a function that receives state and gets the value at the object path', () => {
-    const path = 0;
-    const value = 'foo-bar-baz';
-    const state: Record<string, any[]> = {
+  test('creates a function that receives state and gets the value at the object path at the default arg index', () => {
+    const state = {
       foo: [
         {
           bar: {
-            baz: value,
+            baz: 'state value',
+          },
+        },
+      ],
+    };
+    const props = {
+      foo: [
+        {
+          bar: {
+            baz: 'props value',
           },
         },
       ],
     };
 
-    const identity = createIdentitySelector({ argIndex: 1, path });
+    const identity = createIdentitySelector({ path: ['foo', 0, 'bar', 'baz'] });
 
-    const result = identity(state);
+    const result = identity(state, props);
 
-    expect(result).toBe(state[0]);
+    expect(result).toBe('state value');
+  });
+
+  test('creates a function that receives state and gets the value at the object path when an arg index is provided', () => {
+    const state = {
+      foo: [
+        {
+          bar: {
+            baz: 'state value',
+          },
+        },
+      ],
+    };
+    const props = {
+      foo: [
+        {
+          bar: {
+            baz: 'props value',
+          },
+        },
+      ],
+    };
+
+    const identity = createIdentitySelector({ argIndex: 1, path: ['foo', 0, 'bar', 'baz'] });
+
+    const result = identity(state, props);
+
+    expect(result).toBe('props value');
   });
 
   test('returns the function passed when the path is a function', () => {
@@ -112,38 +147,31 @@ describe('createIdentitySelector', () => {
     expect(result).toBe(path);
   });
 
-  test('throws when path is an object but does not have the argIndex property', () => {
-    expect(() =>
-      createIdentitySelector(
-        // @ts-expect-error - Testing error condition
-        { path: 'foo' },
-      ),
-    ).toThrow();
-  });
+  describe('error conditions', () => {
+    test('throws when path is an object but does not have the `path` property', () => {
+      expect(() =>
+        createIdentitySelector(
+          // @ts-expect-error - Testing error condition
+          { argIndex: 1 },
+        ),
+      ).toThrow('provide the `path` property');
+    });
 
-  test('throws when path is an object but does not have the path property', () => {
-    expect(() =>
-      createIdentitySelector(
-        // @ts-expect-error - Testing error condition
-        { argIndex: 0 },
-      ),
-    ).toThrow();
-  });
+    test('throws when path is not valid', () => {
+      expect(() =>
+        createIdentitySelector(
+          // @ts-expect-error - Testing error condition
+          false,
+        ),
+      ).toThrow('invalid type');
+    });
 
-  test('throws when path is not valid', () => {
-    expect(() =>
-      createIdentitySelector(
+    test('throws when path is not passed', () => {
+      expect(() =>
         // @ts-expect-error - Testing error condition
-        false,
-      ),
-    ).toThrow();
-  });
-
-  test('throws when path is not passed', () => {
-    expect(() =>
-      // @ts-expect-error - Testing error condition
-      createIdentitySelector(),
-    ).toThrow();
+        createIdentitySelector(),
+      ).toThrow('invalid type');
+    });
   });
 });
 
@@ -276,5 +304,15 @@ describe('getStructuredSelector', () => {
       bar: state.foo,
       baz: state.baz.foo,
     });
+  });
+});
+
+describe('getDeep', () => {
+  test('returns `undefined` when no state exists', () => {
+    expect(getDeep(['foo'], null)).toBe(undefined);
+  });
+
+  test('returns `undefined` when no value exists at the path', () => {
+    expect(getDeep(['foo', 'bar', 'baz'], { foo: {} })).toBe(undefined);
   });
 });

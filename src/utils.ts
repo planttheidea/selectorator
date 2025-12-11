@@ -7,6 +7,7 @@ import { INVALID_OBJECT_PATH_MESSAGE, INVALID_PATH_MESSAGE } from './constants.j
 import type {
   AnyFn,
   ComputeValue,
+  ManualSelectInput,
   Path,
   PathObject,
   PathStructured,
@@ -18,14 +19,14 @@ import type {
 const hasOwnProperty = Object.prototype.hasOwnProperty;
 
 /**
- * is the path a functions
+ * Whether the path is a functon
  */
-export function isFunctionPath<Params extends unknown[]>(path: Path<Params>): path is AnyFn {
+export function isManualSelector<Params extends unknown[]>(path: Path<Params>): path is ManualSelectInput<Params> {
   return typeof path === 'function';
 }
 
 /**
- * is the path an object
+ * Whether the path is an object.
  */
 export function isObjectPath(path: any): path is PathObject {
   return !!path && typeof path === 'object' && !Array.isArray(path);
@@ -36,16 +37,17 @@ export function isPathItem(path: any): path is PathItem {
 }
 
 /**
- * based on the path passed, create the identity function for it or return the function itself
+ * Create the identity selector function based on the path passed. If the path item is a function then it is used directly,
+ * otherwise the function is created based on its type.
  */
 export function createIdentitySelector<Params extends unknown[]>(path: Path<Params>) {
-  if (isFunctionPath(path)) {
+  if (isManualSelector(path)) {
     return path;
   }
 
   if (isObjectPath(path)) {
-    if (hasOwnProperty.call(path, 'path') && hasOwnProperty.call(path, 'argIndex')) {
-      const { argIndex, path: objectPath } = path;
+    if (hasOwnProperty.call(path, 'path')) {
+      const { argIndex = 0, path: objectPath } = path;
 
       const selectorIdentity = createIdentity(argIndex);
       const parsedPath: PathItem[] | null = isPathItem(objectPath)
@@ -77,7 +79,10 @@ export function createIdentitySelector<Params extends unknown[]>(path: Path<Para
   throw new TypeError(INVALID_PATH_MESSAGE);
 }
 
-function getDeep<State>(path: PathArray, state: State) {
+/**
+ * Get the value at the deep location expected from the path. If no match is found, return `undefined`.
+ */
+export function getDeep<State>(path: PathArray, state: State) {
   if (state == null) {
     return;
   }
@@ -98,7 +103,7 @@ function getDeep<State>(path: PathArray, state: State) {
 }
 
 /**
- * get the creator function to use when generating the selector
+ * Get the creator function to use when generating the selector.
  */
 export function getSelectorCreator({
   argsMemoize,
@@ -117,7 +122,7 @@ export function getSelectorCreator({
 }
 
 /**
- * get a standard selector based on the paths and getComputedValue provided
+ * Get a standard selector based on the paths and getComputedValue provided.
  */
 export function getStandardSelector<
   const Params extends unknown[],
@@ -128,7 +133,7 @@ export function getStandardSelector<
 }
 
 /**
- * get the structured object based on the computed selector values
+ * Get the structured object based on the computed selector values.
  */
 export function getStructuredObject(properties: string[]): AnyFn {
   return function structuredObject(...values: any[]) {
@@ -141,7 +146,7 @@ export function getStructuredObject(properties: string[]): AnyFn {
 }
 
 /**
- * get an object of property => selected value pairs bsaed on paths
+ * Get an object of property => selected value pairs based on paths.
  */
 export function getStructuredSelector(
   paths: PathStructured<any[]>,
@@ -159,7 +164,7 @@ export function getStructuredSelector(
 }
 
 /**
- * get an object of property => selected value pairs bsaed on paths
+ * Get an object of property => selected value pairs based on paths.
  */
 export function getStructuredIdentitySelector<
   const Params extends unknown[],
