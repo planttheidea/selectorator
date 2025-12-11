@@ -109,11 +109,22 @@ type StandardSelector<Params extends unknown[], Result> = StandardSelectorFn<Par
  * @example
  * import { createSelector } from 'selectorator';
  *
- * const getFilteredItems = createSelector(['items', 'filter.value'], (items, filterValue) => {
- *   return items.filter((item) => {
- *     return item.indexOf(filterValue) !== -1;
- *   });
- * });
+ * interface Item {
+ *   name: string;
+ *   value: number;
+ * }
+ *
+ * interface State {
+ *   items: Item[];
+ *   filter: {
+ *     value: string;
+ *   }
+ * }
+ *
+ * const getFilteredItems = createSelector<State>()(
+ *   ['items', 'filter.value'],
+ *   (items, filterValue) => items.filter((item) => item.includes(filterValue)),
+ * );
  *
  * const state = {
  *   items: ['foo', 'bar', 'foo-bar'],

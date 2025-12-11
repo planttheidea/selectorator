@@ -23,11 +23,22 @@ import {
  * @example
  * import { createSelector } from 'selectorator';
  *
- * const getFilteredItems = createSelector(['items', 'filter.value'], (items, filterValue) => {
- *   return items.filter((item) => {
- *     return item.indexOf(filterValue) !== -1;
- *   });
- * });
+ * interface Item {
+ *   name: string;
+ *   value: number;
+ * }
+ *
+ * interface State {
+ *   items: Item[];
+ *   filter: {
+ *     value: string;
+ *   }
+ * }
+ *
+ * const getFilteredItems = createSelector<State>()(
+ *   ['items', 'filter.value'],
+ *   (items, filterValue) => items.filter((item) => item.includes(filterValue)),
+ * );
  *
  * const state = {
  *   items: ['foo', 'bar', 'foo-bar'],
@@ -87,38 +98,3 @@ export function createSelector<Args>(options: CreateSelectorOptions = {}) {
 
   return selector;
 }
-
-// interface State {
-//   foo: { bar: string };
-// }
-// interface Props {
-//   baz: number;
-// }
-
-// const test = createSelector<State>()(['foo.bar'], (value) => ({ value }))({ foo: { bar: 'baz' } });
-// const testAny = createSelector<any>()(['foo.bar'], (value) => ({ value }))({ foo: { bar: 'baz' } });
-// const testUnknown = createSelector<unknown>()(['foo.bar'], (value) => ({ value }))({ foo: { bar: 'baz' } });
-// const testIdentity = createSelector<State>()([['foo', 'bar']])({ foo: { bar: 'baz' } });
-// const testPathObject = createSelector<[State, Props]>()(['foo', { argIndex: 1, path: 'baz' }], (foo, baz) => ({
-//   foo,
-//   baz,
-// }))({ foo: { bar: 'baz' } }, { baz: 123 });
-// const testCustom = createSelector<State>()(
-//   ['foo', (state) => ({ result: state.foo.bar })],
-//   (foo, { result }) => `${foo.bar}${result}`,
-// )({
-//   foo: { bar: 'baz' },
-// });
-// const testCustomIdentity = createSelector<State>()(['foo', (state) => ({ result: state.foo.bar })])({
-//   foo: { bar: 'baz' },
-// });
-// const testAll = createSelector<[State, Props]>()(
-//   ['foo', ['foo', 'bar'], (_, props) => props.baz, { argIndex: 1, path: ['baz'] }],
-//   (foo, bar, bazCustom, bazObject) => ({ foo, bar, bazCustom, bazObject }),
-// )({ foo: { bar: 'baz' } }, { baz: 123 });
-// const testAllIdentity = createSelector<[State, Props]>()([
-//   'foo',
-//   ['foo', 'bar'],
-//   (_, props) => props.baz,
-//   { argIndex: 1, path: ['baz'] },
-// ])({ foo: { bar: 'baz' } }, { baz: 123 });
